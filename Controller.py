@@ -2,15 +2,40 @@ import RPi.GPIO as GPIO
 import time
 import Params
 
-def lamp_1_on():
-    GPIO.output(Params.SUN_LAMP, GPIO.HIGH)
+ON = GPIO.HIGH
+OFF = GPIO.LOW
 
-def lamp_1_off():
-    GPIO.output(Params.SUN_LAMP, GPIO.LOW)
+
+def warm_fan(status):
+    GPIO.output(Params.WARM_FAN, status)
+
+
+def cool_fan(status):
+    GPIO.output(Params.COOL_FAN, status)
+
+
+def controller_fan(status):
+    GPIO.output(Params.COOL_FAN, status)
+
+
+def sun_lamp(status):
+    GPIO.output(Params.SUN_LAMP, status)
+
+
+def night_lamp(status):
+    GPIO.output(Params.NIGHT_LAMP, status)
+
+
+def uv_lamp(status):
+    GPIO.output(Params.UV_LAMP, status)
+
+
+def humidifier(status):
+    GPIO.output(Params.HUMIDIFIER, status)
+
 
 if __name__ == "__main__":
     print(f'lamp 1 on')
-    lamp_1_on()
+    sun_lamp(ON)
     time.sleep(8)
-    lamp_1_off()
-
+    sun_lamp(OFF)
