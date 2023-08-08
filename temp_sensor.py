@@ -1,4 +1,4 @@
-from Params import *
+from params import *
 import Adafruit_DHT as DHT
 import time
 

@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-import Params
+import params
 
 ON = GPIO.HIGH
 OFF = GPIO.LOW

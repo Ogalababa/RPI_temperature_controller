@@ -1,6 +1,6 @@
 from rpi_lcd import *
 from time import sleep
-from Temp_sensor import get_room_temp
+from temp_sensor import get_room_temp
 import json
 
 DEGREE_SIGN = u'\xb0'  # degree sign
@@ -30,8 +30,8 @@ def show_lamp_status():
              f"CF:{status_to_str(status.get('cool_fan_status'))} "
              f"CL:{status_to_str(status.get('controller_fan_status'))} ", 2)
     temp, humi = get_room_temp()
-    ldc.text(f'Temp: {temp} {TEM_SIGN}', 3)
-    ldc.text(f'Humi: {humi} %', 4)
+    lcd.text(f'Temp: {temp} {TEM_SIGN}', 3)
+    lcd.text(f'Humi: {humi} %', 4)
 
 
 if __name__ == "__main__":
