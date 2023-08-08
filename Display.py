@@ -9,7 +9,9 @@ lcd = LCD()
 
 
 def status_to_str(status):
-    if status is true:
+    print(status)
+    print(type(status))
+    if status is True:
         return "ON"
     else:
         return "OFF"
