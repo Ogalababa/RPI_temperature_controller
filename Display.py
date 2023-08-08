@@ -9,7 +9,7 @@ lcd = LCD()
 
 
 def status_to_str(status):
-    if status is Ture:
+    if status is true:
         return "ON"
     else:
         return "OFF"
