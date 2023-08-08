@@ -1,9 +1,8 @@
-from rpi_lcd import LCD
+from rpi_lcd import *
 from time import sleep
 import json
 
-
-DEGREE_SIGN = u'\xb0' #degree sign
+DEGREE_SIGN = u'\xb0'  # degree sign
 TEM_SIGN = f"{DEGREE_SIGN}C"
 
 lcd = LCD()
@@ -19,6 +18,7 @@ def status_to_str(status):
 def show_lamp_status():
     with open('status.json', 'r') as file:
         status = json.load(file)
+    lcd.clear()
     lcd.text(f"Ni:{status_to_str(status.get('night_lamp_status'))} "
              f"Su:{status_to_str(status.get('sun_lamp_status'))} "
              f"UV:{status_to_str(status.get('uv_lamp_status'))} ", 1)
@@ -30,3 +30,8 @@ def show_lamp_status():
     ldc.text(f'Temp: {temp} {TEM_SIGN}', 3)
     ldc.text(f'Humi: {humi} %', 4)
 
+
+if __name__ == "__main__":
+    while True:
+        show_lamp_status()
+        sleep(1)
