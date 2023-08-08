@@ -1,5 +1,6 @@
 from rpi_lcd import *
 from time import sleep
+from Temp_sensor import get_room_temp
 import json
 
 DEGREE_SIGN = u'\xb0'  # degree sign
