@@ -3,8 +3,6 @@ import Adafruit_DHT as DHT
 import time
 
 TEMP_SENSOR = DHT.DHT11
-DEGREE_SIGN = u'\xb0' #degree sign
-TEM_SIGN = f"{DEGREE_SIGN}C"
 
 def get_room_temp():
     

@@ -1,0 +1,9 @@
+{
+  "warm_fan_status" : false,
+  "cool_fan_status" : false,
+  "controller_fan_status" : false,
+  "night_lamp_status" : false,
+  "sun_lamp_status" : false,
+  "uv_lamp_status" : false,
+  "humidifier_status" : false
+}
