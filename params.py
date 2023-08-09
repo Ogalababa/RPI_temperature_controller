@@ -4,7 +4,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # Gobalparameter
-TERMO_L = 2
+TERMO_L = 26
 TERMO_M = 4
 TERMO_R = 17
 TERMO_F = 22
