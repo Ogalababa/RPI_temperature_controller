@@ -6,6 +6,7 @@ import smbus
 BUS = smbus.SMBus(1)
 LCD_ADDR = 0x27
 BLEN = 1  # turn on/off background light
+# wow
 
 
 def turn_light(key):
