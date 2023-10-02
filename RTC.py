@@ -60,6 +60,7 @@ class RTC:
         termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
 
         for i in termo_list:
+            print(f"sensor {i}")
             hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
             if temp_1 is not None and hum_1 is not None:
                 temp_list.append(temp_1)
@@ -70,17 +71,19 @@ class RTC:
             self.hum = round(sum(hum_list) / len(hum_list), 2)
 
     def get_control_temp(self):
-        print("Get controller temp")
         temp_list = []
         hum_list = []
 
         for i in range(self.NUM_RETRIES):
+            print(f"Get controller temp {i}")
+
             hum, temp = DHT.read_retry(self.TEMP_SENSOR, self.PINS["INPUT"]["TERMO_CL"])
             if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
             else:
-                time.sleep(5)
+                print("sensor field")
+                # time.sleep(5)
             time.sleep(2)
 
         temp_final = sum(temp_list) / len(temp_list)
