@@ -17,8 +17,8 @@ class RTC:
     # Pins
     PINS = {
         "INPUT": {"TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10},
-        "OUTPUT": {"W FAN": 11, "C FAN": 5, "CL FAN": 13, "NIGHT LAMP": 14,
-                   "SUN LAMP": 23, "UV LAMP": 8, "HUMI": 12}
+        "OUTPUT": {"加温风扇": 11, "降温风扇": 5, "控制室风扇": 13, "陶瓷灯": 14,
+                   "日光灯": 23, "UV 灯": 8, "加湿器": 12}
     }
 
     # Initialization
@@ -39,8 +39,8 @@ class RTC:
         # Status
 
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
-        self.status["CL FAN"] = "N/A"
-        self.status["HUM"] = "N/A"
+        self.status["控制室风扇"] = "N/A"
+        self.status["加湿器"] = "N/A"
 
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
@@ -103,10 +103,10 @@ class RTC:
 
         data = self.status.copy()
         data.update({
-            'Temp': f"{self.temp} ℃",
-            'Hum': f"{self.hum} %",
-            'CL Temp': f"{self.control_temp} ℃",
-            'CL HUM': f"{self.control_hum} %",
+            '温度': f"{self.temp} ℃",
+            '湿度': f"{self.hum} %",
+            '控制室温度': f"{self.control_temp} ℃",
+            '控制室湿度': f"{self.control_hum} %",
         })
         with open("status.json", "w") as json_file:
             json.dump(data, json_file, indent=4)
