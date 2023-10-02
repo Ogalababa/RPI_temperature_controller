@@ -10,13 +10,12 @@ class RTC:
     OFF = "OFF"
     NUM_RETRIES = 4
 
-    # Pin numbers
+    # Pins
     PINS = {
         "INPUT": {"TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10},
         "OUTPUT": {"WARM_FAN": 11, "COOL_FAN": 5, "CONTROLLER_FAN": 13, "NIGHT_LAMP": 14,
                    "SUN_LAMP": 23, "UV_LAMP": 8, "HUMIDIFIER": 12}
     }
-
 
     # Initialization
     def __init__(self):

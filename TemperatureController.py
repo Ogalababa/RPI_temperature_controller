@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 import logging
 
+
 class TemperatureController:
 
     def __init__(self, target_temp=30, temp_range=5, timezone='Europe/Amsterdam'):
@@ -75,9 +76,7 @@ class TemperatureController:
             self.rtc.save_to_json()
             counter += 1
             if counter == 30:
-                self.logger.info(f"Time：{datetime.now(self.timezone)}, Temperature: {current_temp}, Status: {self.rtc.status}")
+                self.logger.info(
+                    f"Time：{datetime.now(self.timezone)}, Temperature: {current_temp}, Status: {self.rtc.status}")
                 counter = 0
             time.sleep(60)  # Adjust this value as per your requirement
-
-
-
