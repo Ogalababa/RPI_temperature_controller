@@ -1,7 +1,21 @@
 import time
 import json
+import socket
 import Adafruit_SSD1306
 from PIL import Image, ImageDraw, ImageFont
+
+# Function to get the IP address of the Raspberry Pi
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # This command will not send anything outside of your local network
+        s.connect(('10.255.255.255', 1))
+        ip_address = s.getsockname()[0]
+    except Exception:
+        ip_address = '127.0.0.1'
+    finally:
+        s.close()
+    return ip_address
 
 class OLED_Display:
 
@@ -26,16 +40,21 @@ class OLED_Display:
             # Read data from status.json
             with open('status.json', 'r') as file:
                 data = json.load(file)
+            ip_address = get_ip_address()
 
             # Clear the display
             self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-            # Draw the data (modify this part as per your requirement)
+            # Draw the IP Address
             y_position = 0
+            self.draw.text((0, y_position), f"IP Address: {ip_address}", font=self.font, fill=255)
+            y_position += 10
+
+            # Draw the data from status.json
             for key, value in data.items():
                 text = f"{key}: {value}"
                 self.draw.text((0, y_position), text, font=self.font, fill=255)
-                y_position += 8  # Adjust this as per your text size
+                y_position += 10
 
             # Display the drawn image
             self.disp.image(self.image)
@@ -43,5 +62,6 @@ class OLED_Display:
 
             time.sleep(60)
 
-display = OLED_Display()
-display.display_data()
+if __name__ == '__main__':
+    display = OLED_Display()
+    display.display_data()
