@@ -62,6 +62,7 @@ class RTC:
         for i in termo_list:
             print(f"sensor {i}")
             hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
+            print(f"{temp_1}, {hum_1}")
             if temp_1 is not None and hum_1 is not None:
                 temp_list.append(temp_1)
                 hum_list.append(hum_1)
