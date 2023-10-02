@@ -19,8 +19,8 @@ def display_on_oled():
     font_path_small = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
     font_path_large = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
 
-    font_small = ImageFont.truetype(font_path_small, size=12)
-    font_large = ImageFont.truetype(font_path_large, size=24)
+    font_small = ImageFont.truetype(font_path_small, size=20)
+    font_large = ImageFont.truetype(font_path_large, size=40)
 
     while True:
         data = read_status()  # Refresh the data every minute
