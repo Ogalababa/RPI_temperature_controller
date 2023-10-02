@@ -48,6 +48,13 @@ class RTC:
         # status
         self.ON = GPIO.HIGH
         self.OFF = GPIO.LOW
+        self.warm_fan_status = None
+        self.cool_fan_status = None
+        self.controller_fan_status = "N/A"
+        self.night_lamp_status = None
+        self.sun_lamp_status = None
+        self.uv_lamp_status = None
+        self.humidifier_status = "N/A"
 
     def get_room_temp(self):
         temp_list = []
@@ -85,9 +92,15 @@ class RTC:
         self.control_temp = round(temp_final, 2)
         self.control_hum = round(hum_final, 2)
 
-    def controller(self, equipment, status):
+    def controller(self, equipment, status, ):
         GPIO.output(equipment, status)
-        if status == self.ON:
-            return "ON"
-        elif status == self.OFF:
-            return "OFF"
+        equipment_dict = {self.WARM_FAN: self.warm_fan_status,
+                          self.COOL_FAN: self.cool_fan_status,
+                          self.CONTROLLER_FAN: self.controller_fan_status,
+                          self.NIGHT_LAMP: self.night_lamp_status,
+                          self.SUN_LAMP: self.sun_lamp_status,
+                          self.UV_LAMP: self.uv_lamp_status,
+                          self.HUMIDIFIER: self.humidifier_status
+                          }
+        set_dict = {self.ON: "ON", self.OFF: "OFF"}
+        equipment_dict[equipment] = set_dict.get(status)
