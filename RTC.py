@@ -39,7 +39,7 @@ class RTC:
         # Status
 
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
-        self.status["Cl FAN"] = "N/A"
+        self.status["CL FAN"] = "N/A"
         self.status["HUM"] = "N/A"
 
         # Initialization status set to off

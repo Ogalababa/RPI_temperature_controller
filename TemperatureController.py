@@ -40,40 +40,40 @@ class TemperatureController:
 
             if 10 <= current_hour < 24:
                 # check night lamp status:
-                self.update_equipment_status('NIGHT_LAMP', self.rtc.OFF)
+                self.update_equipment_status('NIGHT LAMP', self.rtc.OFF)
 
                 if current_temp < self.target_temp_day - self.temp_range:  # It's too cold
-                    self.update_equipment_status('SUN_LAMP', self.rtc.ON)
-                    self.update_equipment_status('WARM_FAN', self.rtc.ON)
-                    self.update_equipment_status('COOL_FAN', self.rtc.OFF)
+                    self.update_equipment_status('SUN LAMP', self.rtc.ON)
+                    self.update_equipment_status('W FAN', self.rtc.ON)
+                    self.update_equipment_status('C FAN', self.rtc.OFF)
 
                 elif self.target_temp_day - 3 <= current_temp <= self.target_temp_day + 3:  # It's good temp
-                    self.update_equipment_status('SUN_LAMP', self.rtc.OFF)
-                    self.update_equipment_status('WARM_FAN', self.rtc.OFF)
-                    self.update_equipment_status('COOL_FAN', self.rtc.OFF)
+                    self.update_equipment_status('SUN LAMP', self.rtc.OFF)
+                    self.update_equipment_status('W FAN', self.rtc.OFF)
+                    self.update_equipment_status('C FAN', self.rtc.OFF)
 
                 elif current_temp > self.target_temp_day + self.temp_range:  # It's too hot
-                    self.update_equipment_status('SUN_LAMP', self.rtc.OFF)
-                    self.update_equipment_status('WARM_FAN', self.rtc.OFF)
-                    self.update_equipment_status('COOL_FAN', self.rtc.ON)
+                    self.update_equipment_status('SUN LAMP', self.rtc.OFF)
+                    self.update_equipment_status('W FAN', self.rtc.OFF)
+                    self.update_equipment_status('C FAN', self.rtc.ON)
 
             else:
-                self.update_equipment_status('SUN_LAMP', self.rtc.OFF)
+                self.update_equipment_status('SUN LAMP', self.rtc.OFF)
 
                 if current_temp < self.target_temp_night - self.temp_range:  # It's too cold
-                    self.update_equipment_status('NIGHT_LAMP', self.rtc.ON)
-                    self.update_equipment_status('WARM_FAN', self.rtc.ON)
-                    self.update_equipment_status('COOL_FAN', self.rtc.OFF)
+                    self.update_equipment_status('NIGHT LAMP', self.rtc.ON)
+                    self.update_equipment_status('W FAN', self.rtc.ON)
+                    self.update_equipment_status('C FAN', self.rtc.OFF)
 
                 elif self.target_temp_night - 3 <= current_temp <= self.target_temp_night + 3:  # It's good temp
-                    self.update_equipment_status('NIGHT_LAMP', self.rtc.OFF)
-                    self.update_equipment_status('WARM_FAN', self.rtc.OFF)
-                    self.update_equipment_status('COOL_FAN', self.rtc.OFF)
+                    self.update_equipment_status('NIGHT LAMP', self.rtc.OFF)
+                    self.update_equipment_status('W FAN', self.rtc.OFF)
+                    self.update_equipment_status('C FAN', self.rtc.OFF)
 
                 elif current_temp > self.target_temp_night + self.temp_range:  # It's too hot
-                    self.update_equipment_status('NIGHT_LAMP', self.rtc.OFF)
-                    self.update_equipment_status('WARM_FAN', self.rtc.OFF)
-                    self.update_equipment_status('COOL_FAN', self.rtc.ON)
+                    self.update_equipment_status('NIGHT LAMP', self.rtc.OFF)
+                    self.update_equipment_status('W FAN', self.rtc.OFF)
+                    self.update_equipment_status('C FAN', self.rtc.ON)
             self.rtc.save_to_json()
             counter += 1
             if counter == 30:
