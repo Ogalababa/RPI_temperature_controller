@@ -19,19 +19,26 @@ def display_on_oled(data):
     font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
     font = ImageFont.truetype(font_path, size=12)
 
-    with canvas(device) as draw:
-        y = 0
-        for key, value in data.items():
-            text = f"{key}: {value}"
-            draw.text((0, y), text, fill="white", font=font)
-            y += 14  # Adjust depending on your font size
+    total_height = len(data) * 14  # Assuming each line is 14 pixels high
+    start_y = 0
+
+    while True:
+        with canvas(device) as draw:
+            y = start_y
+            for key, value in data.items():
+                text = f"{key}: {value}"
+                draw.text((0, y), text, fill="white", font=font)
+                y += 14
+
+        start_y -= 1  # Move the text up by 1 pixel
+        if -start_y > total_height:
+            start_y = 64  # Reset to the bottom once all the text has moved off the top
+        time.sleep(0.05)  # Adjust speed as necessary
 
 
 def main():
-    while True:
-        data = read_status()
-        display_on_oled(data)
-        time.sleep(60)  # Wait for 1 minute before updating again
+    data = read_status()
+    display_on_oled(data)
 
 
 if __name__ == "__main__":
