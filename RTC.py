@@ -58,6 +58,11 @@ class RTC:
         self.uv_lamp_status = None
         self.humidifier_status = "N/A"
 
+        # initialization status set to off
+        for i in pin_output:
+            self.controller(i, self.OFF)
+        self.save_to_json()
+
     def get_room_temp(self):
         temp_list = []
         hum_list = []
@@ -123,3 +128,4 @@ class RTC:
         }
         with open("status.json", "w") as json_file:
             json.dump(data, json_file, indent=4)
+
