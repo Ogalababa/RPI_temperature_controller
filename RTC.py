@@ -54,6 +54,7 @@ class RTC:
                 time.sleep(0.1)
 
     def get_room_temp(self):
+        print("Get room temp")
         temp_list = []
         hum_list = []
         termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
@@ -69,6 +70,7 @@ class RTC:
             self.hum = round(sum(hum_list) / len(hum_list), 2)
 
     def get_control_temp(self):
+        print("Get controller temp")
         temp_list = []
         hum_list = []
 
