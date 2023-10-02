@@ -43,8 +43,8 @@ class RTC:
         self.status["HUMIDIFIER"] = "N/A"
 
         # Initialization status set to off
-        for pin in self.PINS.get("OUTPUT").values():
-            self.controller(pin, self.OFF)
+        for equipment in self.PINS["OUTPUT"].keys():
+            self.controller(equipment, self.OFF)
 
     def initialize_pins(self):
         for pin_type, pins in self.PINS.items():
