@@ -11,11 +11,11 @@ class RTC:
     NUM_RETRIES = 4
 
     # Pin numbers
-    PINS = {
-        "TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10,
-        "WARM_FAN": 11, "COOL_FAN": 5, "CONTROLLER_FAN": 13, "NIGHT_LAMP": 14,
-        "SUN_LAMP": 23, "UV_LAMP": 8, "HUMIDIFIER": 12
+    PINS = { "INPUT": {"TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10},
+             "OUTPUT": {"WARM_FAN": 11, "COOL_FAN": 5, "CONTROLLER_FAN": 13, "NIGHT_LAMP": 14,
+                "SUN_LAMP": 23, "UV_LAMP": 8, "HUMIDIFIER": 12}
     }
+
 
     # Initialization
     def __init__(self):
@@ -46,16 +46,17 @@ class RTC:
             self.controller(pin, self.OFF)
 
     def initialize_pins(self):
-        for pin in self.PINS.values():
-            self.GPIO.setup(pin,
-                            self.GPIO.OUT if "FAN" in pin or "LAMP" in pin or "HUMIDIFIER" in pin else self.GPIO.IN)
+        for pin in self.PINS.get("INPUT").values():
+            self.GPIO.setup(pin, self.GPIO.IN)
+            self.time.sleep(0.1)
+        for pin in self.PINS.get("OUTPUT").values():
+            self.GPIO.setup(pin, self.GPIO.OUT)
             self.time.sleep(0.1)
 
     def get_room_temp(self):
         temp_list = []
         hum_list = []
-        termo_list = [self.PINS.get("TERMO_L"), self.PINS.get("TERMO_R"),
-                      self.PINS.get("TERMO_M"), self.PINS.get("TERMO_F")]
+        termo_list = [i for i in self.PINS.get("INPUT").values() if i != self.PINS.get("INPUT").get("TERMO_CL")]
 
         for i in termo_list:
             temp_1, hum_1 = DHT.read_retry(self.TEMP_SENSOR, i)
@@ -75,7 +76,7 @@ class RTC:
         hum_list = []
 
         for i in range(4):
-            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS.get("TERMO_CL"))
+            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS.get("INPUT").get("TERMO_CL"))
             if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
