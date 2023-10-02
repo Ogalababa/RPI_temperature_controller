@@ -92,6 +92,7 @@ class RTC:
 
         set_to = GPIO.LOW if status == self.ON else GPIO.HIGH
         # set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
+        print(f"{equipment} {status}")
         GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
 
@@ -104,5 +105,5 @@ class RTC:
             'control_temp': f"{self.control_temp} ℃",
             'control_hum': f"{self.control_hum} %",
         })
-        with open("status.json", "w") as json_file:
+        with open("status.json", "rw") as json_file:
             json.dump(data, json_file, indent=4)
