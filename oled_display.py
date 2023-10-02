@@ -4,6 +4,7 @@ import socket
 import Adafruit_SSD1306
 from PIL import Image, ImageDraw, ImageFont
 
+
 # Function to get the IP address of the Raspberry Pi
 def get_ip_address():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -17,11 +18,13 @@ def get_ip_address():
         s.close()
     return ip_address
 
+
 class OLED_Display:
 
     def __init__(self):
         # Initialize OLED display
-        self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_bus=1, gpio=1)  # If necessary, adjust these parameters
+        self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_bus=1,
+                                                    gpio=1)  # If necessary, adjust these parameters
         self.disp.begin()
         self.disp.clear()
         self.disp.display()
@@ -61,6 +64,7 @@ class OLED_Display:
             self.disp.display()
 
             time.sleep(60)
+
 
 if __name__ == '__main__':
     display = OLED_Display()
