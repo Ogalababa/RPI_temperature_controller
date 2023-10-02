@@ -21,7 +21,10 @@ def display_on_oled():
     font_path_large = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
 
     font_small = ImageFont.truetype(font_path_small, size=12)
-    font_large = ImageFont.truetype(font_path_large, size=24)
+    font_medium = ImageFont.truetype(font_path_large, size=20)
+    font_large = ImageFont.truetype(font_path_large, size=40)
+
+    screen_width = device.width
 
     while True:
         data = read_status()  # Refresh the data every minute
@@ -32,12 +35,14 @@ def display_on_oled():
                 with canvas(device) as draw:
                     # Displaying the time
                     current_time = datetime.now().strftime('%H:%M:%S')
-                    draw.text((0, 0), current_time, fill="white", font=font_small)
+                    time_width, _ = draw.textsize(current_time, font=font_small)
+                    time_position = (screen_width - time_width, 20)
+                    draw.text(time_position, current_time, fill="white", font=font_small)
 
                     key_position = (0, 20)
                     value_position = (0, 40)
 
-                    draw.text(key_position, key, fill="white", font=font_small)
+                    draw.text(key_position, key, fill="white", font=font_medium)
                     draw.text(value_position, str(value), fill="white", font=font_large)
                 time.sleep(2)  # Display each key-value pair for 2 seconds
 
