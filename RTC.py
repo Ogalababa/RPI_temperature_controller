@@ -60,7 +60,7 @@ class RTC:
         termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
 
         for i in termo_list:
-            temp_1, hum_1 = DHT.read_retry(self.TEMP_SENSOR, i)
+            hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
             if temp_1 is not None and hum_1 is not None:
                 temp_list.append(temp_1)
                 hum_list.append(hum_1)
@@ -75,7 +75,7 @@ class RTC:
         hum_list = []
 
         for i in range(self.NUM_RETRIES):
-            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS["INPUT"]["TERMO_CL"])
+            hum, temp = DHT.read_retry(self.TEMP_SENSOR, self.PINS["INPUT"]["TERMO_CL"])
             if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
