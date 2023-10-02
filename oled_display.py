@@ -1,9 +1,10 @@
 import time
 import json
+from datetime import datetime
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import sh1106
-from PIL import ImageFont
+from PIL import ImageFont, ImageDraw
 
 
 def read_status():
@@ -19,8 +20,8 @@ def display_on_oled():
     font_path_small = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
     font_path_large = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
 
-    font_small = ImageFont.truetype(font_path_small, size=20)
-    font_large = ImageFont.truetype(font_path_large, size=40)
+    font_small = ImageFont.truetype(font_path_small, size=12)
+    font_large = ImageFont.truetype(font_path_large, size=24)
 
     while True:
         data = read_status()  # Refresh the data every minute
@@ -29,8 +30,15 @@ def display_on_oled():
         while time.time() - start_time < 60:  # Keep displaying for 1 minute
             for key, value in data.items():
                 with canvas(device) as draw:
-                    draw.text((0, 0), key, fill="white", font=font_small)
-                    draw.text((0, 14), str(value), fill="white", font=font_large)
+                    # Displaying the time
+                    current_time = datetime.now().strftime('%H:%M:%S')
+                    draw.text((0, 0), current_time, fill="white", font=font_small)
+
+                    key_position = (0, 20)
+                    value_position = (0, 40)
+
+                    draw.text(key_position, key, fill="white", font=font_small)
+                    draw.text(value_position, str(value), fill="white", font=font_large)
                 time.sleep(2)  # Display each key-value pair for 2 seconds
 
 
