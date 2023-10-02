@@ -71,7 +71,7 @@ class RTC:
 
     def controller(self, equipment, status):
 
-        if status is "ON":
+        if status == "ON":
             setTo = GPIO.HIGH
         else:
             setTo = GPIO.LOW
