@@ -3,6 +3,7 @@ import time
 from RTC import RTC
 from datetime import datetime
 import pytz
+import logging
 
 class TemperatureController:
 
@@ -16,12 +17,19 @@ class TemperatureController:
         self.datetime = datetime
         self.pytz = pytz
 
+        # Logging setup
+        logging.basicConfig(filename='temperature_controller.log',
+                            level=logging.INFO,
+                            format='%(asctime)s - %(message)s')
+        self.logger = logging.getLogger()
+
     def update_equipment_status(self, equipment, desired_status):
         current_status = self.rtc.status[equipment]
         if current_status != desired_status:
             self.rtc.controller(equipment, desired_status)
 
     def control_temperature(self):
+        counter = 0
         while True:
             self.rtc.get_room_temp()
             current_temp = self.rtc.temp
@@ -64,6 +72,10 @@ class TemperatureController:
                     self.update_equipment_status('WARM_FAN', self.rtc.OFF)
                     self.update_equipment_status('COOL_FAN', self.rtc.ON)
             self.rtc.save_to_json()
+            counter += 1
+            if counter == 30:
+                self.logger.info(f"Temperature: {current_temp}, Status: {self.rtc.status}")
+                counter = 0
             time.sleep(60)  # Adjust this value as per your requirement
 
 
