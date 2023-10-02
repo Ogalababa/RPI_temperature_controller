@@ -75,7 +75,7 @@ class TemperatureController:
             self.rtc.save_to_json()
             counter += 1
             if counter == 30:
-                self.logger.info(f"Temperature: {current_temp}, Status: {self.rtc.status}")
+                self.logger.info(f"Time：{datetime.now(self.timezone)}, Temperature: {current_temp}, Status: {self.rtc.status}")
                 counter = 0
             time.sleep(60)  # Adjust this value as per your requirement
 
