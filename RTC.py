@@ -79,6 +79,9 @@ class RTC:
             if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
+            else:
+                time.sleep(5)
+            time.sleep(2)
 
         temp_final = sum(temp_list) / len(temp_list)
         hum_final = sum(hum_list) / len(temp_list)
