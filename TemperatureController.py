@@ -35,6 +35,7 @@ class TemperatureController:
             self.rtc.get_room_temp()
             self.rtc.get_control_temp()
             current_temp = self.rtc.temp
+            print(current_temp)
             current_hour = self.datetime.now(self.timezone).hour
 
             if 10 <= current_hour < 24:
