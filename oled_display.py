@@ -16,11 +16,14 @@ def display_on_oled():
     serial = i2c(port=1, address=0x3C)
     device = sh1106(serial, rotate=0)
 
-    font_path_small = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
-    font_path_large = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
+    font_path_small = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
+    font_path_large = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
 
     font_small = ImageFont.truetype(font_path_small, size=12)
     font_large = ImageFont.truetype(font_path_large, size=24)
+
+    screen_width = device.width
+    screen_height = device.height
 
     while True:
         data = read_status()  # Refresh the data every minute
@@ -29,8 +32,14 @@ def display_on_oled():
         while time.time() - start_time < 60:  # Keep displaying for 1 minute
             for key, value in data.items():
                 with canvas(device) as draw:
-                    draw.text((0, 0), key, fill="white", font=font_small)
-                    draw.text((0, 14), str(value), fill="white", font=font_large)
+                    value_width, value_height = draw.textsize(str(value), font=font_large)
+
+                    key_position = (0, 0)
+                    value_position = (
+                    (screen_width - value_width) // 2, (screen_height + value_height) // 2 - value_height)
+
+                    draw.text(key_position, key, fill="white", font=font_small)
+                    draw.text(value_position, str(value), fill="white", font=font_large)
                 time.sleep(2)  # Display each key-value pair for 2 seconds
 
 
