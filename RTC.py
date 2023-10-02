@@ -1,3 +1,5 @@
+import json
+
 import RPi.GPIO as GPIO
 import time
 import Adafruit_DHT as DHT
@@ -104,3 +106,20 @@ class RTC:
                           }
         set_dict = {self.ON: "ON", self.OFF: "OFF"}
         equipment_dict[equipment] = set_dict.get(status)
+
+    def save_to_json(self):
+        data = {
+            'temp': self.temp,
+            'hum': self.hum,
+            'control_temp': self.control_temp,
+            'control_hum': self.control_hum,
+            'warm_fan_status': self.warm_fan_status,
+            'cool_fan_status': self.cool_fan_status,
+            'controller_fan_status': self.controller_fan_status,
+            'night_lamp_status': self.night_lamp_status,
+            'sun_lamp_status': self.sun_lamp_status,
+            'uv_lamp_status': self.uv_lamp_status,
+            'humidifier_status': self.humidifier_status
+        }
+        with open("status.json", "w") as json_file:
+            json.dump(data, json_file, indent=4)
