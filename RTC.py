@@ -89,7 +89,7 @@ class RTC:
     def controller(self, equipment, status):
 
         # set_to = GPIO.LOW if status == self.ON else GPIO.HIGH
-        set_to = GPIO.HIGH if status == self.ON else GPIO.HIGH
+        set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
         GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
 
