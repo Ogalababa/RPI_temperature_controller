@@ -4,6 +4,10 @@ import RPi.GPIO as GPIO
 import Adafruit_DHT as DHT
 
 
+def cleanup():
+    GPIO.cleanup()
+
+
 class RTC:
     # Class Constants
     ON = "ON"
@@ -99,6 +103,3 @@ class RTC:
         })
         with open("status.json", "w") as json_file:
             json.dump(data, json_file, indent=4)
-
-    def cleanup(self):
-        GPIO.cleanup()
