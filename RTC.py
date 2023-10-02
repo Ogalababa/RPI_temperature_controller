@@ -38,7 +38,7 @@ class RTC:
 
         # Status
 
-        self.status = {key: None for sub_dict in self.PINS.values() for key in sub_dict.keys()}
+        self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["CONTROLLER_FAN"] = "N/A"
         self.status["HUMIDIFIER"] = "N/A"
 
