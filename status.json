@@ -5,5 +5,7 @@
   "night_lamp_status" : false,
   "sun_lamp_status" : false,
   "uv_lamp_status" : false,
-  "humidifier_status" : false
+  "humidifier_status" : false,
+  "temp": 0,
+  "hum": 0
 }
