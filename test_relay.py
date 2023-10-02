@@ -21,5 +21,6 @@ if __name__ == "__main__":
     # print(rtc.control_temp)
     # print(rtc.control_hum)
     # time.sleep(1)
+    #
     cleanup()
     exit()
