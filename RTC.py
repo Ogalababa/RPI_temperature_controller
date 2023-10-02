@@ -108,5 +108,5 @@ class RTC:
             'control_temp': f"{self.control_temp} ℃",
             'control_hum': f"{self.control_hum} %",
         })
-        with open("status.json", "rw") as json_file:
+        with open("status.json", "w") as json_file:
             json.dump(data, json_file, indent=4)
