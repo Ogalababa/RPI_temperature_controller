@@ -12,33 +12,30 @@ def read_status():
     return data
 
 
-def display_on_oled(data):
+def display_on_oled():
     serial = i2c(port=1, address=0x3C)
     device = sh1106(serial, rotate=0)
 
-    font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-    font = ImageFont.truetype(font_path, size=12)
+    font_path_small = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    font_path_large = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 
-    total_height = len(data) * 14  # Assuming each line is 14 pixels high
-    start_y = 0
+    font_small = ImageFont.truetype(font_path_small, size=12)
+    font_large = ImageFont.truetype(font_path_large, size=24)
 
     while True:
-        with canvas(device) as draw:
-            y = start_y
-            for key, value in data.items():
-                text = f"{key}: {value}"
-                draw.text((0, y), text, fill="white", font=font)
-                y += 14
+        data = read_status()  # Refresh the data every minute
+        start_time = time.time()
 
-        start_y -= 1  # Move the text up by 1 pixel
-        if -start_y > total_height:
-            start_y = 64  # Reset to the bottom once all the text has moved off the top
-        time.sleep(0.05)  # Adjust speed as necessary
+        while time.time() - start_time < 60:  # Keep displaying for 1 minute
+            for key, value in data.items():
+                with canvas(device) as draw:
+                    draw.text((0, 0), key, fill="white", font=font_small)
+                    draw.text((0, 14), str(value), fill="white", font=font_large)
+                time.sleep(2)  # Display each key-value pair for 2 seconds
 
 
 def main():
-    data = read_status()
-    display_on_oled(data)
+    display_on_oled()
 
 
 if __name__ == "__main__":
