@@ -54,20 +54,39 @@ class RTC:
     def get_room_temp(self):
         temp_list = []
         hum_list = []
-        for _ in range(self.NUM_RETRIES):
-            hum, temp = self.DHT.read(self.TEMP_SENSOR, self.PINS["TERMO_L"])
-            if hum is not None and temp is not None:
+        termo_list = [self.PINS.get("TERMO_L"), self.PINS.get("TERMO_R"),
+                      self.PINS.get("TERMO_M"), self.PINS.get("TERMO_F")]
+
+        for i in termo_list:
+            temp_1, hum_1 = DHT.read_retry(self.TEMP_SENSOR, i)
+            temp_list.append(temp_1)
+            hum_list.append(hum_1)
+
+        temp_list = [i for i in temp_list if i is not None]
+        hum_list = [i for i in hum_list if i is not None]
+
+        temp = sum(temp_list) / len(temp_list)
+        hum = sum(hum_list) / len(hum_list)
+        self.temp = round(temp, 2)
+        self.hum = round(hum, 2)
+
+    def get_control_temp(self):
+        temp_list = []
+        hum_list = []
+
+        for i in range(4):
+            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS.get("TERMO_CL"))
+            if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
             else:
-                self.time.sleep(5)
-            self.time.sleep(2)
+                time.sleep(5)
+            time.sleep(2)
 
-        if temp_list and hum_list:
-            self.control_temp = round(sum(temp_list) / len(temp_list), 2)
-            self.control_hum = round(sum(hum_list) / len(temp_list), 2)
-        else:
-            print("Failed to read control temperature and humidity")
+        temp_final = sum(temp_list) / len(temp_list)
+        hum_final = sum(hum_list) / len(temp_list)
+        self.control_temp = round(temp_final, 2)
+        self.control_hum = round(hum_final, 2)
 
     def controller(self, equipment, status):
 
@@ -83,10 +102,10 @@ class RTC:
 
         data = self.status.copy()
         data.update({
-            'temp': self.temp,
-            'hum': self.hum,
-            'control_temp': self.control_temp,
-            'control_hum': self.control_hum,
+            'temp': f"{self.temp} ℃",
+            'hum': f"{self.hum} %",
+            'control_temp': f"{self.control_temp} ℃",
+            'control_hum': f"{self.control_hum} %",
         })
         with open("status.json", "w") as json_file:
             json.dump(data, json_file, indent=4)

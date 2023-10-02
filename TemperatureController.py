@@ -32,6 +32,7 @@ class TemperatureController:
         counter = 0
         while True:
             self.rtc.get_room_temp()
+            self.rtc.get_control_temp()
             current_temp = self.rtc.temp
             current_hour = self.datetime.now(self.timezone).hour
 
