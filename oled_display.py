@@ -3,7 +3,7 @@ import json
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import sh1106
-from PIL import ImageFont
+from PIL import ImageFont, ImageDraw
 
 
 def read_status():
@@ -25,6 +25,8 @@ def display_on_oled():
     screen_width = device.width
     screen_height = device.height
 
+    dummy_draw = ImageDraw.Draw("RGB", (screen_width, screen_height))
+
     while True:
         data = read_status()  # Refresh the data every minute
         start_time = time.time()
@@ -32,7 +34,7 @@ def display_on_oled():
         while time.time() - start_time < 60:  # Keep displaying for 1 minute
             for key, value in data.items():
                 with canvas(device) as draw:
-                    value_width, value_height = draw.textsize(str(value), font=font_large)
+                    value_width, value_height = dummy_draw.textsize(str(value), font=font_large)
 
                     key_position = (0, 0)
                     value_position = (
