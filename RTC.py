@@ -11,72 +11,66 @@ class RTC:
     NUM_RETRIES = 4
 
     # Pin numbers
-    PINS = { "INPUT": {"TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10},
-             "OUTPUT": {"WARM_FAN": 11, "COOL_FAN": 5, "CONTROLLER_FAN": 13, "NIGHT_LAMP": 14,
-                "SUN_LAMP": 23, "UV_LAMP": 8, "HUMIDIFIER": 12}
+    PINS = {
+        "INPUT": {"TERMO_L": 26, "TERMO_M": 4, "TERMO_R": 17, "TERMO_F": 22, "TERMO_CL": 10},
+        "OUTPUT": {"WARM_FAN": 11, "COOL_FAN": 5, "CONTROLLER_FAN": 13, "NIGHT_LAMP": 14,
+                   "SUN_LAMP": 23, "UV_LAMP": 8, "HUMIDIFIER": 12}
     }
 
 
     # Initialization
     def __init__(self):
 
-        self.GPIO = GPIO
-        self.DHT = DHT
-        self.time = time
-
         # Set GPIO mode to use board nr 1-40
-        self.GPIO.setmode(self.GPIO.BCM)
+        GPIO.setmode(GPIO.BCM)
 
         self.initialize_pins()
 
         # Temp sensor
-        self.TEMP_SENSOR = self.DHT.DHT11
+        self.TEMP_SENSOR = DHT.DHT11
         self.temp = None
         self.hum = None
         self.control_temp = None
         self.control_hum = None
 
         # Status
-        self.status = {key: None for key in self.PINS.keys()}
+
+        self.status = {key: None for sub_dict in self.PINS.values() for key in sub_dict.keys()}
         self.status["CONTROLLER_FAN"] = "N/A"
         self.status["HUMIDIFIER"] = "N/A"
 
         # Initialization status set to off
-        for pin in self.PINS.values():
+        for pin in self.PINS.get("OUTPUT").values():
             self.controller(pin, self.OFF)
 
     def initialize_pins(self):
-        for pin in self.PINS.get("INPUT").values():
-            self.GPIO.setup(pin, self.GPIO.IN)
-            self.time.sleep(0.1)
-        for pin in self.PINS.get("OUTPUT").values():
-            self.GPIO.setup(pin, self.GPIO.OUT)
-            self.time.sleep(0.1)
+        for pin_type, pins in self.PINS.items():
+            mode = GPIO.IN if pin_type == "INPUT" else GPIO.OUT
+            for pin in pins.values():
+                GPIO.setup(pin, mode)
+                time.sleep(0.1)
 
     def get_room_temp(self):
         temp_list = []
         hum_list = []
-        termo_list = [i for i in self.PINS.get("INPUT").values() if i != self.PINS.get("INPUT").get("TERMO_CL")]
+        termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
 
         for i in termo_list:
             temp_1, hum_1 = DHT.read_retry(self.TEMP_SENSOR, i)
-            temp_list.append(temp_1)
-            hum_list.append(hum_1)
+            if temp_1 is not None and hum_1 is not None:
+                temp_list.append(temp_1)
+                hum_list.append(hum_1)
 
-        temp_list = [i for i in temp_list if i is not None]
-        hum_list = [i for i in hum_list if i is not None]
-
-        temp = sum(temp_list) / len(temp_list)
-        hum = sum(hum_list) / len(hum_list)
-        self.temp = round(temp, 2)
-        self.hum = round(hum, 2)
+        if temp_list and hum_list:
+            self.temp = round(sum(temp_list) / len(temp_list), 2)
+            self.hum = round(sum(hum_list) / len(hum_list), 2)
 
     def get_control_temp(self):
         temp_list = []
         hum_list = []
 
-        for i in range(4):
-            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS.get("INPUT").get("TERMO_CL"))
+        for i in range(self.NUM_RETRIES):
+            temp, hum = DHT.read_retry(self.TEMP_SENSOR, self.PINS["INPUT"]["TERMO_CL"])
             if temp is not None and hum is not None:
                 temp_list.append(temp)
                 hum_list.append(hum)
@@ -91,12 +85,8 @@ class RTC:
 
     def controller(self, equipment, status):
 
-        if status == "ON":
-            setTo = GPIO.HIGH
-        else:
-            setTo = GPIO.LOW
-
-        self.GPIO.output(self.PINS[equipment], setTo)
+        set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
+        GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
 
     def save_to_json(self):
@@ -112,4 +102,4 @@ class RTC:
             json.dump(data, json_file, indent=4)
 
     def cleanup(self):
-        self.GPIO.cleanup()
+        GPIO.cleanup()
