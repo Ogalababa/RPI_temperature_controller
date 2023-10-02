@@ -6,3 +6,4 @@ if __name__ == "__main__":
     rtc = RTC()
     time.sleep(10)
     cleanup()
+    exit()
