@@ -16,8 +16,8 @@ def display_on_oled():
     serial = i2c(port=1, address=0x3C)
     device = sh1106(serial, rotate=0)
 
-    font_path_small = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
-    font_path_large = "/usr/share/fonts/truetype/wqy/wqy-microhei.ttc"
+    font_path_small = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
+    font_path_large = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
 
     font_small = ImageFont.truetype(font_path_small, size=20)
     font_large = ImageFont.truetype(font_path_large, size=40)
