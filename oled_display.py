@@ -30,14 +30,14 @@ def display_on_oled():
 
     while True:
         data = read_status()  # Refresh the data every minute
-        start_time = time.time()
+        # start_time = time.time()
 
-        while time.time() - start_time < 60:  # Keep displaying for 1 minute
-            for key, value in data.items():
-                with canvas(device) as draw:
-                    draw.text((0, 0), key, fill="white", font=font_small)
-                    draw.text((0, 14), str(value), fill="white", font=font_large)
-                time.sleep(2)  # Display each key-value pair for 2 seconds
+        # while time.time() - start_time < 30:  # Keep displaying for 1 minute
+        for key, value in data.items():
+            with canvas(device) as draw:
+                draw.text((0, 0), key, fill="white", font=font_small)
+                draw.text((0, 14), str(value), fill="white", font=font_large)
+            time.sleep(2)  # Display each key-value pair for 2 seconds
 
 
 def main():

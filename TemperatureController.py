@@ -86,7 +86,7 @@ class TemperatureController:
                 self.logger.info(
                     f"Temperature: {current_temp}, Status: {self.rtc.status}")
                 counter = 0
-            time.sleep(60)  # Adjust this value as per your requirement
+            time.sleep(10)  # Adjust this value as per your requirement
 #
 
 if __name__ == '__main__':
