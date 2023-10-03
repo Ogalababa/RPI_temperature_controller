@@ -10,9 +10,12 @@ from pathlib import Path
 
 def read_status():
     current_dir = Path(__file__).parent
-    with open(os.path.join(current_dir, "status.json"), "r") as file:
-        data = json.load(file)
-    return data
+    try:
+        with open(os.path.join(current_dir, "status.json"), "r") as file:
+            data = json.load(file)
+        return data
+    except:
+        return {"读取错误":"Error"}
 
 
 def display_on_oled():
