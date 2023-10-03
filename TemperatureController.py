@@ -81,10 +81,10 @@ class TemperatureController:
             counter += 1
             if counter == 30:
                 self.logger.info(
-                    f"Time：{datetime.now(self.timezone)}, Temperature: {current_temp}, Status: {self.rtc.status}")
+                    f"Temperature: {current_temp}, Status: {self.rtc.status}")
                 counter = 0
             time.sleep(60)  # Adjust this value as per your requirement
-
+#
 
 if __name__ == '__main__':
     temp_controller = TemperatureController(target_temp=30, temp_range=5, timezone='Europe/Amsterdam')
