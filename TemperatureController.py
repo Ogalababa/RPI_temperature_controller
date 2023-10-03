@@ -42,11 +42,11 @@ class TemperatureController:
             current_hour = self.datetime.now(self.timezone).hour
             if 10 <= current_hour < 16:
                 self.update_equipment_status('日光灯', self.rtc.OFF)
-                self.update_equipment_status('UV灯', self.rtc.ON)
+                self.update_equipment_status('UV 灯', self.rtc.ON)
             if 16 <= current_hour < 24:
                 # check 陶瓷灯 status:
                 self.update_equipment_status('陶瓷灯', self.rtc.OFF)
-                self.update_equipment_status('UV灯', self.rtc.OFF)
+                self.update_equipment_status('UV 灯', self.rtc.OFF)
 
                 if current_temp < self.target_temp_day - self.temp_range:  # It's too cold
                     self.update_equipment_status('日光灯', self.rtc.ON)
