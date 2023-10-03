@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import RPi.GPIO as GPIO
@@ -108,5 +109,5 @@ class RTC:
             '控制室温度': f"{self.control_temp} ℃",
             '控制室湿度': f"{self.control_hum} %",
         })
-        with open("status.json", "w") as json_file:
+        with open(os.path.join("/","home","jiawei","RPI_temperature_controller","status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)

@@ -1,3 +1,4 @@
+import os.path
 import time
 import json
 from luma.core.interface.serial import i2c
@@ -7,7 +8,7 @@ from PIL import ImageFont
 
 
 def read_status():
-    with open("status.json", "r") as file:
+    with open(os.path.join("/","home","jiawei","RPI_temperature_controller","status.json"), "r") as file:
         data = json.load(file)
     return data
 
