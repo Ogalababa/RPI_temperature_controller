@@ -111,5 +111,5 @@ class RTC:
             '控制室湿度': f"{self.control_hum} %",
         })
         current_dir = Path(__file__).parent
-        with open(os.path.join(current_dir, "w")) as json_file:
+        with open(os.path.join(current_dir, "status.json"),"w") as json_file:
             json.dump(data, json_file, indent=4)
