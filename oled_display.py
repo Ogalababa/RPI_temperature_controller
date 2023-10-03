@@ -35,12 +35,12 @@ def display_on_oled():
                 with canvas(device) as draw:
                     # Displaying the time
                     current_time = datetime.now().strftime('%H:%M:%S')
-                    time_width, _ = draw.textsize(current_time, font=font_small)
-                    time_position = (screen_width - time_width, 20)
+                    time_width, _ = font_small.getsize(current_time)
+                    time_position = (screen_width - time_width, 0)
                     draw.text(time_position, current_time, fill="white", font=font_small)
 
-                    key_position = (0, 20)
-                    value_position = (0, 40)
+                    key_position = (0, 15)
+                    value_position = (0, 35)
 
                     draw.text(key_position, key, fill="white", font=font_medium)
                     draw.text(value_position, str(value), fill="white", font=font_large)
