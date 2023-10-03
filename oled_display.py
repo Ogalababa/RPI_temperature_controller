@@ -1,13 +1,16 @@
+import os
 import time
 import json
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import sh1106
 from PIL import ImageFont
+from pathlib import Path
 
 
 def read_status():
-    with open("status.json", "r") as file:
+    current_dir = Path(__file__).parent
+    with open(os.path.join(current_dir, "status.json"), "r") as file:
         data = json.load(file)
     return data
 

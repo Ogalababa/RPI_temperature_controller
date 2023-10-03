@@ -3,6 +3,7 @@ import time
 import json
 import RPi.GPIO as GPIO
 import Adafruit_DHT as DHT
+from pathlib import Path
 
 
 def cleanup():
@@ -109,5 +110,6 @@ class RTC:
             '控制室温度': f"{self.control_temp} ℃",
             '控制室湿度': f"{self.control_hum} %",
         })
-        with open(os.path.join("/","home","jiawei","RPI_temperature_controller","status.json"), "w") as json_file:
+        current_dir = Path(__file__).parent
+        with open(os.path.join(current_dir, "w")) as json_file:
             json.dump(data, json_file, indent=4)
