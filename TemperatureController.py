@@ -88,8 +88,8 @@ class TemperatureController:
                     f"Temperature: {current_temp}, Status: {self.rtc.status}")
                 counter = 0
             time.sleep(10)  # Adjust this value as per your requirement
-#
+
 
 if __name__ == '__main__':
-    temp_controller = TemperatureController(target_temp=30, temp_range=5, timezone='Europe/Amsterdam')
+    temp_controller = TemperatureController(target_temp=28, temp_range=5, timezone='Europe/Amsterdam')
     temp_controller.control_temperature()
