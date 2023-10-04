@@ -41,6 +41,7 @@ class TemperatureController:
             current_temp = self.rtc.control_temp
             print(current_temp)
             current_hour = self.datetime.now(self.timezone).hour
+            self.update_equipment_status('降温风扇', self.rtc.ON)
             if 10 <= current_hour < 16:
                 self.update_equipment_status('日光灯', self.rtc.OFF)
                 self.update_equipment_status('UV 灯', self.rtc.ON)
@@ -58,7 +59,7 @@ class TemperatureController:
                     # It's good temp
                     self.update_equipment_status('日光灯', self.rtc.OFF)
                     self.update_equipment_status('加温风扇', self.rtc.OFF)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
+
 
                 elif current_temp > self.target_temp_day + self.temp_range:  # It's too hot
                     self.update_equipment_status('日光灯', self.rtc.OFF)
@@ -77,7 +78,6 @@ class TemperatureController:
                     # It's good temp
                     self.update_equipment_status('陶瓷灯', self.rtc.OFF)
                     self.update_equipment_status('加温风扇', self.rtc.OFF)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
 
                 elif current_temp > self.target_temp_night + self.temp_range:  # It's too hot
                     self.update_equipment_status('陶瓷灯', self.rtc.OFF)
