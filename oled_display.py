@@ -15,7 +15,7 @@ def read_status():
             data = json.load(file)
         return data
     except:
-        return {"读取错误":"Error", "jiawei@rasp.local": "SSH"}
+        return {"读取错误": "Error", "jiawei@rasp.local": "SSH"}
 
 
 def display_on_oled():
@@ -45,5 +45,8 @@ def main():
 
 
 if __name__ == "__main__":
-    # time.sleep(10)
-    main()
+    while True:
+        try:
+            main()
+        except:
+            pass
