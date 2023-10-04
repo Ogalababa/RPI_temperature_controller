@@ -91,5 +91,5 @@ class TemperatureController:
 
 
 if __name__ == '__main__':
-    temp_controller = TemperatureController(target_temp=28, temp_range=5, timezone='Europe/Amsterdam')
+    temp_controller = TemperatureController(target_temp=27, temp_range=5, timezone='Europe/Amsterdam')
     temp_controller.control_temperature()
