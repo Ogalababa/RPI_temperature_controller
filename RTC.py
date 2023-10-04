@@ -4,6 +4,11 @@ import json
 import RPi.GPIO as GPIO
 import Adafruit_DHT as DHT
 from pathlib import Path
+import pandas as pd
+import sqlite3
+import datetime
+import pytz
+
 
 
 def cleanup():
@@ -43,6 +48,9 @@ class RTC:
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["控制室风扇"] = "N/A"
         self.status["加湿器"] = "N/A"
+
+        # Database
+        self.conn = sqlite3.connect('status.db')
 
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
@@ -117,5 +125,18 @@ class RTC:
             '陶瓷灯': self.status.get("陶瓷灯")
         }
         current_dir = Path(__file__).parent
-        with open(os.path.join(current_dir, "status.json"),"w") as json_file:
+        with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)
+
+        db_data = data.copy()
+        db_data.update(self.status)
+        df = pd.DataFrame(db_data)
+
+        now_utc = datetime.datetime.now(pytz.utc)
+        # 将UTC日期和时间转换为阿姆斯特丹时区
+        amsterdam_tz = pytz.timezone('Europe/Amsterdam')
+        now_amsterdam = now_utc.astimezone(amsterdam_tz)
+        # 将阿姆斯特丹的日期和时间添加到DataFrame中
+        df['时间'] = [now_amsterdam]
+        df.to_sql('status', self.conn, if_exists='append', index=True)
+        self.conn.close()
