@@ -58,6 +58,7 @@ class TemperatureController:
                 elif self.target_temp_day <= current_temp <= self.target_temp_day + self.temp_range:
                     # It's good temp
                     self.update_equipment_status('日光灯', self.rtc.OFF)
+                    self.update_equipment_status('加温风扇', self.rtc.ON)
                     self.update_equipment_status('降温风扇', self.rtc.OFF)
 
                 elif current_temp > self.target_temp_day + self.temp_range:  # It's too hot
