@@ -14,7 +14,7 @@ class RTC:
     # Class Constants
     ON = "ON"
     OFF = "OFF"
-    NUM_RETRIES = 1
+    NUM_RETRIES = 4
 
     # Pins
     PINS = {
@@ -33,10 +33,10 @@ class RTC:
 
         # Temp sensor
         self.TEMP_SENSOR = DHT.DHT11
-        self.temp = None
-        self.hum = None
-        self.control_temp = None
-        self.control_hum = None
+        self.temp = 0
+        self.hum = 0
+        self.control_temp = 0
+        self.control_hum = 0
 
         # Status
 
@@ -69,9 +69,6 @@ class RTC:
             if temp_1 is not None and hum_1 is not None:
                 temp_list.append(temp_1)
                 hum_list.append(hum_1)
-            else:
-                self.temp = 0
-                self.hum = 0
 
         if temp_list and hum_list:
             self.temp = round(sum(temp_list) / len(temp_list), 1)
