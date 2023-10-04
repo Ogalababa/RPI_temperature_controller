@@ -106,13 +106,16 @@ class RTC:
 
     def save_to_json(self):
 
-        data = self.status.copy()
-        data.update({
-            '温度': f"{self.temp} ℃",
-            '湿度': f"{self.hum} %",
-            '控制室温度': f"{self.control_temp} ℃",
-            '控制室湿度': f"{self.control_hum} %",
-        })
+        # data = self.status.copy()
+        data = {
+            # '温度': f"{self.temp} ℃",
+            # '湿度': f"{self.hum} %",
+            # '控制室温度': f"{self.control_temp} ℃",
+            # '控制室湿度': f"{self.control_hum} %",
+            '温度': f"{self.control_temp} ℃",
+            '湿度': f"{self.control_hum} %",
+            '陶瓷灯': self.status.get("陶瓷灯")
+        }
         current_dir = Path(__file__).parent
         with open(os.path.join(current_dir, "status.json"),"w") as json_file:
             json.dump(data, json_file, indent=4)
