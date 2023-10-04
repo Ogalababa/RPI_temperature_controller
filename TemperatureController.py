@@ -54,7 +54,8 @@ class TemperatureController:
                     self.update_equipment_status('加温风扇', self.rtc.ON)
                     self.update_equipment_status('降温风扇', self.rtc.OFF)
 
-                elif self.target_temp_day - 3 <= current_temp <= self.target_temp_day + 3:  # It's good temp
+                elif self.target_temp_day <= current_temp <= self.target_temp_day + self.temp_range:
+                    # It's good temp
                     self.update_equipment_status('日光灯', self.rtc.OFF)
                     self.update_equipment_status('加温风扇', self.rtc.OFF)
                     self.update_equipment_status('降温风扇', self.rtc.OFF)
@@ -72,7 +73,8 @@ class TemperatureController:
                     self.update_equipment_status('加温风扇', self.rtc.ON)
                     self.update_equipment_status('降温风扇', self.rtc.OFF)
 
-                elif self.target_temp_night - 3 <= current_temp <= self.target_temp_night + 3:  # It's good temp
+                elif self.target_temp_night <= current_temp <= self.target_temp_night + self.temp_range:
+                    # It's good temp
                     self.update_equipment_status('陶瓷灯', self.rtc.OFF)
                     self.update_equipment_status('加温风扇', self.rtc.OFF)
                     self.update_equipment_status('降温风扇', self.rtc.OFF)
@@ -91,5 +93,5 @@ class TemperatureController:
 
 
 if __name__ == '__main__':
-    temp_controller = TemperatureController(target_temp=27, temp_range=5, timezone='Europe/Amsterdam')
+    temp_controller = TemperatureController(target_temp=30, temp_range=5, timezone='Europe/Amsterdam')
     temp_controller.control_temperature()
