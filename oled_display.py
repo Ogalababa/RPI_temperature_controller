@@ -22,22 +22,18 @@ def display_on_oled():
     serial = i2c(port=1, address=0x3C)
     device = sh1106(serial, rotate=0)
 
-    font_path_small = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
-    font_path_large = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
-
-    font_small = ImageFont.truetype(font_path_small, size=20)
-    font_large = ImageFont.truetype(font_path_large, size=40)
+    font_path = "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc"
+    font = ImageFont.truetype(font_path, size=14)  # 使用相同的字体大小
 
     while True:
-        data = read_status()  # Refresh the data every minute
-        start_time = time.time()
-
-        while time.time() - start_time < 60:  # Keep displaying for 1 minute
+        data = read_status()  # 每分钟刷新数据
+        with canvas(device) as draw:
+            y_position = 0  # 初始化y轴位置
             for key, value in data.items():
-                with canvas(device) as draw:
-                    draw.text((0, 0), key, fill="white", font=font_small)
-                    draw.text((0, 14), str(value), fill="white", font=font_large)
-                time.sleep(2)  # Display each key-value pair for 2 seconds
+                text_line = f"{key}: {value}"
+                draw.text((0, y_position), text_line, fill="white", font=font)
+                y_position += 20  # 更新y轴位置以便下一行文本
+        time.sleep(60)  # 每分钟刷新一次显示内容
 
 
 def main():
