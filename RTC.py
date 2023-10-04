@@ -14,7 +14,7 @@ class RTC:
     # Class Constants
     ON = "ON"
     OFF = "OFF"
-    NUM_RETRIES = 4
+    NUM_RETRIES = 1
 
     # Pins
     PINS = {
@@ -69,6 +69,9 @@ class RTC:
             if temp_1 is not None and hum_1 is not None:
                 temp_list.append(temp_1)
                 hum_list.append(hum_1)
+            else:
+                self.temp = 0
+                self.hum = 0
 
         if temp_list and hum_list:
             self.temp = round(sum(temp_list) / len(temp_list), 1)
@@ -86,8 +89,10 @@ class RTC:
                 hum_list.append(hum)
             else:
                 print("sensor field")
+                self.control_temp = 0
+                self.control_hum = 0
                 # time.sleep(5)
-            time.sleep(2)
+            # time.sleep(2)
 
         temp_final = sum(temp_list) / len(temp_list)
         hum_final = sum(hum_list) / len(temp_list)
