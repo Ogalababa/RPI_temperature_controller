@@ -88,8 +88,8 @@ class RTC:
                 print("sensor field")
                 self.control_temp = 0
                 self.control_hum = 0
-                # time.sleep(5)
-            # time.sleep(2)
+                time.sleep(5)
+            time.sleep(3)
 
         temp_final = sum(temp_list) / len(temp_list)
         hum_final = sum(hum_list) / len(temp_list)
