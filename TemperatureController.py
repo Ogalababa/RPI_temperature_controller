@@ -14,7 +14,7 @@ class TemperatureController:
 
         self.rtc = RTC()
         self.target_temp_day = target_temp
-        self.target_temp_night = target_temp - 3
+        self.target_temp_night = target_temp - 1
         self.temp_range = temp_range
         self.timezone = pytz.timezone(timezone)
         self.datetime = datetime
