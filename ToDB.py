@@ -1,6 +1,7 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+import os.path
 from datetime import datetime
 
 import pandas as pd
@@ -20,7 +21,8 @@ class ConnectToDB:
 
     def save_to_sql(self, data_dict):
         df = pd.DataFrame(data_dict)
-        df.to_sql(self.db_name, self.conn, index=True, if_exists="append")
+        df.to_csv(f'{os.path.join(current_dir, "data", self.db_name)}.csv', index=True, if_exists="append")
+        # df.to_sql(self.db_name, self.conn, index=True, if_exists="append")
 
     def read_from_sql(self):
         pd.read_sql_table(self.db_name, self.conn)

@@ -48,10 +48,6 @@ class RTC:
         self.status["加湿器"] = "N/A"
         self.database = ConnectToDB("Status", os.path.join(current_dir, "data"))
 
-        # # Database
-        # current_dir = Path(__file__).parent
-        # self.conn = sqlite3.connect(os.path.join(current_dir, 'status.db'))
-
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
             self.controller(equipment, self.OFF)
