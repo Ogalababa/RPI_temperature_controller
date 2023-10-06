@@ -2,11 +2,7 @@
 # coding:utf-8
 # sys
 import os.path
-from datetime import datetime
-
 import pandas as pd
-import pytz
-import sqlalchemy
 
 from __init__ import *
 from sqlalchemy import create_engine
