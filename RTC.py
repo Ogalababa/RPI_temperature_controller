@@ -59,24 +59,24 @@ class RTC:
                 GPIO.setup(pin, mode)
                 time.sleep(0.1)
 
-    def get_room_temp(self):
-
-        temp_list = []
-        hum_list = []
-        termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
-
-        for i in termo_list:
-            print(i)
-            hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
-            print(temp_1)
-
-            if temp_1 is not None and hum_1 is not None:
-                temp_list.append(temp_1)
-                hum_list.append(hum_1)
-
-        if temp_list and hum_list:
-            self.temp = round(sum(temp_list) / len(temp_list), 1)
-            self.hum = round(sum(hum_list) / len(hum_list), 1)
+    # def get_room_temp(self):
+    #
+    #     temp_list = []
+    #     hum_list = []
+    #     termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
+    #
+    #     for i in termo_list:
+    #         # print(i)
+    #         hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
+    #         # print(temp_1)
+    #
+    #         if temp_1 is not None and hum_1 is not None:
+    #             temp_list.append(temp_1)
+    #             hum_list.append(hum_1)
+    #
+    #     if temp_list and hum_list:
+    #         self.temp = round(sum(temp_list) / len(temp_list), 1)
+    #         self.hum = round(sum(hum_list) / len(hum_list), 1)
 
     def get_control_temp(self):
         temp_list = []
@@ -120,5 +120,6 @@ class RTC:
             json.dump(data, json_file, indent=4)
         data.update(self.status)
         data.update({"时间": datetime.now()})
-        self.database.save_to_sql(data)
+        print(data)
+        # self.database.save_to_sql(data)
 

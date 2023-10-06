@@ -40,7 +40,7 @@ class TemperatureController:
             self.rtc.get_control_temp()
             # current_temp = self.rtc.temp
             current_temp = self.rtc.control_temp
-            print(current_temp)
+            print(f'Current temp: {current_temp}')
             current_hour = self.datetime.now(self.timezone).hour
             self.update_equipment_status('加温风扇', self.rtc.ON)
             if 10 <= current_hour < 16:

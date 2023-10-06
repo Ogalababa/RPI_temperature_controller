@@ -21,7 +21,7 @@ class ConnectToDB:
 
     def save_to_sql(self, data_dict):
         df = pd.DataFrame(data_dict)
-        print(data_dict)
+        print(df)
         df.to_csv(f'{os.path.join(current_dir, "data", self.db_name)}.csv', index=True, if_exists="append")
         # df.to_sql(self.db_name, self.conn, index=True, if_exists="append")
 
