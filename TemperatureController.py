@@ -36,7 +36,7 @@ class TemperatureController:
     def control_temperature(self):
         counter = 0
         while True:
-            self.rtc.get_room_temp()
+            # self.rtc.get_room_temp()
             self.rtc.get_control_temp()
             # current_temp = self.rtc.temp
             current_temp = self.rtc.control_temp
