@@ -90,7 +90,7 @@ class RTC:
                 self.control_temp = 0
                 self.control_hum = 0
                 time.sleep(5)
-            time.sleep(3)
+            time.sleep(1)
 
         temp_final = sum(temp_list) / len(temp_list)
         hum_final = sum(hum_list) / len(temp_list)
@@ -117,5 +117,6 @@ class RTC:
             json.dump(data, json_file, indent=4)
         data.update(self.status)
         data.update({"时间": datetime.now()})
+        print(data)
         self.database.save_to_sql(data)
 
