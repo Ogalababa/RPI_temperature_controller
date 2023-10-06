@@ -117,6 +117,5 @@ class RTC:
             json.dump(data, json_file, indent=4)
         data.update(self.status)
         data.update({"时间": datetime.now()})
-        print(data)
         self.database.save_to_sql(data)
 

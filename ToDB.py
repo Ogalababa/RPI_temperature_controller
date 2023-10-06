@@ -21,7 +21,6 @@ class ConnectToDB:
 
     def save_to_sql(self, data_dict):
         df = pd.DataFrame({key: [value] for key, value in data_dict.items()})
-        print(df)
         df.to_sql(self.db_name, self.conn, index=True, if_exists="append")
 
     def read_from_sql(self):
