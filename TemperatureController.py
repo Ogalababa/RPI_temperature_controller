@@ -5,7 +5,8 @@ from RTC import RTC
 from datetime import datetime
 import pytz
 import logging
-from pathlib import Path
+
+from __init__ import *
 
 
 class TemperatureController:
@@ -21,7 +22,7 @@ class TemperatureController:
         self.pytz = pytz
 
         # Logging setup
-        current_dir = Path(__file__).parent
+
         logging.basicConfig(filename=os.path.join(current_dir, 'temperature_controller.log'),
                             level=logging.INFO,
                             format='%(asctime)s - %(message)s')

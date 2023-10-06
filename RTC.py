@@ -1,14 +1,12 @@
 import os
 import time
 import json
+from datetime import datetime
+
 import RPi.GPIO as GPIO
 import Adafruit_DHT as DHT
-from pathlib import Path
-import pandas as pd
-import sqlite3
-import datetime
-import pytz
-
+from ToDB import ConnectToDB
+from __init__ import *
 
 
 def cleanup():
@@ -48,6 +46,7 @@ class RTC:
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["控制室风扇"] = "N/A"
         self.status["加湿器"] = "N/A"
+        self.database = ConnectToDB("Status", os.path.join(current_dir, "data"))
 
         # # Database
         # current_dir = Path(__file__).parent
@@ -117,27 +116,13 @@ class RTC:
 
         # data = self.status.copy()
         data = {
-            # '温度': f"{self.temp} ℃",
-            # '湿度': f"{self.hum} %",
-            # '控制室温度': f"{self.control_temp} ℃",
-            # '控制室湿度': f"{self.control_hum} %",
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
             '陶瓷灯': self.status.get("陶瓷灯")
         }
-        current_dir = Path(__file__).parent
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)
+        data.update(self.status)
+        data.update({"时间": datetime.now()})
+        self.database.save_to_sql(data)
 
-        # db_data = data.copy()
-        # db_data.update(self.status)
-        # df = pd.DataFrame(db_data)
-        #
-        # now_utc = datetime.datetime.now(pytz.utc)
-        # # 将UTC日期和时间转换为阿姆斯特丹时区
-        # amsterdam_tz = pytz.timezone('Europe/Amsterdam')
-        # now_amsterdam = now_utc.astimezone(amsterdam_tz)
-        # # 将阿姆斯特丹的日期和时间添加到DataFrame中
-        # df['时间'] = [now_amsterdam]
-        # df.to_sql('status', self.conn, if_exists='append', index=True)
-        # self.conn.close()
