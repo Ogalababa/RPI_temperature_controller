@@ -22,3 +22,9 @@ class ConnectToDB:
     def read_from_sql(self):
         pd.read_sql_table(self.db_name, self.conn)
         return pd
+
+
+if __name__ == "__main__":
+    db = ConnectToDB("Status", os.path.join(current_dir, "data"))
+    df = db.read_from_sql()
+    print(df)
