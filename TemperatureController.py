@@ -5,13 +5,11 @@ import logging
 from RTC import RTC
 from __init__ import current_dir
 
-
 def setup_logging():
     logging.basicConfig(filename=os.path.join(current_dir, 'temperature_controller.log'),
                         level=logging.INFO,
                         format='%(asctime)s - %(message)s')
     return logging.getLogger()
-
 
 class TemperatureController:
 
@@ -60,33 +58,35 @@ class TemperatureController:
         self.equipment_mapping['日光灯'] = self.rtc.OFF
         self.equipment_mapping['UV 灯'] = self.rtc.ON
 
-        if current_temp < self.target_temp_day - self.temp_range:
-            self.equipment_mapping['日光灯'] = self.rtc.ON
-            self.equipment_mapping['降温风扇'] = self.rtc.OFF
+        if current_temp is not None:
+            if current_temp < self.target_temp_day - self.temp_range:
+                self.equipment_mapping['日光灯'] = self.rtc.ON
+                self.equipment_mapping['降温风扇'] = self.rtc.OFF
 
-        elif self.target_temp_day <= current_temp <= self.target_temp_day + self.temp_range:
-            self.equipment_mapping['降温风扇'] = self.rtc.OFF
+            elif self.target_temp_day <= current_temp <= self.target_temp_day + self.temp_range:
+                self.equipment_mapping['降温风扇'] = self.rtc.OFF
 
-        elif current_temp > self.target_temp_day + self.temp_range:
-            self.equipment_mapping['加温风扇'] = self.rtc.OFF
-            self.equipment_mapping['降温风扇'] = self.rtc.ON
+            elif current_temp > self.target_temp_day + self.temp_range:
+                self.equipment_mapping['加温风扇'] = self.rtc.OFF
+                self.equipment_mapping['降温风扇'] = self.rtc.ON
 
         self.update_equipment_statuses()
 
     def update_nighttime_equipment(self, current_temp):
         self.equipment_mapping['日光灯'] = self.rtc.OFF
 
-        if current_temp < self.target_temp_night - self.temp_range:
-            self.equipment_mapping['陶瓷灯'] = self.rtc.ON
-            self.equipment_mapping['加温风扇'] = self.rtc.ON
-            self.equipment_mapping['降温风扇'] = self.rtc.OFF
+        if current_temp is not None:
+            if current_temp < self.target_temp_night - self.temp_range:
+                self.equipment_mapping['陶瓷灯'] = self.rtc.ON
+                self.equipment_mapping['加温风扇'] = self.rtc.ON
+                self.equipment_mapping['降温风扇'] = self.rtc.OFF
 
-        elif self.target_temp_night <= current_temp <= self.target_temp_night + self.temp_range:
-            self.equipment_mapping['陶瓷灯'] = self.rtc.OFF
-            self.equipment_mapping['加温风扇'] = self.rtc.OFF
+            elif self.target_temp_night <= current_temp <= self.target_temp_night + self.temp_range:
+                self.equipment_mapping['陶瓷灯'] = self.rtc.OFF
+                self.equipment_mapping['加温风扇'] = self.rtc.OFF
 
-        elif current_temp > self.target_temp_night + self.temp_range:
-            self.equipment_mapping['降温风扇'] = self.rtc.ON
+            elif current_temp > self.target_temp_night + self.temp_range:
+                self.equipment_mapping['降温风扇'] = self.rtc.ON
 
         self.update_equipment_statuses()
 
@@ -96,7 +96,6 @@ class TemperatureController:
 
     def log_temperature_status(self, current_temp):
         self.logger.info(f"Temperature: {current_temp}, Status: {self.rtc.status}")
-
 
 if __name__ == '__main__':
     temp_controller = TemperatureController(target_temp_day=32, target_temp_night=30, temp_range=2, 
