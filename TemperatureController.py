@@ -15,7 +15,7 @@ class TemperatureController:
 
         self.rtc = RTC()
         self.target_temp_day = target_temp
-        self.target_temp_night = target_temp - 1
+        self.target_temp_night = target_temp - 2
         self.temp_range = temp_range
         self.timezone = pytz.timezone(timezone)
         self.datetime = datetime
@@ -50,7 +50,6 @@ class TemperatureController:
             else:
                 self.update_equipment_status("加温风扇", self.rtc.OFF)
                 self.update_equipment_status('UV 灯', self.rtc.OFF)
-
 
             if 16 <= current_hour < 24:
                 # check 陶瓷灯 status:
