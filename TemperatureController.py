@@ -54,7 +54,7 @@ class TemperatureController:
             time.sleep(54)  # Adjust this value as per your requirement
 
     def get_current_hour(self):
-        return self.datetime.now(self.timezone).hour
+        return self.datetime.now().hour
 
     def update_daytime_equipment(self, current_temp):
         self.equipment_mapping['日光灯'] = self.rtc.OFF
