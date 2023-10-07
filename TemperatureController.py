@@ -97,7 +97,7 @@ class TemperatureController:
     def log_temperature_status(self, current_temp):
         self.logger.info(f"Temperature: {current_temp}, Status: {self.rtc.status}")
 
+
 if __name__ == '__main__':
-    temp_controller = TemperatureController(target_temp_day=32, target_temp_night=30, temp_range=2, 
-                                            timezone='Europe/Amsterdam')
+    temp_controller = TemperatureController(target_temp_day=32, target_temp_night=30, temp_range=2)
     temp_controller.control_temperature()
