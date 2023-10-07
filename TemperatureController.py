@@ -1,6 +1,6 @@
+import datetime
 import os.path
 import time
-import pytz
 import logging
 from RTC import RTC
 from __init__ import current_dir
@@ -16,12 +16,11 @@ def setup_logging():
 class TemperatureController:
 
     def __init__(self, target_temp_day=32, target_temp_night=31, temp_range=2, timezone='Europe/Amsterdam'):
-        self.datetime = None
+        self.datetime = datetime.datetime.now()
         self.rtc = RTC()
         self.target_temp_day = target_temp_day
         self.target_temp_night = target_temp_night
         self.temp_range = temp_range
-        self.timezone = pytz.timezone(timezone)
         self.logger = setup_logging()
         self.equipment_mapping = {
             '加温风扇': self.rtc.ON,
