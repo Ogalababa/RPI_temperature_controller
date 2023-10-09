@@ -38,8 +38,8 @@ if __name__ == "__main__":
     column_names = [description[0] for description in cursor.description]
 
     for col_name in column_names:
-        print(col_name, end=' ')
-    print("\t\t\t\t")
+        print(col_name, end='\t')
+
     # 打印数据
     for row in rows[-10:]:
         print(row)
