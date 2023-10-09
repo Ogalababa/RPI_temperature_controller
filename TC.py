@@ -36,7 +36,7 @@ class TC:
             self.equipment_action(equipment, status)
 
     def get_current_hour(self):
-        self.datetime = self.datetime.now().hour
+        self.datetime = datetime.now().hour
         return self.datetime.now().hour
 
     def update_uv_equipment(self):
