@@ -41,7 +41,8 @@ class TC:
         return datetime.now().hour
 
     def update_uv_equipment(self):
-        if 10 <= datetime.now().hour < 16:
+        current_hour = datetime.now().hour
+        if 10 <= current_hour < 16:
             self.equipment_mapping['UV 灯'] = self.rtc.ON
             # self.equipment_mapping['降温风扇'] = self.rtc.ON
             self.equipment_mapping['加温风扇'] = self.rtc.ON
