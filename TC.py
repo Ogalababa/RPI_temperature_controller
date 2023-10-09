@@ -48,7 +48,7 @@ class TC:
             self.equipment_mapping['UV 灯'] = self.rtc.OFF
             self.equipment_mapping['降温风扇'] = self.rtc.OFF
 
-    def update_day_equipment(self, current_temp):
+    def update_day_equipment(self, current_temp, current_hour):
         self.equipment_mapping['陶瓷灯'] = self.rtc.OFF
         self.update_uv_equipment()
 
@@ -91,11 +91,11 @@ class TC:
             current_temp = self.rtc.get_control_temp()
             print(current_temp)
             current_hour = self.get_current_hour()
-            for start_hour, end_hour, equipment_function in self.hourly_functions:
-                # 在这里使用start_hour、end_hour和equipment_function
-                if start_hour <= current_hour < end_hour:
-                    print(start_hour)
-                    equipment_function(current_temp)
+            if 0 <= current_hour < 16:
+                self.update_night_equipment(current_temp)
+            else:
+                self.update_day_equipment(current_temp)
+
             print('save to json')
             self.rtc.save_to_json()
             self.equipment_actions()
