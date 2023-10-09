@@ -89,9 +89,9 @@ class TC:
         while True:
             current_temp = self.rtc.get_control_temp()
             current_hour = self.get_current_hour()
-            for (start_hour, end_hour), equipment_function in self.hourly_functions.items():
+            for (start_hour, end_hour), self.equipment_function in self.hourly_functions.items():
                 if start_hour <= current_hour < end_hour:
-                    equipment_function(current_temp)
+                    self.equipment_function(current_temp)
             self.rtc.save_to_json()
             self.equipment_actions()
             time.sleep(54)
