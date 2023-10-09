@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # 打印数据
     for row in rows[-10:]:
         for i in range(10):
-            print(f'{column_names[i]} : {row[i]} ')
+            print(f'{column_names[i]} : {row[i]}', end=' ')
         print('\n')
     # 关闭游标和数据库连接
     cursor.close()
