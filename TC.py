@@ -98,7 +98,7 @@ class TC:
 
             self.rtc.save_to_json()
             self.equipment_actions()
-            time.sleep(54)
+            # time.sleep(54)
 
 
 if __name__ == '__main__':
