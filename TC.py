@@ -93,7 +93,9 @@ class TC:
             for start_hour, end_hour, equipment_function in self.hourly_functions:
                 # 在这里使用start_hour、end_hour和equipment_function
                 if start_hour <= current_hour < end_hour:
+                    print(equipment_function)
                     equipment_function(current_temp)
+            print('save to json')
             self.rtc.save_to_json()
             self.equipment_actions()
             time.sleep(54)
