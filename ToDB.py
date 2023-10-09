@@ -43,8 +43,7 @@ if __name__ == "__main__":
 
     # 打印数据
     for row in rows[-10:]:
-        for i in row:
-            print(i, end='\t')
+        print(row)
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
