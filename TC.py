@@ -36,10 +36,6 @@ class TC:
         for equipment, status in self.equipment_mapping.items():
             self.equipment_action(equipment, status)
 
-    def get_current_hour(self):
-        # self.datetime = datetime.now().hour
-        return datetime.now().hour
-
     def update_uv_equipment(self):
         current_hour = datetime.now().hour
         if 10 <= current_hour < 16:
