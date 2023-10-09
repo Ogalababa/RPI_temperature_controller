@@ -96,7 +96,6 @@ class TC:
             else:
                 self.update_day_equipment(current_temp)
 
-            print('save to json')
             self.rtc.save_to_json()
             self.equipment_actions()
             time.sleep(54)
