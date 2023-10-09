@@ -39,10 +39,12 @@ if __name__ == "__main__":
 
     for col_name in column_names:
         print(col_name, end='\t')
+    print("\n")
 
     # 打印数据
     for row in rows[-10:]:
-        print(row)
+        for i in row:
+            print(i, end='\t')
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
