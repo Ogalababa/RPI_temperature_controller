@@ -96,7 +96,7 @@ class RTC:
                 self.control_hum = 0
                 time.sleep(5)
                 self.get_control_temp()
-            time.sleep(5)
+            time.sleep(1)
 
         temp_final = sum(temp_list) / len(temp_list)
         hum_final = sum(hum_list) / len(temp_list)
