@@ -1,3 +1,6 @@
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
 from RTC import RTC
 from RTC import cleanup
 import time

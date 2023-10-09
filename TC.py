@@ -1,3 +1,6 @@
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
 import time
 from RTC import RTC
 from datetime import datetime

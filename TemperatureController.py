@@ -1,4 +1,6 @@
-# Optimized TemperatureController.py
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
 import os.path
 import time
 from RTC import RTC
