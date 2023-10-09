@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     for col_name in column_names:
         print(col_name, end=' ')
-    print("\t")
+    print("\t\t\t\t")
     # 打印数据
     for row in rows[-10:]:
         print(row)
