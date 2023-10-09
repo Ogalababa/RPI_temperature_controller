@@ -100,6 +100,7 @@ class RTC:
         hum_final = sum(hum_list) / len(temp_list)
         self.control_temp = round(temp_final, 1)
         self.control_hum = round(hum_final, 1)
+        return temp_final
 
     def controller(self, equipment, status):
 
