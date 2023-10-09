@@ -89,6 +89,7 @@ class TC:
     def temperature_controller(self):
         while True:
             current_temp = self.rtc.get_control_temp()
+            print(current_temp)
             current_hour = self.get_current_hour()
             for start_hour, end_hour, equipment_function in self.hourly_functions:
                 # 在这里使用start_hour、end_hour和equipment_function
