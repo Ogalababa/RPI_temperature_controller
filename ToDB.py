@@ -35,6 +35,11 @@ if __name__ == "__main__":
     cursor.execute('SELECT * FROM Status')
     # 读取所有行数据
     rows = cursor.fetchall()
+    column_names = [description[0] for description in cursor.description]
+
+    for col_name in column_names:
+        print(col_name, end=' ')
+    print("\t")
     # 打印数据
     for row in rows[-10:]:
         print(row)
