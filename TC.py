@@ -38,7 +38,7 @@ class TC:
 
     def get_current_hour(self):
         self.datetime = datetime.now().hour
-        return self.datetime
+        return datetime.now().hour
 
     def update_uv_equipment(self):
         if 10 <= self.get_current_hour() < 16:
