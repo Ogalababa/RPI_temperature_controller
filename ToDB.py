@@ -37,13 +37,11 @@ if __name__ == "__main__":
     rows = cursor.fetchall()
     column_names = [description[0] for description in cursor.description]
 
-    for col_name in column_names:
-        print(col_name, end='    ')
-    print("\n")
-
     # 打印数据
     for row in rows[-10:]:
-        print(row)
+        for i in range(0):
+            print(f'{column_names[i]} : {row[i]} ')
+        print('\n')
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
