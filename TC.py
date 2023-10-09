@@ -43,7 +43,7 @@ class TC:
     def update_uv_equipment(self):
         if 10 <= self.get_current_hour() < 16:
             self.equipment_mapping['UV 灯'] = self.rtc.ON
-            self.equipment_mapping['降温风扇'] = self.rtc.ON
+            # self.equipment_mapping['降温风扇'] = self.rtc.ON
             self.equipment_mapping['加温风扇'] = self.rtc.ON
         else:
             self.equipment_mapping['UV 灯'] = self.rtc.OFF
@@ -51,7 +51,6 @@ class TC:
 
     def update_day_equipment(self, current_temp):
         self.equipment_mapping['陶瓷灯'] = self.rtc.OFF
-        self.update_uv_equipment()
 
         if current_temp is not None:
             if current_temp < self.target_day - self.range:  # 冷
@@ -66,11 +65,11 @@ class TC:
                 self.equipment_mapping['加温风扇'] = self.rtc.OFF
         else:
             current_temp = self.rtc.get_control_temp()
+        self.update_uv_equipment()
         self.update_day_equipment(current_temp)
 
     def update_night_equipment(self, current_temp):
         self.equipment_mapping['日光灯'] = self.rtc.OFF
-        self.update_uv_equipment()
 
         if current_temp is not None:
             if current_temp < self.target_night - self.range:  # 冷
@@ -86,7 +85,8 @@ class TC:
 
         else:
             current_temp = self.rtc.get_control_temp()
-            self.update_night_equipment(current_temp)
+        self.update_uv_equipment()
+        self.update_night_equipment(current_temp)
 
     def temperature_controller(self):
         while True:
