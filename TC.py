@@ -9,7 +9,7 @@ from datetime import datetime
 class TC:
 
     def __init__(self, target_day=32, target_night=30, temp_range=2, ):
-        self.datetime = datetime.now()
+        # self.datetime = datetime.now()
         self.rtc = RTC()
         self.target_day = target_day
         self.target_night = target_night
@@ -37,7 +37,7 @@ class TC:
             self.equipment_action(equipment, status)
 
     def get_current_hour(self):
-        self.datetime = datetime.now().hour
+        # self.datetime = datetime.now().hour
         return datetime.now().hour
 
     def update_uv_equipment(self):
@@ -93,7 +93,7 @@ class TC:
         while True:
             current_temp = self.rtc.get_control_temp()
             print(current_temp)
-            current_hour = self.get_current_hour()
+            current_hour = datetime.now().hour
             if 0 <= current_hour < 16:
                 self.update_night_equipment(current_temp)
             else:
