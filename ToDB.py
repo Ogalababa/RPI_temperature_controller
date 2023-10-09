@@ -38,7 +38,7 @@ if __name__ == "__main__":
     column_names = [description[0] for description in cursor.description]
 
     for col_name in column_names:
-        print(col_name, end='\t')
+        print(col_name, end='  ')
     print("\n")
 
     # 打印数据
