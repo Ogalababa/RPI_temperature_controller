@@ -44,11 +44,12 @@ class TC:
         if 10 <= self.get_current_hour() < 16:
             self.equipment_mapping['UV 灯'] = self.rtc.ON
             self.equipment_mapping['降温风扇'] = self.rtc.ON
+            self.equipment_mapping['加温风扇'] = self.rtc.ON
         else:
             self.equipment_mapping['UV 灯'] = self.rtc.OFF
             self.equipment_mapping['降温风扇'] = self.rtc.OFF
 
-    def update_day_equipment(self, current_temp, current_hour):
+    def update_day_equipment(self, current_temp):
         self.equipment_mapping['陶瓷灯'] = self.rtc.OFF
         self.update_uv_equipment()
 
@@ -62,9 +63,10 @@ class TC:
             else:  # 热
                 self.equipment_mapping['降温风扇'] = self.rtc.ON
                 self.equipment_mapping['日光灯'] = self.rtc.OFF
+                self.equipment_mapping['加温风扇'] = self.rtc.OFF
         else:
             current_temp = self.rtc.get_control_temp()
-            self.update_day_equipment(current_temp)
+        self.update_day_equipment(current_temp)
 
     def update_night_equipment(self, current_temp):
         self.equipment_mapping['日光灯'] = self.rtc.OFF
