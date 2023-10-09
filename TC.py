@@ -21,10 +21,11 @@ class TC:
             '日光灯': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
         }
-        self.hourly_functions = {
-            (10, 16): self.update_day_equipment,
-            (16, 24): self.update_night_equipment
-        }
+        self.hourly_functions = [
+            (10, 16, self.update_day_equipment),
+            (16, 24, self.update_night_equipment)
+
+        ]
 
     def equipment_action(self, equipment, desired_status):
         current_status = self.rtc.status.get(equipment, self.rtc.OFF)
@@ -89,9 +90,10 @@ class TC:
         while True:
             current_temp = self.rtc.get_control_temp()
             current_hour = self.get_current_hour()
-            for (start_hour, end_hour), self.equipment_function in self.hourly_functions.items():
+            for start_hour, end_hour, equipment_function in self.hourly_functions:
+                # 在这里使用start_hour、end_hour和equipment_function
                 if start_hour <= current_hour < end_hour:
-                    self.equipment_function(current_temp)
+                    equipment_function(current_temp)
             self.rtc.save_to_json()
             self.equipment_actions()
             time.sleep(54)
