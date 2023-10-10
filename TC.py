@@ -88,6 +88,7 @@ class TC:
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
         else:
+            print('temp is none')
             current_temp = self.rtc.get_control_temp()
             self.update_day_equipment(current_temp)
 
