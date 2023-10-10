@@ -4,7 +4,7 @@ import time
 from ToDB import ConnectToDB
 
 
-db = ConnectToDB('data', "Status")
+db = ConnectToDB('/home/jiawei/RPI_temperature_controller/data', "Status")
 
 while True:
     df = db.read_from_sql()
