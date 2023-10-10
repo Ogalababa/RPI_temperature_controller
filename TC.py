@@ -59,6 +59,7 @@ class TC:
             self.change_mapping_status('加温风扇', 'OFF')
 
     def update_day_equipment(self, current_temp):
+        print('in day')
         self.change_mapping_status('陶瓷灯', 'OFF')
         self.update_uv_equipment()
 
@@ -89,6 +90,7 @@ class TC:
             self.update_day_equipment(current_temp)
 
     def update_night_equipment(self, current_temp):
+        print('in night')
         self.change_mapping_status('日光灯', 'OFF')
         self.update_uv_equipment()
 
