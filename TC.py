@@ -61,7 +61,6 @@ class TC:
 
     def update_day_equipment(self, current_temp):
         self.change_mapping_status('陶瓷灯', 'OFF')
-        current_hour = datetime.now().hour
 
         if current_temp is not None:
             if current_temp < self.target_day - self.ranges:  # 冷
@@ -108,6 +107,7 @@ class TC:
             current_temp = self.rtc.get_control_temp()
             print(current_temp)
             current_hour = datetime.now().hour
+            print(f"time: {current_hour}")
             if 20 <= current_hour < 22:
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('降温风扇', 'ON')
