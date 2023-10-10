@@ -1,107 +1,150 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
-import logging
-import os.path
 import time
 from datetime import datetime
 
-import pytz
-
 from RTC import RTC
-from __init__ import *
 
 
-class TemperatureController:
+class TC:
 
-    def __init__(self, target_temp=30, temp_range=5, timezone='Europe/Amsterdam'):
-
+    def __init__(self, target_day=32, target_night=30, temp_range=2, ):
         self.rtc = RTC()
-        self.target_temp_day = target_temp
-        self.target_temp_night = target_temp - 2
-        self.temp_range = temp_range
-        self.timezone = pytz.timezone(timezone)
-        self.datetime = datetime
-        self.pytz = pytz
+        self.target_day = target_day
+        self.target_night = target_night
+        self.ranges = temp_range
+        self.equipment_mapping = {
+            '加温风扇': self.rtc.OFF,
+            '降温风扇': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
+            '日光灯': self.rtc.OFF,
+            '陶瓷灯': self.rtc.OFF,
+        }
+        self.lock = {
+            '加温风扇': False,
+            '降温风扇': False,
+            'UV 灯': False,
+            '日光灯': False,
+            '陶瓷灯': False
+        }
 
-        # Logging setup
+    def change_mapping_status(self, equipment, status):
+        status_dict = {'lock': True, 'unlock': False, 'ON': self.rtc.ON, 'OFF': self.rtc.OFF}
+        if status in status_dict:
+            if equipment in self.equipment_mapping and status in ('ON', "OFF") and self.lock.get(equipment) is False:
+                self.equipment_mapping[equipment] = status_dict.get(status)
+            if equipment in self.lock and status in ('lock', 'unlock'):
+                self.lock[equipment] = status_dict.get(status)
+        else:
+            print(f"无效的状态: {status}")
 
-        logging.basicConfig(filename=os.path.join(current_dir, 'temperature_controller.log'),
-                            level=logging.INFO,
-                            format='%(asctime)s - %(message)s')
-        self.logger = logging.getLogger()
+    def equipment_action(self, equipment, desired_status):
+        current_status = self.rtc.status.get(equipment, self.rtc.OFF)
 
-    def update_equipment_status(self, equipment, desired_status):
-        current_status = self.rtc.status[equipment]
         if current_status != desired_status:
             self.rtc.controller(equipment, desired_status)
 
-    def control_temperature(self):
-        counter = 0
+    def equipment_actions(self):
+        for equipment, status in self.equipment_mapping.items():
+            self.equipment_action(equipment, status)
+
+    def update_uv_equipment(self):
+        current_hour = datetime.now().hour
+        if 10 <= current_hour < 16:
+            self.change_mapping_status('UV 灯', 'ON')
+            self.change_mapping_status('加温风扇', 'ON')
+
+        else:
+            self.change_mapping_status('UV 灯', 'OFF')
+            self.change_mapping_status('加温风扇', 'OFF')
+
+    def update_day_equipment(self, current_temp):
+        self.change_mapping_status('陶瓷灯', 'OFF')
+        self.update_uv_equipment()
+
+        if current_temp is not None:
+            if current_temp < self.target_day - self.ranges:  # 冷
+                print('too cold day')
+                print(current_temp)
+                print(self.target_day)
+                self.change_mapping_status('日光灯', 'ON')
+                self.change_mapping_status('加温风扇', 'ON')
+
+            elif self.target_day <= current_temp <= self.target_day + self.ranges:  # 目标温度
+                print('good day')
+                print(current_temp)
+                print(self.target_day)
+                self.change_mapping_status('日光灯', 'OFF')
+                self.change_mapping_status('加温风扇', 'OFF')
+
+            elif current_temp > self.target_day + self.ranges:  # 热
+                print('too hot day')
+                print(current_temp)
+                print(self.target_day)
+                self.change_mapping_status('降温风扇', 'ON')
+                self.change_mapping_status('日光灯', 'OFF')
+                self.change_mapping_status('加温风扇', 'OFF')
+        else:
+            current_temp = self.rtc.get_control_temp()
+            self.update_day_equipment(current_temp)
+
+    def update_night_equipment(self, current_temp):
+        self.change_mapping_status('日光灯', 'OFF')
+        self.update_uv_equipment()
+
+        if current_temp is not None:
+            if current_temp < self.target_night - self.ranges:  # 冷
+                print('too cold night')
+                print(current_temp)
+                print(self.target_night)
+                self.change_mapping_status('陶瓷灯', 'ON')
+                self.change_mapping_status('加温风扇', 'ON')
+
+            elif self.target_night <= current_temp <= self.target_night + self.ranges:
+                print('good night')
+                print(current_temp)
+                print(self.target_night)
+                self.change_mapping_status('陶瓷灯', 'OFF')
+                self.change_mapping_status('加温风扇', 'OFF')
+
+            elif current_temp > self.target_night + self.ranges:
+                print('too hot night')
+                print(current_temp)
+                print(self.target_night)
+                self.change_mapping_status('陶瓷灯', 'OFF')
+                self.change_mapping_status('加温风扇', 'OFF')
+                self.change_mapping_status('降温风扇', 'ON')
+
+        else:
+            current_temp = self.rtc.get_control_temp()
+            self.update_night_equipment(current_temp)
+
+    def temperature_controller(self):
         while True:
-            # self.rtc.get_room_temp()
-            self.rtc.get_control_temp()
-            # current_temp = self.rtc.temp
-            current_temp = self.rtc.control_temp
-            print(f'Current temp: {current_temp}')
-            current_hour = self.datetime.now(self.timezone).hour
-            self.update_equipment_status('加温风扇', self.rtc.ON)
-            if 10 <= current_hour < 16:
-                self.update_equipment_status('日光灯', self.rtc.OFF)
-                self.update_equipment_status('UV 灯', self.rtc.ON)
-                self.update_equipment_status("加温风扇", self.rtc.ON)
+            current_temp = self.rtc.get_control_temp()
+            print(current_temp)
+            current_hour = datetime.now().hour
+            print(f"time: {current_hour}")
+            if 20 <= current_hour < 22:
+                self.change_mapping_status('日光灯', 'ON')
+                self.change_mapping_status('降温风扇', 'ON')
+                self.change_mapping_status('日光灯', 'lock')
+                self.change_mapping_status('降温风扇', 'lock')
             else:
-                self.update_equipment_status("加温风扇", self.rtc.OFF)
-                self.update_equipment_status('UV 灯', self.rtc.OFF)
+                self.change_mapping_status('日光灯', 'unlock')
+                self.change_mapping_status('降温风扇', 'unlock')
 
-            if 16 <= current_hour < 24:
-                # check 陶瓷灯 status:
-                self.update_equipment_status('陶瓷灯', self.rtc.OFF)
-                self.update_equipment_status('UV 灯', self.rtc.OFF)
-
-                if current_temp < self.target_temp_day - self.temp_range:  # It's too cold
-                    self.update_equipment_status('日光灯', self.rtc.ON)
-                    self.update_equipment_status('加温风扇', self.rtc.ON)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
-
-                elif self.target_temp_day <= current_temp <= self.target_temp_day + self.temp_range:
-                    # It's good temp
-                    self.update_equipment_status('日光灯', self.rtc.OFF)
-                    self.update_equipment_status('加温风扇', self.rtc.ON)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
-
-                elif current_temp > self.target_temp_day + self.temp_range:  # It's too hot
-                    self.update_equipment_status('日光灯', self.rtc.OFF)
-                    self.update_equipment_status('加温风扇', self.rtc.OFF)
-                    self.update_equipment_status('降温风扇', self.rtc.ON)
-
+            if 0 <= current_hour < 16:
+                self.update_night_equipment(current_temp)
             else:
-                self.update_equipment_status('日光灯', self.rtc.OFF)
+                self.update_day_equipment(current_temp)
 
-                if current_temp < self.target_temp_night - self.temp_range:  # It's too cold
-                    self.update_equipment_status('陶瓷灯', self.rtc.ON)
-                    self.update_equipment_status('加温风扇', self.rtc.ON)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
-
-                elif self.target_temp_night <= current_temp <= self.target_temp_night + self.temp_range:
-                    # It's good temp
-                    self.update_equipment_status('陶瓷灯', self.rtc.OFF)
-                    self.update_equipment_status('加温风扇', self.rtc.OFF)
-                    self.update_equipment_status('降温风扇', self.rtc.OFF)
-
-                elif current_temp > self.target_temp_night + self.temp_range:  # It's too hot
-                    self.update_equipment_status('陶瓷灯', self.rtc.OFF)
-                    self.update_equipment_status('加温风扇', self.rtc.OFF)
-                    self.update_equipment_status('降温风扇', self.rtc.ON)
             self.rtc.save_to_json()
-            counter += 1
-            if counter == 30:
-                self.logger.info(
-                    f"Temperature: {current_temp}, Status: {self.rtc.status}")
-                counter = 0
-            time.sleep(54)  # Adjust this value as per your requirement
+            self.equipment_actions()
+            time.sleep(54)
 
 
 if __name__ == '__main__':
-    temp_controller = TemperatureController(target_temp=32, temp_range=2, timezone='Europe/Amsterdam')
-    temp_controller.control_temperature()
+    temp_controller = TC(target_day=32, target_night=30, temp_range=2)
+    temp_controller.temperature_controller()
