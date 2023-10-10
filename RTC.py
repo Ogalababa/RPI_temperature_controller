@@ -130,5 +130,5 @@ class RTC:
             json.dump(data, json_file, indent=4)
         df_data.update(self.status)
         df_data.update({"时间": datetime.now()})
-        db_data = {key: 10 if value == "ON" else -10 if value == "OFF" else value for key, value in df_data.items()}
-        self.database.save_to_sql(db_data)
+        # db_data = {key: 10 if value == "ON" else -10 if value == "OFF" else value for key, value in df_data.items()}
+        self.database.save_to_sql(df_data)
