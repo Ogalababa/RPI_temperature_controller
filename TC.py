@@ -13,7 +13,7 @@ class TC:
         self.rtc = RTC()
         self.target_day = target_day
         self.target_night = target_night
-        self.range = temp_range
+        self.ranges = temp_range
         self.equipment_mapping = {
             '加温风扇': self.rtc.OFF,
             '降温风扇': self.rtc.OFF,
@@ -64,11 +64,11 @@ class TC:
         current_hour = datetime.now().hour
 
         if current_temp is not None:
-            if current_temp < self.target_day - self.range:  # 冷
+            if current_temp < self.target_day - self.ranges:  # 冷
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_day <= current_temp <= self.target_day + self.range:  # 目标温度
+            elif self.target_day <= current_temp <= self.target_day + self.ranges:  # 目标温度
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
@@ -85,11 +85,11 @@ class TC:
         self.change_mapping_status('日光灯', 'OFF')
 
         if current_temp is not None:
-            if current_temp < self.target_night - self.range:  # 冷
+            if current_temp < self.target_night - self.ranges:  # 冷
                 self.change_mapping_status('陶瓷灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_night <= current_temp <= self.target_night + self.range:
+            elif self.target_night <= current_temp <= self.target_night + self.ranges:
                 self.change_mapping_status('陶瓷灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
