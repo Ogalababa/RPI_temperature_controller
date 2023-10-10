@@ -3,7 +3,6 @@
 # sys
 import time
 from datetime import datetime
-
 from RTC import RTC
 
 
@@ -71,7 +70,7 @@ class TC:
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_day <= current_temp <= self.target_day + self.ranges:  # 目标温度
+            elif self.target_day <= current_temp <= (self.target_day + self.ranges):  # 目标温度
                 print('good day')
                 print(current_temp)
                 print(self.target_day)
@@ -101,7 +100,7 @@ class TC:
                 self.change_mapping_status('陶瓷灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_night <= current_temp <= self.target_night + self.ranges:
+            elif self.target_night <= current_temp <= (self.target_night + self.ranges):
                 print('good night')
                 print(current_temp)
                 print(self.target_night)
@@ -117,6 +116,7 @@ class TC:
                 self.change_mapping_status('降温风扇', 'ON')
 
         else:
+            print('current_temp is none')
             current_temp = self.rtc.get_control_temp()
             self.update_night_equipment(current_temp)
 
