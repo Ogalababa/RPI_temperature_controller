@@ -68,6 +68,7 @@ class TC:
             print('temp is not none')
             print(current_temp)
             print(self.target_day)
+            print(current_temp < self.target_day - self.ranges)
             if current_temp < self.target_day - self.ranges:  # 冷
                 print('too cold day')
                 print(current_temp)
