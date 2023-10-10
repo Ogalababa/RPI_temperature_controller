@@ -1,13 +1,14 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+import logging
 import os.path
 import time
-from RTC import RTC
 from datetime import datetime
-import pytz
-import logging
 
+import pytz
+
+from RTC import RTC
 from __init__ import *
 
 

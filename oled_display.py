@@ -1,14 +1,15 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+import json
 import os
 import time
-import json
+from pathlib import Path
+
+from PIL import ImageFont
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import sh1106
-from PIL import ImageFont
-from pathlib import Path
 
 
 def read_status():

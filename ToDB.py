@@ -5,14 +5,11 @@ import os.path
 import sqlite3
 
 import pandas as pd
-
-from __init__ import *
 from sqlalchemy import create_engine
 
 
 class ConnectToDB:
     def __init__(self, db_name, path):
-
         self.db_path = os.path.join(path, f'{db_name}.db')
         self.conn = create_engine(f'sqlite:///{self.db_path}').connect()
         self.db_name = db_name

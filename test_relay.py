@@ -1,9 +1,10 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+import time
+
 from RTC import RTC
 from RTC import cleanup
-import time
 
 if __name__ == "__main__":
     print("Initialization Status")

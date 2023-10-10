@@ -1,13 +1,14 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+import json
 import os
 import time
-import json
 from datetime import datetime
 
-import RPi.GPIO as GPIO
 import Adafruit_DHT as DHT
+import RPi.GPIO as GPIO
+
 from ToDB import ConnectToDB
 from __init__ import *
 
@@ -125,4 +126,3 @@ class RTC:
         data.update(self.status)
         data.update({"时间": datetime.now()})
         self.database.save_to_sql(data)
-

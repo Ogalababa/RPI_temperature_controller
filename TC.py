@@ -2,8 +2,9 @@
 # coding:utf-8
 # sys
 import time
-from RTC import RTC
 from datetime import datetime
+
+from RTC import RTC
 
 
 class TC:
@@ -27,15 +28,16 @@ class TC:
             '日光灯': False,
             '陶瓷灯': False
         }
-    def change_mapping_status(self,equipment, status):
-        lock = self.lock[equipment] = True
-        unlock = self.lock[equipment] = False
-        on = self.equipment_mapping[equipment] = self.rtc.ON
-        off = self.equipment_mapping[equipment] = self.rtc.OFF
-        status_dict = {'lock': lock, 'unlock': unlock, 'ON': on, 'OFF': off}
-        if self.lock.get(equipment) is False or status == 'unlock':
-            status_dict.get(status)
 
+    def change_mapping_status(self, equipment, status):
+        status_dict = {'lock': True, 'unlock': False, 'ON': self.rtc.ON, 'OFF': self.rtc.OFF}
+        if status in status_dict:
+            if equipment in self.equipment_mapping and status in ('ON', "OFF") and self.lock.get(equipment) is False:
+                self.equipment_mapping[equipment] = status_dict.get(status)
+            if equipment in self.lock and status in ('lock', 'unlock'):
+                self.lock[equipment] = status_dict.get(status)
+        else:
+            print(f"无效的状态: {status}")
 
     def equipment_action(self, equipment, desired_status):
         current_status = self.rtc.status.get(equipment, self.rtc.OFF)
@@ -56,7 +58,6 @@ class TC:
         else:
             self.change_mapping_status('UV 灯', 'OFF')
             self.change_mapping_status('加温风扇', 'OFF')
-
 
     def update_day_equipment(self, current_temp):
         self.change_mapping_status('陶瓷灯', 'ON')
