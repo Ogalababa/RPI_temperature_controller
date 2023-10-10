@@ -19,8 +19,8 @@ class ConnectToDB:
         data_df.to_sql(self.db_name, self.conn, index=False, if_exists="append")
 
     def read_from_sql(self):
-        pd.read_sql_table(self.db_name, self.conn)
-        return pd
+        df = pd.read_sql_table(self.db_name, self.conn)
+        return df
 
 
 if __name__ == "__main__":
