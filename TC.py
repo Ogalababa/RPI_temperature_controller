@@ -91,6 +91,7 @@ class TC:
             print('temp is none')
             current_temp = self.rtc.get_control_temp()
             self.update_day_equipment(current_temp)
+        print('end day')
 
     def update_night_equipment(self, current_temp):
         print('in night')
