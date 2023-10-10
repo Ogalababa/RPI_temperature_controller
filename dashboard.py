@@ -1,10 +1,13 @@
+import os.path
+
 import plotly.express as px
 import streamlit as st
 import time
 from ToDB import ConnectToDB
+from __init__ import *
 
 
-db = ConnectToDB('/home/jiawei/RPI_temperature_controller/data', "Status")
+db = ConnectToDB("Status", os.path.join(current_dir, 'data'))
 
 while True:
     df = db.read_from_sql()
