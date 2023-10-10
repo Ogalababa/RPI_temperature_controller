@@ -120,7 +120,6 @@ class TC:
             current_temp = self.rtc.get_control_temp()
             self.update_night_equipment(current_temp)
 
-
     def temperature_controller(self):
         while True:
             current_temp = self.rtc.get_control_temp()
