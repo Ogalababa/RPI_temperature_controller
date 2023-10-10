@@ -60,12 +60,8 @@ class TC:
             self.change_mapping_status('加温风扇', 'OFF')
 
     def update_day_equipment(self, current_temp):
-        self.change_mapping_status('陶瓷灯', 'ON')
+        self.change_mapping_status('陶瓷灯', 'OFF')
         current_hour = datetime.now().hour
-        if 16 <= current_hour <= 18:
-            self.change_mapping_status('降温风扇', 'ON')
-        else:
-            self.change_mapping_status('降温风扇', 'OFF')
 
         if current_temp is not None:
             if current_temp < self.target_day - self.range:  # 冷
