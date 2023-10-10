@@ -121,9 +121,14 @@ class RTC:
             '湿度': f"{self.control_hum} %",
             '陶瓷灯': self.status.get("陶瓷灯")
         }
+        df_data = {
+            '温度': self.control_temp,
+            '湿度': self.control_hum,
+            '陶瓷灯': self.status.get("陶瓷灯")
+        }
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)
-        data.update(self.status)
-        data.update({"时间": datetime.now()})
-        db_data = {key: 10 if value == "ON" else -10 if value == "OFF" else value for key, value in data.items()}
+        df_data.update(self.status)
+        df_data.update({"时间": datetime.now()})
+        db_data = {key: 10 if value == "ON" else -10 if value == "OFF" else value for key, value in df_data.items()}
         self.database.save_to_sql(db_data)
