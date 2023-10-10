@@ -62,8 +62,10 @@ class TC:
         print('in day')
         self.change_mapping_status('陶瓷灯', 'OFF')
         self.update_uv_equipment()
+        print('end uv')
 
         if current_temp is not None:
+            print('temp is not none')
             if current_temp < self.target_day - self.ranges:  # 冷
                 print('too cold day')
                 print(current_temp)
