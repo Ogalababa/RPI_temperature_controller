@@ -135,7 +135,7 @@ class TC:
             print(current_temp)
             current_hour = datetime.now().hour
             print(f"time: {current_hour}")
-            if 20 <= current_hour < 23:
+            if 20 <= current_hour:
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('降温风扇', 'ON')
                 self.change_mapping_status('日光灯', 'lock')
