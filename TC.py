@@ -69,7 +69,7 @@ class TC:
             print(current_temp)
             print(self.target_day)
             print(current_temp < self.target_day - self.ranges)
-            if current_temp < self.target_day - self.ranges:  # 冷
+            if current_temp < (self.target_day - self.ranges):  # 冷
                 print('too cold day')
                 print(current_temp)
                 print(self.target_day)
@@ -102,7 +102,7 @@ class TC:
         self.update_uv_equipment()
 
         if current_temp is not None:
-            if current_temp < self.target_night - self.ranges:  # 冷
+            if current_temp < (self.target_night - self.ranges):  # 冷
                 print('too cold night')
                 print(current_temp)
                 print(self.target_night)
@@ -116,7 +116,7 @@ class TC:
                 self.change_mapping_status('陶瓷灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
-            elif current_temp > self.target_night + self.ranges:
+            elif current_temp > (self.target_night + self.ranges):
                 print('too hot night')
                 print(current_temp)
                 print(self.target_night)
