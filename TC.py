@@ -61,6 +61,7 @@ class TC:
 
     def update_day_equipment(self, current_temp):
         self.change_mapping_status('陶瓷灯', 'OFF')
+        self.update_uv_equipment()
 
         if current_temp is not None:
             if current_temp < self.target_day - self.ranges:  # 冷
@@ -87,10 +88,10 @@ class TC:
         else:
             current_temp = self.rtc.get_control_temp()
             self.update_day_equipment(current_temp)
-        self.update_uv_equipment()
 
     def update_night_equipment(self, current_temp):
         self.change_mapping_status('日光灯', 'OFF')
+        self.update_uv_equipment()
 
         if current_temp is not None:
             if current_temp < self.target_night - self.ranges:  # 冷
@@ -118,7 +119,7 @@ class TC:
         else:
             current_temp = self.rtc.get_control_temp()
             self.update_night_equipment(current_temp)
-        self.update_uv_equipment()
+
 
     def temperature_controller(self):
         while True:
