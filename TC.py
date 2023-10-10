@@ -64,14 +64,17 @@ class TC:
 
         if current_temp is not None:
             if current_temp < self.target_day - self.ranges:  # 冷
+                print('too cold day')
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
             elif self.target_day <= current_temp <= self.target_day + self.ranges:  # 目标温度
+                print('good day')
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
             else:  # 热
+                print('too hot day')
                 self.change_mapping_status('降温风扇', 'ON')
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
@@ -85,14 +88,17 @@ class TC:
 
         if current_temp is not None:
             if current_temp < self.target_night - self.ranges:  # 冷
+                print('too cold night')
                 self.change_mapping_status('陶瓷灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
             elif self.target_night <= current_temp <= self.target_night + self.ranges:
+                print('good night')
                 self.change_mapping_status('陶瓷灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
             else:
+                print('too hot night')
                 self.change_mapping_status('陶瓷灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
                 self.change_mapping_status('降温风扇', 'ON')
