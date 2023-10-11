@@ -12,11 +12,6 @@ st.set_page_config(
     page_title="实时数据监控",  # 页面标题
     layout="wide",  # 页面布局为 wide mode
     initial_sidebar_state="collapsed",  # 初始时侧边栏是关闭的
-    theme={  # 设置主题为 dark mode
-        "primary": "#E694FF",
-        "background": "#262730",
-        "text": "#FFFFFF",
-    },
 )
 
 # 连接数据库
