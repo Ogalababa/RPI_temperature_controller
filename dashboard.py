@@ -11,8 +11,12 @@ from __init__ import *
 st.set_page_config(
     page_title="实时数据监控",  # 页面标题
     layout="wide",  # 页面布局为 wide mode
-    initial_sidebar_state="collapsed",  # 初始时侧边栏是展开的
-
+    initial_sidebar_state="collapsed",  # 初始时侧边栏是关闭的
+    theme={  # 设置主题为 dark mode
+        "primary": "#E694FF",
+        "background": "#262730",
+        "text": "#FFFFFF",
+    },
 )
 
 # 连接数据库
@@ -34,6 +38,23 @@ while True:
 
     # 更新占位符中的内容
     placeholder.plotly_chart(fig, theme="streamlit", use_container_width=True)
+
+    # 获取最后一行数据
+    last_row = df.tail(1)
+    # 创建三列
+    col1, col2 = st.columns(2)
+    # 在每列中显示度量值
+    col1.metric("温度", f"{last_row['温度'].values[0]:.2f} °C")
+    col2.metric("湿度", f"{last_row['湿度'].values[0]:.2f} %")
+
+    # 创建另外四列
+    col3, col4, col5, col6, col7 = st.columns(5)
+    # 在每列中显示度量值
+    col3.metric("加温风扇", last_row['加温风扇'].values[0])
+    col4.metric("降温风扇", last_row['降温风扇'].values[0])
+    col5.metric("陶瓷灯", last_row['陶瓷灯'].values[0])
+    col6.metric("UV 灯", last_row['UV 灯'].values[0])
+    col7.metric("日光灯", last_row['日光灯'].values[0])
 
     # 等待指定的时间间隔
     time.sleep(refresh_interval)
