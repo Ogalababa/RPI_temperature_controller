@@ -1,5 +1,6 @@
 import os.path
 import time
+import pandas as pd
 
 import plotly.express as px
 import streamlit as st
@@ -53,8 +54,8 @@ while True:
     # 在每列中显示度量值
     metric1.metric("温度", f"{last_row['温度'].values[0]:.2f} °C")
     metric2.metric("湿度", f"{last_row['湿度'].values[0]:.2f} %")
-    # 格式化时间以显示到秒
-    last_update_time = last_row['时间'].values[0].strftime('%Y-%m-%d %H:%M:%S')
+    # 将 numpy.datetime64 转换为 datetime，然后格式化为字符串
+    last_update_time = pd.to_datetime(last_row['时间'].values[0]).strftime('%Y-%m-%d %H:%M:%S')
     metric3.metric("最后更新", last_update_time)
     metric4.metric("加温风扇", last_row['加温风扇'].values[0])
     metric5.metric("降温风扇", last_row['降温风扇'].values[0])
