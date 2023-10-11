@@ -53,7 +53,9 @@ while True:
     # 在每列中显示度量值
     metric1.metric("温度", f"{last_row['温度'].values[0]:.2f} °C")
     metric2.metric("湿度", f"{last_row['湿度'].values[0]:.2f} %")
-    metric3.metric("最后更新", f"{last_row['时间'].values[0]} ")
+    # 格式化时间以显示到秒
+    last_update_time = last_row['时间'].values[0].strftime('%Y-%m-%d %H:%M:%S')
+    metric3.metric("最后更新", last_update_time)
     metric4.metric("加温风扇", last_row['加温风扇'].values[0])
     metric5.metric("降温风扇", last_row['降温风扇'].values[0])
     metric6.metric("陶瓷灯", last_row['陶瓷灯'].values[0])
