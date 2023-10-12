@@ -13,7 +13,8 @@ from run.ToDB import ConnectToDB
 from __init__ import *
 
 
-def to_csv(dataframe):
+def to_csv():
+    dataframe = db.read_from_sql()
     # 将 DataFrame 转换为 CSV 格式的字符串
     return dataframe.to_csv(index=False).encode('utf-8')
 
@@ -46,6 +47,16 @@ metric5 = col5.empty()
 metric6 = col6.empty()
 metric7 = col7.empty()
 metric8 = col8.empty()
+
+# 在侧边栏添加下载按钮
+csv_str = to_csv()
+st.sidebar.download_button(
+    label="Download data as CSV",
+    data=csv_str,
+    file_name="data.csv",
+    mime="text/csv",
+    key="download_csv_button"
+)
 
 while True:
     # 从数据库中读取数据
@@ -83,16 +94,5 @@ while True:
     metric6.metric("陶瓷灯", last_row['陶瓷灯'].values[0])
     metric7.metric("UV 灯", last_row['UV 灯'].values[0])
     metric8.metric("日光灯", last_row['日光灯'].values[0])
-
-    # 在侧边栏添加下载按钮
-    csv_str = to_csv(df)
-    st.sidebar.download_button(
-        label="Download data as CSV",
-        data=csv_str,
-        file_name="data.csv",
-        mime="text/csv",
-        key="download_csv_button"
-    )
-
     # 等待指定的时间间隔
     time.sleep(refresh_interval)
