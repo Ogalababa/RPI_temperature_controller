@@ -14,9 +14,9 @@ class ConnectToDB:
         self.conn = create_engine(f'sqlite:///{self.db_path}').connect()
         self.db_name = db_name
 
-    def save_to_sql(self, data_dict):
+    def save_to_sql(self, data_dict, exists='append'):
         data_df = pd.DataFrame({key: [value] for key, value in data_dict.items()})
-        data_df.to_sql(self.db_name, self.conn, index=False, if_exists="append")
+        data_df.to_sql(self.db_name, self.conn, index=False, if_exists=exists)
 
     def read_from_sql(self):
         df = pd.read_sql_table(self.db_name, self.conn)

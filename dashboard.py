@@ -1,3 +1,4 @@
+import base64
 import os.path
 import time
 import pandas as pd
@@ -73,6 +74,12 @@ while True:
     metric6.metric("陶瓷灯", last_row['陶瓷灯'].values[0])
     metric7.metric("UV 灯", last_row['UV 灯'].values[0])
     metric8.metric("日光灯", last_row['日光灯'].values[0])
+
+    # 在侧边栏添加下载按钮
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+    href = f'<a href="data:file/csv;base64,{b64}" download="data.csv">Download CSV File</a>'
+    st.sidebar.markdown(href, unsafe_allow_html=True)
 
     # 等待指定的时间间隔
     time.sleep(refresh_interval)
