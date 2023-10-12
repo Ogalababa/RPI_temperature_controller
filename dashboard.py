@@ -9,6 +9,12 @@ import streamlit as st
 from ToDB import ConnectToDB
 from __init__ import *
 
+
+def to_csv(dataframe):
+    # 将 DataFrame 转换为 CSV 格式的字符串
+    return dataframe.to_csv(index=False).encode('utf-8')
+
+
 # 设置页面配置
 st.set_page_config(
     page_title="实时数据监控",  # 页面标题
@@ -76,10 +82,13 @@ while True:
     metric8.metric("日光灯", last_row['日光灯'].values[0])
 
     # 在侧边栏添加下载按钮
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
-    href = f'<a href="data:file/csv;base64,{b64}" download="data.csv">Download CSV File</a>'
-    st.sidebar.markdown(href, unsafe_allow_html=True)
+    csv_str = to_csv(df)
+    st.sidebar.download_button(
+        label="Download data as CSV",
+        data=csv_str,
+        file_name="data.csv",
+        mime="text/csv"
+    )
 
     # 等待指定的时间间隔
     time.sleep(refresh_interval)
