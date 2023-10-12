@@ -90,7 +90,8 @@ while True:
         label="Download data as CSV",
         data=csv_str,
         file_name="data.csv",
-        mime="text/csv"
+        mime="text/csv",
+        key="download_csv_button"
     )
 
     # 等待指定的时间间隔
