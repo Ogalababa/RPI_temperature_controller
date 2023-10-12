@@ -3,8 +3,8 @@
 # sys
 import time
 
-from RTC import RTC
-from RTC import cleanup
+from run.RTC import RTC
+from run.RTC import cleanup
 
 if __name__ == "__main__":
     print("Initialization Status")

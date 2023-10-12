@@ -50,7 +50,7 @@ class RTC:
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["控制室风扇"] = "N/A"
         self.status["加湿器"] = "N/A"
-        self.database = ConnectToDB("Status", os.path.join(current_dir, "data"))
+        self.database = ConnectToDB("Status", os.path.join(current_dir, "../data"))
 
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
@@ -114,7 +114,6 @@ class RTC:
 
     def save_to_json(self):
 
-        # data = self.status.copy()
         data = {
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
@@ -129,5 +128,4 @@ class RTC:
             json.dump(data, json_file, indent=4)
         df_data.update(self.status)
         df_data.update({"时间": datetime.now()})
-        # db_data = {key: 10 if value == "ON" else -10 if value == "OFF" else value for key, value in df_data.items()}
         self.database.save_to_sql(df_data)

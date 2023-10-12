@@ -6,6 +6,7 @@ import sqlite3
 
 import pandas as pd
 from sqlalchemy import create_engine
+from __init__ import *
 
 
 class ConnectToDB:
@@ -14,9 +15,9 @@ class ConnectToDB:
         self.conn = create_engine(f'sqlite:///{self.db_path}').connect()
         self.db_name = db_name
 
-    def save_to_sql(self, data_dict, exists='append'):
+    def save_to_sql(self, data_dict):
         data_df = pd.DataFrame({key: [value] for key, value in data_dict.items()})
-        data_df.to_sql(self.db_name, self.conn, index=False, if_exists=exists)
+        data_df.to_sql(self.db_name, self.conn, index=False, if_exists='append')
 
     def read_from_sql(self):
         df = pd.read_sql_table(self.db_name, self.conn)
@@ -25,7 +26,7 @@ class ConnectToDB:
 
 if __name__ == "__main__":
     # 连接到数据库
-    conn = sqlite3.connect(os.path.join("data", "Status.db"))
+    conn = sqlite3.connect(os.path.join(current_dir, "data", "Status.db"))
     # 创建一个游标对象
     cursor = conn.cursor()
     # 执行 SQL 查询以获取数据
