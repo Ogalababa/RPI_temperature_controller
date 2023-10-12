@@ -1,6 +1,5 @@
-# ！/usr/bin/python3
+#!/usr/bin/python3
 # coding:utf-8
-# sys
 
 import time
 from datetime import datetime
@@ -42,30 +41,31 @@ class Schedule:
         if self.is_night:
             self.target_temp = self.target_night
         else:
-            self.target_temp = self.target_temp
+            self.target_temp = self.target_day
+
         current_temp = self.rtc.get_control_temp()
-        print(current_temp)
-        print(type(current_temp))
+        print(f"Current Temp: {current_temp}°C")
+        print(f"Target Temp: {self.target_temp}°C")
         if current_temp < self.target_temp - self.temp_range:
             self.temp_status = 'cold'
-        elif self.target_temp <= current_temp < self.target_temp + self.temp_range:
+        elif self.target_temp - self.temp_range <= current_temp <= self.target_temp + self.temp_range:
             self.temp_status = 'good'
-        elif self.target_temp >= self.target_temp + self.temp_range:
+        elif current_temp > self.target_temp + self.temp_range:
             self.temp_status = 'hot'
         else:
             self.temp_status = 'error'
-        print(self.temp_status)
+        print(f"Temperature Status: {self.temp_status}")
 
     def change_mapping_status(self, equipment, status):
         status_dict = {'lock': True, 'unlock': False, 'ON': self.rtc.ON, 'OFF': self.rtc.OFF}
         if status in status_dict:
-            if equipment in self.equipment_mapping and status in ('ON', "OFF") and self.lock.get(
-                    equipment) is False:
+            if equipment in self.equipment_mapping and status in ('ON', "OFF") and not self.lock.get(
+                    equipment, False):
                 self.equipment_mapping[equipment] = status_dict.get(status)
             if equipment in self.lock and status in ('lock', 'unlock'):
                 self.lock[equipment] = status_dict.get(status)
         else:
-            print(f"无效的状态: {status}")
+            print(f"Invalid status: {status}")
 
     def equipment_action(self, equipment, desired_status):
         current_status = self.rtc.status.get(equipment, self.rtc.OFF)
@@ -85,7 +85,7 @@ class Schedule:
             self.change_mapping_status('UV 灯', "OFF")
 
     def sun_lamp(self):
-        if self.is_night is False:
+        if not self.is_night:
             self.change_mapping_status('日光灯', "ON")
         else:
             self.change_mapping_status('日光灯', "OFF")
@@ -103,12 +103,21 @@ class Schedule:
             self.change_mapping_status('降温风扇', "OFF")
 
     def controller(self):
-        while True:
-            self.day_night()
-            self.check_temp()
-            self.uv_lamp()
-            self.sun_lamp()
-            self.night_lamp()
-            self.rtc.save_to_json(self.target_temp)
-            self.equipment_actions()
-            time.sleep(54)
+        try:
+            while True:
+                self.day_night()
+                self.check_temp()
+                self.uv_lamp()
+                self.sun_lamp()
+                self.night_lamp()
+                self.cooling_fan()
+                self.rtc.save_to_json(self.target_temp)
+                self.equipment_actions()
+                time.sleep(54)
+        except KeyboardInterrupt:
+            print("Controller stopped by user.")
+
+
+if __name__ == "__main__":
+    schedule = Schedule()
+    schedule.controller()
