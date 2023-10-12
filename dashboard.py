@@ -51,8 +51,8 @@ while True:
                        markers=True)
 
     # 设置线条颜色
-    fig_hum.update_traces(line=dict(color='red'))
-    fig_temp.update_traces(line=dict(color='blue'))
+    fig_hum.update_traces(line=dict(color='#FF8080'))
+    fig_temp.update_traces(line=dict(color='#CDFAD5'))
 
     # 更新占位符中的内容
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
