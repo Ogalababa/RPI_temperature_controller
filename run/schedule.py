@@ -81,8 +81,10 @@ class Schedule:
         hour = datetime.now().hour
         if 14 <= hour < 20:
             self.change_mapping_status('UV 灯', "ON")
+            self.change_mapping_status('加温风扇', "ON")
         else:
             self.change_mapping_status('UV 灯', "OFF")
+            self.change_mapping_status('加温风扇', "OFF")
 
     def sun_lamp(self):
         if not self.is_night:
