@@ -1,4 +1,6 @@
-import base64
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
 import os.path
 import time
 import pandas as pd
@@ -63,7 +65,7 @@ while True:
 
     # 更新占位符中的内容
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
-    temperature.plotly_chart(fig_temp,theme="streamlit", use_container_width=True)
+    temperature.plotly_chart(fig_temp, theme="streamlit", use_container_width=True)
 
     # 获取最后一行数据
     last_row = df.tail(1)

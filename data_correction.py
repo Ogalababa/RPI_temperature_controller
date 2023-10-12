@@ -1,3 +1,6 @@
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
 import pandas as pd
 from __init__ import *
 import os
@@ -21,5 +24,3 @@ for column in ['温度', '湿度']:
 corrected_df.to_sql("Status", conn, if_exists="replace")
 
 conn.close()
-
-
