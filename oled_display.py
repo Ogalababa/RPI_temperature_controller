@@ -37,7 +37,7 @@ def display_on_oled():
                 text_line = f"{key}: {value}"
                 draw.text((0, y_position), text_line, fill="white", font=font)
                 y_position += 20  # 更新y轴位置以便下一行文本
-        time.sleep(10)  # 每分钟刷新一次显示内容
+        # time.sleep(10)  # 每分钟刷新一次显示内容
 
 
 def main():
