@@ -9,7 +9,7 @@ from datetime import datetime
 import Adafruit_DHT as DHT
 import RPi.GPIO as GPIO
 
-from ToDB import ConnectToDB
+from run.ToDB import ConnectToDB
 from __init__ import *
 
 
