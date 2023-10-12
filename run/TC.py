@@ -100,6 +100,7 @@ class TC:
         self.update_uv_equipment()
 
         if current_temp is not None:
+            current_temp = float(current_temp)
             print(current_temp)
             print(self.target_night)
             print(f'too cold night: {current_temp < (self.target_night - self.ranges)}')
