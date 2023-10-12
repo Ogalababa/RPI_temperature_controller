@@ -19,7 +19,8 @@ st.set_page_config(
 db = ConnectToDB("Status", os.path.join(current_dir, 'data'))
 
 # 创建一个空的占位符
-placeholder = st.empty()
+humility = st.empty()
+temperature = st.empty()
 
 # 添加一个滑块来让用户选择刷新间隔
 refresh_interval = st.sidebar.slider('选择刷新间隔（秒）', min_value=1, max_value=120, value=60)
@@ -41,11 +42,14 @@ while True:
     df = db.read_from_sql()
 
     # 创建图形
-    fig = px.line(df, x="时间", y=['温度', '湿度'],
-                  hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'])
+    fig_hum = px.line(df, x="时间", y='湿度',
+                      hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'])
+    fig_temp = px.line(df, x="时间", y='温度',
+                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'])
 
     # 更新占位符中的内容
-    placeholder.plotly_chart(fig, theme="streamlit", use_container_width=True)
+    humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
+    temperature.plotly_chart(fig_temp,theme="streamlit", use_container_width=True)
 
     # 获取最后一行数据
     last_row = df.tail(1)
