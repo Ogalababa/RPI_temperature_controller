@@ -86,7 +86,7 @@ while True:
 
     # 在每列中显示度量值
     metric1.metric("当前温度", f"{last_row['温度'].values[0]:.2f} °C")
-    metric9.metric("目标温度", f"{last_row['温度'].values[0]:.2f} °C")
+    metric9.metric("目标温度", f"{last_row['目标温度'].values[0]:.2f} °C")
     metric2.metric("湿度", f"{last_row['湿度'].values[0]:.2f} %")
 
     # 将 numpy.datetime64 转换为 datetime，然后格式化为字符串
