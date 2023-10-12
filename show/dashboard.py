@@ -1,6 +1,7 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # sys
+
 import os.path
 import time
 import pandas as pd
@@ -8,7 +9,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from run.ToDB import ConnectToDB
+from ..run.ToDB import ConnectToDB
 from __init__ import *
 
 
