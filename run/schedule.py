@@ -48,7 +48,7 @@ class Schedule:
             self.temp_status = 'cold'
         elif self.target_temp <= current_temp < self.target_temp + self.temp_range:
             self.temp_status = 'good'
-        elif self.target_temp >= self.temp_status + self.temp_range:
+        elif self.target_temp >= self.target_temp + self.temp_range:
             self.temp_status = 'hot'
         else:
             self.temp_status = 'error'
