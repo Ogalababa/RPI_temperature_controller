@@ -118,8 +118,8 @@ class Schedule:
                 self.sun_lamp()
                 self.night_lamp()
                 self.cooling_fan()
-                self.rtc.save_to_json(self.target_temp)
                 self.equipment_actions()
+                self.rtc.save_to_json(self.target_temp)
                 time.sleep(54)
         except KeyboardInterrupt:
             print("Controller stopped by user.")
