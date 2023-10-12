@@ -9,7 +9,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from ..run.ToDB import ConnectToDB
+from run.ToDB import ConnectToDB
 from __init__ import *
 
 
