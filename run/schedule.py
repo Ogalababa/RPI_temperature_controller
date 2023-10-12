@@ -10,8 +10,9 @@ from run.RTC import RTC
 class Schedule:
     def __init__(self):
         self.rtc = RTC()
-        self.target_temp = 32
+        self.target_day = 32
         self.target_night = 30
+        self.target_temp = 28
         self.temp_range = 2
         self.is_night = True
         self.temp_status = 'good'
@@ -39,15 +40,15 @@ class Schedule:
 
     def check_temp(self):
         if self.is_night:
-            target_temp = self.target_night
+            self.target_temp = self.target_night
         else:
-            target_temp = self.target_temp
+            self.target_temp = self.target_temp
         current_temp = self.rtc.get_control_temp()
-        if current_temp < target_temp - self.temp_range:
+        if current_temp < self.target_temp - self.temp_range:
             self.temp_status = 'cold'
-        elif target_temp <= current_temp < target_temp + self.temp_range:
+        elif self.target_temp <= current_temp < self.target_temp + self.temp_range:
             self.temp_status = 'good'
-        elif target_temp >= target_temp + self.temp_range:
+        elif self.target_temp >= self.temp_status + self.temp_range:
             self.temp_status = 'hot'
         else:
             self.temp_status = 'error'
@@ -106,5 +107,5 @@ class Schedule:
             self.uv_lamp()
             self.sun_lamp()
             self.night_lamp()
-            self.rtc.save_to_json()
+            self.rtc.save_to_json(self.target_temp)
             self.equipment_actions()

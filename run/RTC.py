@@ -113,7 +113,7 @@ class RTC:
         GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
 
-    def save_to_json(self):
+    def save_to_json(self, target_temp=None):
 
         data = {
             '温度': f"{self.control_temp} ℃",
@@ -129,4 +129,6 @@ class RTC:
             json.dump(data, json_file, indent=4)
         df_data.update(self.status)
         df_data.update({"时间": datetime.now()})
+        if target_temp:
+            df_data.update({"目标温度": target_temp})
         self.database.save_to_sql(df_data)
