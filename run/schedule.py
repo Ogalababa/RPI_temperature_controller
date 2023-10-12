@@ -14,6 +14,7 @@ class Schedule:
         self.target_temp = 28
         self.temp_range = 2
         self.is_night = True
+        self.is_uv = False
         self.temp_status = 'good'
         self.equipment_mapping = {
             '加温风扇': self.rtc.OFF,
@@ -35,6 +36,10 @@ class Schedule:
         if hour >= 20:
             self.is_night = False
         else:
+            if 16 <= hour < 20:
+                self.is_uv = True
+            else:
+                self.is_uv = False
             self.is_night = True
 
     def check_temp(self):
@@ -79,7 +84,7 @@ class Schedule:
 
     def uv_lamp(self):
         hour = datetime.now().hour
-        if 14 <= hour < 20:
+        if self.is_uv:
             self.change_mapping_status('UV 灯', "ON")
             self.change_mapping_status('加温风扇', "ON")
         else:
