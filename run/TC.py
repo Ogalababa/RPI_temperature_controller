@@ -68,21 +68,22 @@ class TC:
             print('temp is not none')
             print(current_temp)
             print(self.target_day)
-            print(current_temp < self.target_day - self.ranges)
+            print(current_temp < (self.target_day - self.ranges))
             print(f'too cold night: {current_temp < (self.target_day - self.ranges)}')
-            print(f'good night: {self.target_day <= current_temp <= (self.target_day + self.ranges)}')
+            print(f'good night: {self.target_day < current_temp < (self.target_day + self.ranges)}')
             print(f'too hot night: {current_temp > (self.target_day + self.ranges)}')
+
             if current_temp < (self.target_day - self.ranges):  # 冷
                 print('too cold day')
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_day <= current_temp <= (self.target_day + self.ranges):  # 目标温度
+            elif self.target_day < current_temp < (self.target_day + self.ranges):  # 目标温度
                 print('good day')
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
-            elif current_temp > self.target_day + self.ranges:  # 热
+            elif current_temp > (self.target_day + self.ranges):  # 热
                 print('too hot day')
                 self.change_mapping_status('降温风扇', 'ON')
                 self.change_mapping_status('日光灯', 'OFF')
@@ -104,11 +105,12 @@ class TC:
             print(f'too cold night: {current_temp < (self.target_night - self.ranges)}')
             print(f'good night: {self.target_night <= current_temp <= (self.target_night + self.ranges)}')
             print(f'too hot night: {current_temp > (self.target_night + self.ranges)}')
+
             if current_temp < (self.target_night - self.ranges):  # 冷
                 self.change_mapping_status('陶瓷灯', 'ON')
                 self.change_mapping_status('加温风扇', 'ON')
 
-            elif self.target_night <= current_temp <= (self.target_night + self.ranges):
+            elif self.target_night < current_temp < (self.target_night + self.ranges):
                 self.change_mapping_status('陶瓷灯', 'OFF')
                 self.change_mapping_status('加温风扇', 'OFF')
 
