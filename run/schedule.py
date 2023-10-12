@@ -53,7 +53,7 @@ class Schedule:
         print(f"Target Temp: {self.target_temp}°C")
         if current_temp < self.target_temp - self.temp_range:
             self.temp_status = 'cold'
-        elif self.target_temp - self.temp_range <= current_temp <= self.target_temp + self.temp_range:
+        elif self.target_temp <= current_temp <= self.target_temp + self.temp_range:
             self.temp_status = 'good'
         elif current_temp > self.target_temp + self.temp_range:
             self.temp_status = 'hot'
