@@ -55,6 +55,7 @@ class RTC:
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
             self.controller(equipment, self.OFF)
+        print(f'current_dir:{current_dir}')
 
     def initialize_pins(self):
         for pin_type, pins in self.PINS.items():
