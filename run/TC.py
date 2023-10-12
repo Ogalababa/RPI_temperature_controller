@@ -52,11 +52,9 @@ class TC:
         current_hour = datetime.now().hour
         if 10 <= current_hour < 16:
             self.change_mapping_status('UV 灯', 'ON')
-            self.change_mapping_status('加温风扇', 'ON')
 
         else:
             self.change_mapping_status('UV 灯', 'OFF')
-            self.change_mapping_status('加温风扇', 'OFF')
 
     def update_day_equipment(self, current_temp):
         print('in day')
