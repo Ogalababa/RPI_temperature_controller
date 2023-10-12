@@ -35,10 +35,11 @@ temperature = st.empty()
 
 # 添加一个滑块来让用户选择刷新间隔
 refresh_interval = st.sidebar.slider('选择刷新间隔（秒）', min_value=1, max_value=120, value=60)
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col9 = st.columns(4)
 metric1 = col1.empty()
 metric2 = col2.empty()
 metric3 = col3.empty()
+metric9 = col9.empty()
 # 创建另外四列
 col4, col5, col6, col7, col8 = st.columns(5)
 # 在每列中显示度量值
@@ -84,10 +85,12 @@ while True:
     # 创建三列
 
     # 在每列中显示度量值
-    metric1.metric("温度", f"{last_row['温度'].values[0]:.2f} °C")
+    metric1.metric("当前温度", f"{last_row['温度'].values[0]:.2f} °C")
+    metric9.metric("目标温度", f"{last_row['温度'].values[0]:.2f} °C")
     metric2.metric("湿度", f"{last_row['湿度'].values[0]:.2f} %")
+
     # 将 numpy.datetime64 转换为 datetime，然后格式化为字符串
-    last_update_time = pd.to_datetime(last_row['时间'].values[0]).strftime('%Y-%m-%d %H:%M:%S')
+    last_update_time = pd.to_datetime(last_row['时间'].values[0]).strftime('%H:%M:%S')
     metric3.metric("最后更新", last_update_time)
     metric4.metric("加温风扇", last_row['加温风扇'].values[0])
     metric5.metric("降温风扇", last_row['降温风扇'].values[0])

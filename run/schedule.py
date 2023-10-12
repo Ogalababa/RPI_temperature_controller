@@ -109,3 +109,4 @@ class Schedule:
             self.night_lamp()
             self.rtc.save_to_json(self.target_temp)
             self.equipment_actions()
+            time.sleep(54)
