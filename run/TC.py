@@ -155,5 +155,5 @@ class TC:
 
 
 if __name__ == '__main__':
-    temp_controller = TC(target_day=32, target_night=30, temp_range=2)
+    temp_controller = TC(target_day=32, target_night=30, temp_range=1)
     temp_controller.temperature_controller()
