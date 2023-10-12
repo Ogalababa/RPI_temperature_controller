@@ -9,10 +9,10 @@ from run.RTC import RTC
 class Schedule:
     def __init__(self):
         self.rtc = RTC()
-        self.target_day = 25
-        self.target_night = 25
+        self.target_day = 32
+        self.target_night = 30
         self.target_temp = 28
-        self.temp_range = 0
+        self.temp_range = 2
         self.is_night = True
         self.temp_status = 'good'
         self.equipment_mapping = {
