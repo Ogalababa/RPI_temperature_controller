@@ -51,7 +51,7 @@ class Schedule:
         current_temp = self.rtc.get_control_temp()
         print(f"Current Temp: {current_temp}°C")
         print(f"Target Temp: {self.target_temp}°C")
-        if current_temp < self.target_temp - self.temp_range:
+        if current_temp < self.target_temp:
             self.temp_status = 'cold'
         elif self.target_temp <= current_temp <= self.target_temp + self.temp_range:
             self.temp_status = 'good'
