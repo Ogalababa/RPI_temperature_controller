@@ -13,12 +13,6 @@ st.set_page_config(
     page_title="实时数据监控",  # 页面标题
     layout="wide",  # 页面布局为 wide mode
     initial_sidebar_state="collapsed",  # 初始时侧边栏是关闭的
-    theme={
-            "primary": "#E694FF",  # 主色调
-            "background": "#262730",  # 背景颜色
-            "text": "#FFFFFF",  # 文本颜色
-            "secondaryBackgroundColor": "#2F2F4F",  # 次要背景颜色
-        }
 )
 
 # 连接数据库
