@@ -3,7 +3,7 @@
 # sys
 import time
 from datetime import datetime
-from RTC import RTC
+from run.RTC import RTC
 
 
 class TC:
