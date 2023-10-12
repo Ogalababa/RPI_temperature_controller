@@ -35,7 +35,7 @@ temperature = st.empty()
 
 # 添加一个滑块来让用户选择刷新间隔
 refresh_interval = st.sidebar.slider('选择刷新间隔（秒）', min_value=1, max_value=120, value=60)
-col1, col2, col3, col9 = st.columns(4)
+col1, col9, col2, col3 = st.columns(4)
 metric1 = col1.empty()
 metric2 = col2.empty()
 metric3 = col3.empty()
