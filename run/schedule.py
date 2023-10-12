@@ -84,7 +84,7 @@ class Schedule:
 
     def uv_lamp(self):
         hour = datetime.now().hour
-        if self.is_uv:
+        if 16 <= hour < 20:
             self.change_mapping_status('UV 灯', "ON")
             self.change_mapping_status('加温风扇', "ON")
         else:
