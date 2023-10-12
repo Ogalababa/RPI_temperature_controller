@@ -43,9 +43,16 @@ while True:
 
     # 创建图形
     fig_hum = px.line(df, x="时间", y='湿度',
-                      hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'])
+                      hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
+                      markers=True)
+
     fig_temp = px.line(df, x="时间", y='温度',
-                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'])
+                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
+                       markers=True)
+
+    # 设置线条颜色
+    fig_hum.update_traces(line=dict(color='red'))
+    fig_temp.update_traces(line=dict(color='blue'))
 
     # 更新占位符中的内容
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
