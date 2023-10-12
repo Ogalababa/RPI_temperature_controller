@@ -130,11 +130,14 @@ class TC:
             if 20 <= current_hour:
                 self.change_mapping_status('日光灯', 'ON')
                 self.change_mapping_status('降温风扇', 'ON')
+                self.change_mapping_status('加温风扇', 'OFF')
                 self.change_mapping_status('日光灯', 'lock')
                 self.change_mapping_status('降温风扇', 'lock')
+                self.change_mapping_status('加温风扇', 'lock')
             else:
                 self.change_mapping_status('日光灯', 'unlock')
                 self.change_mapping_status('降温风扇', 'unlock')
+                self.change_mapping_status('加温风扇', 'unlock')
                 self.change_mapping_status('日光灯', 'OFF')
                 self.change_mapping_status('降温风扇', 'OFF')
 
