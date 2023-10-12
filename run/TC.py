@@ -106,7 +106,7 @@ class TC:
             print(float(self.target_night - self.ranges))
             print(float(self.target_night + self.ranges))
             print(f'too cold night: {current_temp < float(self.target_night - self.ranges)}')
-            print(f'good night: {self.target_night < current_temp < float(self.target_night + self.ranges)}')
+            print(f'good night: {self.target_night <= current_temp < float(self.target_night + self.ranges)}')
             print(f'too hot night: {current_temp > float(self.target_night + self.ranges)}')
 
             if current_temp < (self.target_night - self.ranges):  # 冷
