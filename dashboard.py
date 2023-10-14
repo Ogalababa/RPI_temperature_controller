@@ -30,6 +30,7 @@ st.set_page_config(
 db = ConnectToDB("Status", os.path.join(current_dir, 'data'))
 
 # 创建一个空的占位符
+both = st.empty()
 humility = st.empty()
 temperature = st.empty()
 
@@ -64,6 +65,9 @@ while True:
     df = db.read_from_sql()
 
     # 创建图形
+    both_temp = px.line(df, x="时间", y=['温度', '湿度'],
+                        hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
+                        markers=True)
     fig_hum = px.line(df, x="时间", y='湿度',
                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
                       markers=True)
@@ -77,6 +81,7 @@ while True:
     fig_temp.update_traces(line=dict(color='#687EFF'))
 
     # 更新占位符中的内容
+    both.plotly_chart(both_temp, theme='streamlit', use_container_width=True)
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
     temperature.plotly_chart(fig_temp, theme="streamlit", use_container_width=True)
 
