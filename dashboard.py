@@ -81,7 +81,7 @@ while True:
     fig_temp.update_traces(line=dict(color='#687EFF'))
 
     # 更新占位符中的内容
-    both.plotly_chart(both_temp, theme='streamlit', use_container_width=True)
+    both.plotly_chart(both_temp, use_container_width=True)
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
     temperature.plotly_chart(fig_temp, theme="streamlit", use_container_width=True)
 
