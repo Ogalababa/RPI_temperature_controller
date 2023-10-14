@@ -79,9 +79,13 @@ while True:
     # 设置线条颜色
     fig_hum.update_traces(line=dict(color='#FF8080'))
     fig_temp.update_traces(line=dict(color='#687EFF'))
+    # 为 '湿度' 折线设置颜色
+    both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(variable='湿度'))
+    # 为 '温度' 折线设置颜色
+    both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(variable='温度'))
 
     # 更新占位符中的内容
-    both.plotly_chart(both_temp, use_container_width=True)
+    both.plotly_chart(both_temp, theme="streamlit", use_container_width=True)
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
     temperature.plotly_chart(fig_temp, theme="streamlit", use_container_width=True)
 
