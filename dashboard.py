@@ -65,7 +65,7 @@ while True:
     df = db.read_from_sql()
 
     # 创建图形
-    both_temp = px.line(df[-1000:], x="时间", y=['湿度', '温度'],
+    both_temp = px.line(df[-2000:], x="时间", y=['湿度', '温度'],
                         hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
                         markers=True)
     fig_hum = px.line(df, x="时间", y='湿度',
