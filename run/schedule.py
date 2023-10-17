@@ -10,7 +10,7 @@ class Schedule:
     def __init__(self):
         self.rtc = RTC()
         self.target_day = 28
-        self.target_night = 30
+        self.target_night = 29
         self.target_temp = 27
         self.temp_range = 2
         self.is_night = True
