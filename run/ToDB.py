@@ -19,8 +19,8 @@ class ConnectToDB:
         data_df = pd.DataFrame({key: [value] for key, value in data_dict.items()})
         data_df.to_sql(self.db_name, self.conn, index=False, if_exists='append')
 
-    def read_from_sql(self):
-        df = pd.read_sql_table(self.db_name, self.conn)
+    def read_from_sql(self, table_name="Status"):
+        df = pd.read_sql_table(table_name, self.conn)
         return df
 
     def set_target_temp(self, tabel_name: str, data_dict: dict):
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # 创建一个游标对象
     cursor = conn.cursor()
     # 执行 SQL 查询以获取数据
-    cursor.execute('SELECT * FROM Status')
+    cursor.execute('SELECT * FROM target_temp')
     # 读取所有行数据
     rows = cursor.fetchall()
     column_names = [description[0] for description in cursor.description]
