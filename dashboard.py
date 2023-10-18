@@ -79,16 +79,17 @@ while True:
 
     # 设置线条颜色
     fig_hum.update_traces(line=dict(color='#FF8080'))
-    # fig_temp.update_traces(line=dict(color='#687EFF'))
+    fig_temp.update_traces(line=dict(color='#687EFF'), selector=dict(legendgroup='温度'))
+    fig_temp.update_traces(line=dict(color='#3eede7'), selector=dict(legendgroup='目标温度'))
     # # 为 '湿度' 折线设置颜色
     #
-    # both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(variable='湿度'))
-    # # 为 '温度' 折线设置颜色
-    # both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(variable='温度'))
+    both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(legendgroup='湿度'))
+    # 为 '温度' 折线设置颜色
+    both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(legendgroup='温度'))
     # 设置线条颜色
-    both_temp.update_traces(line=dict(color='red'), selector=dict(legendgroup='湿度'))
-    both_temp.update_traces(line=dict(color='blue'), selector=dict(legendgroup='温度'))
-    both_temp.update_traces(line=dict(color='green'), selector=dict(legendgroup='目标温度'))
+    both_temp.update_traces(line=dict(color='#3eede7'), selector=dict(legendgroup='目标温度'))
+
+
 
     # 更新占位符中的内容
     both.plotly_chart(both_temp, theme="streamlit", use_container_width=True)
