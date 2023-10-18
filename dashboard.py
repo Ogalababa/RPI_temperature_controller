@@ -80,7 +80,7 @@ while True:
     # 设置线条颜色
     fig_hum.update_traces(line=dict(color='#FF8080'))
     fig_temp.update_traces(line=dict(color='#687EFF'), selector=dict(legendgroup='温度'))
-    fig_temp.update_traces(line=dict(color='#3eede7'), selector=dict(legendgroup='目标温度'))
+    fig_temp.update_traces(line=dict(color='#CFBAF0'), selector=dict(legendgroup='目标温度'))
     # # 为 '湿度' 折线设置颜色
     #
     both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(legendgroup='湿度'))
