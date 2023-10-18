@@ -67,14 +67,14 @@ while True:
     # 创建图形
     both_temp = px.line(df[-1500:], x="时间", y=['湿度', '温度', '目标温度'],
                         hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
-                        markers=True, color_discrete_map={'温度': "#687EFF", '目标温度': "#21EDC1", '湿度':"FF8080"})
+                        markers=True)
     fig_hum = px.line(df, x="时间", y='湿度',
                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
                       markers=True)
 
     fig_temp = px.line(df, x="时间", y=['温度', '目标温度'],
                        hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
-                       markers=True, color_discrete_map={'温度': "#687EFF", '目标温度': "#21EDC1"}
+                       markers=True
                        )
 
     # 设置线条颜色
