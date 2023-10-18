@@ -30,7 +30,7 @@ class ConnectToDB:
 
 if __name__ == "__main__":
     # 连接到数据库
-    conn = sqlite3.connect(os.path.join(current_dir, "data", "Status.db"))
+    conn = sqlite3.connect(os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', "data", "Status.db"))
     # 创建一个游标对象
     cursor = conn.cursor()
     # 执行 SQL 查询以获取数据
