@@ -87,7 +87,7 @@ while True:
     # 为 '温度' 折线设置颜色
     both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(legendgroup='温度'))
     # 设置线条颜色
-    both_temp.update_traces(line=dict(color='#3eede7'), selector=dict(legendgroup='目标温度'))
+    both_temp.update_traces(line=dict(color='#CFBAF0'), selector=dict(legendgroup='目标温度'))
 
 
 
