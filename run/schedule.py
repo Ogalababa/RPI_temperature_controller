@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # coding:utf-8
-
+import os.path
 import time
 from datetime import datetime
 from run.RTC import RTC
+from run.ToDB import ConnectToDB
 
 
 class Schedule:
@@ -30,6 +31,12 @@ class Schedule:
             '日光灯': False,
             '陶瓷灯': False
         }
+
+    def get_target_temp(self):
+        db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
+        temp_df = db.read_from_sql(table_name="target_temp")
+        self.target_day = temp_df['日间温度'][0]
+        self.target_night = temp_df['夜间温度'][0]
 
     def day_night(self):
         hour = datetime.now().hour
@@ -112,6 +119,7 @@ class Schedule:
     def controller(self):
         try:
             while True:
+                self.get_target_temp()
                 self.day_night()
                 self.check_temp()
                 self.uv_lamp()
