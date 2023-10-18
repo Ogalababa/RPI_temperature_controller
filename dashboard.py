@@ -89,8 +89,6 @@ while True:
     # 设置线条颜色
     both_temp.update_traces(line=dict(color='#CFBAF0'), selector=dict(legendgroup='目标温度'))
 
-
-
     # 更新占位符中的内容
     both.plotly_chart(both_temp, theme="streamlit", use_container_width=True)
     humility.plotly_chart(fig_hum, theme="streamlit", use_container_width=True)
