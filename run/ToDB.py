@@ -23,6 +23,10 @@ class ConnectToDB:
         df = pd.read_sql_table(self.db_name, self.conn)
         return df
 
+    def set_target_temp(self, tabel_name: str, data_dict: dict):
+        data_df = pd.DataFrame({key: [value] for key, value in data_dict.items()})
+        data_df.to_sql(tabel_name, self.conn, index=False, if_exists='replace')
+
 
 if __name__ == "__main__":
     # 连接到数据库
@@ -43,3 +47,7 @@ if __name__ == "__main__":
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
+
+
+def set_target_temp():
+    return None

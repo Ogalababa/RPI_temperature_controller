@@ -36,6 +36,18 @@ temperature = st.empty()
 
 # 添加一个滑块来让用户选择刷新间隔
 refresh_interval = st.sidebar.slider('选择刷新间隔（秒）', min_value=1, max_value=120, value=60)
+# Save the input Day and Night target temperatures to the database.
+# 添加目标温度输入
+day_target_temp = st.sidebar.number_input('日间目标温度', min_value=20, max_value=32, value=28)
+night_target_temp = st.sidebar.number_input('夜间目标温度', min_value=20, max_value=32, value=29)
+
+if st.sidebar.button('保存'):
+    data_to_save = {
+        "日间温度":day_target_temp,
+        "夜间温度":night_target_temp
+    }
+    db.set_target_temp("target_temp",data_to_save)
+
 col1, col9, col2, col3 = st.columns(4)
 metric1 = col1.empty()
 metric2 = col2.empty()
