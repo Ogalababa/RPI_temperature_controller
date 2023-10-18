@@ -65,24 +65,26 @@ while True:
     df = db.read_from_sql()
 
     # 创建图形
-    both_temp = px.line(df[-1500:], x="时间", y=['湿度', '温度'],
+    both_temp = px.line(df[-1500:], x="时间", y=['湿度', '温度', '目标温度'],
                         hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
-                        markers=True)
+                        markers=True, color_discrete_map={'温度': "#687EFF", '目标温度': "#21EDC1", '湿度':"FF8080"})
     fig_hum = px.line(df, x="时间", y='湿度',
                       hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
                       markers=True)
 
-    fig_temp = px.line(df, x="时间", y='温度',
+    fig_temp = px.line(df, x="时间", y=['温度', '目标温度'],
                        hover_data=['湿度', '加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
-                       markers=True)
+                       markers=True, color_discrete_map={'温度': "#687EFF", '目标温度': "#21EDC1"}
+                       )
 
     # 设置线条颜色
-    fig_hum.update_traces(line=dict(color='#FF8080'))
-    fig_temp.update_traces(line=dict(color='#687EFF'))
-    # 为 '湿度' 折线设置颜色
-    both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(variable='湿度'))
-    # 为 '温度' 折线设置颜色
-    both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(variable='温度'))
+    # fig_hum.update_traces(line=dict(color='#FF8080'))
+    # fig_temp.update_traces(line=dict(color='#687EFF'))
+    # # 为 '湿度' 折线设置颜色
+    #
+    # both_temp.update_traces(line=dict(color='#FF8080'), selector=dict(variable='湿度'))
+    # # 为 '温度' 折线设置颜色
+    # both_temp.update_traces(line=dict(color='#687EFF'), selector=dict(variable='温度'))
 
     # 更新占位符中的内容
     both.plotly_chart(both_temp, theme="streamlit", use_container_width=True)
