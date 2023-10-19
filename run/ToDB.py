@@ -47,7 +47,3 @@ if __name__ == "__main__":
     # 关闭游标和数据库连接
     cursor.close()
     conn.close()
-
-
-def set_target_temp():
-    return None
