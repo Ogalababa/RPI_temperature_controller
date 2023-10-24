@@ -56,7 +56,6 @@ class RTC:
         for equipment in self.PINS["OUTPUT"].keys():
             self.controller(equipment, self.OFF)
 
-
     def initialize_pins(self):
         for pin_type, pins in self.PINS.items():
             mode = GPIO.IN if pin_type == "INPUT" else GPIO.OUT
