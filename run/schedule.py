@@ -18,12 +18,13 @@ class Schedule:
         self.is_night = True
         self.is_uv = False
         self.temp_status = 'good'
+        button_df = db.read_from_sql("button")
         self.equipment_mapping = {
-            '加温风扇': self.rtc.OFF,
-            '降温风扇': self.rtc.OFF,
-            'UV 灯': self.rtc.OFF,
-            '日光灯': self.rtc.OFF,
-            '陶瓷灯': self.rtc.OFF,
+            '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
+            '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
+            'UV 灯': self.rtc.ON if button_df['UV 灯'][0] else self.rtc.OFF,
+            '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
+            '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
         lock_df = db.read_from_sql('lock')
         self.lock = {
@@ -92,6 +93,10 @@ class Schedule:
     def equipment_actions(self):
         for equipment, status in self.equipment_mapping.items():
             self.equipment_action(equipment, status)
+        inverse_equipment_mapping = {
+            key: True if value == self.rtc.ON else False for key, value in self.equipment_mapping.items()
+        }
+        db.set_target_temp("button", inverse_equipment_mapping)
 
     def uv_lamp(self):
 
