@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # 创建一个游标对象
     cursor = conn.cursor()
     # 执行 SQL 查询以获取数据
-    cursor.execute('SELECT * FROM button')
+    cursor.execute('SELECT * FROM current status')
     # 读取所有行数据
     rows = cursor.fetchall()
     column_names = [description[0] for description in cursor.description]
