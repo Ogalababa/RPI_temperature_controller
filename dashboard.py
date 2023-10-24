@@ -4,6 +4,8 @@
 
 import os.path
 import time
+from datetime import datetime, timedelta
+
 import pandas as pd
 
 import plotly.express as px
@@ -84,6 +86,11 @@ st.sidebar.download_button(
 while True:
     # 从数据库中读取数据
     df = db.read_from_sql()
+    # 获取7天前的时间
+    seven_days_ago = datetime.now() - timedelta(days=7)
+
+    # 过滤出最近7天的数据
+    df = df[df['时间'] > seven_days_ago]
 
     # 创建图形
     both_temp = px.line(df[-1500:], x="时间", y=['湿度', '温度', '目标温度'],
