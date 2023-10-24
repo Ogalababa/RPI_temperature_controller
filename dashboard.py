@@ -43,14 +43,19 @@ day_temp = temp_df["日间温度"][0]
 night_temp = temp_df['夜间温度'][0]
 day_target_temp = st.sidebar.number_input('日间目标温度', min_value=20, max_value=32, value=day_temp)
 night_target_temp = st.sidebar.number_input('夜间目标温度', min_value=20, max_value=32, value=night_temp)
+uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=0, max_value=24, value=14)
+sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=24, value=20)
 
 if st.sidebar.button('保存'):
     data_to_save = {
         "日间温度": day_target_temp,
-        "夜间温度": night_target_temp
+        "夜间温度": night_target_temp,
+        "UV时间": uv_start_time,
+        "日光时间": sun_start_time
     }
     db.set_target_temp("target_temp", data_to_save)
     st.sidebar.success('目标温度已成功保存到数据库！')
+
 
 col1, col9, col2, col3 = st.columns(4)
 metric1 = col1.empty()

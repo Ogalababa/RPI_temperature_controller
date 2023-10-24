@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 # coding:utf-8
-import os.path
 import time
 from datetime import datetime
-from run.RTC import RTC
-from run.ToDB import ConnectToDB
+from objects import rtc_instance
+from objects import db_instance as db
 
 
 class Schedule:
     def __init__(self):
-        self.rtc = RTC()
+        self.rtc = rtc_instance
         self.target_day = 28
         self.target_night = 29
         self.target_temp = 27
@@ -33,7 +32,6 @@ class Schedule:
         }
 
     def get_target_temp(self):
-        db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
         temp_df = db.read_from_sql(table_name="target_temp")
         self.target_day = temp_df['日间温度'][0]
         self.target_night = temp_df['夜间温度'][0]
