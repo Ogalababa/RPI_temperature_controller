@@ -41,33 +41,23 @@ refresh_interval = st.sidebar.slider('选择刷新间隔（秒）', min_value=1,
 
 # Save the input Day and Night target temperatures to the database.
 # 首先从数据库读取当前的设备状态和锁定状态
-# button_status_df = db.read_from_sql(table_name="button")
-# lock_status_df = db.read_from_sql(table_name="lock")
+button_status_df = db.read_from_sql(table_name="button")
+lock_status_df = db.read_from_sql(table_name="lock")
 # 使用beta_columns为每个设备创建两列
 
 # 在第一列中使用toggle创建开关
-# heating_fan_button = sb1.toggle('加温风扇', value=button_status_df['加温风扇'][0])
-# cooling_fan_button = sb3.toggle('降温风扇', value=button_status_df['降温风扇'][0])
-# ceramic_lamp_button = sb5.toggle('陶瓷灯', value=button_status_df['陶瓷灯'][0])
-# uv_lamp_button = sb7.toggle('UV灯', value=button_status_df['UV灯'][0])
-# daylight_button = sb9.toggle('日光灯', value=button_status_df['日光灯'][0])
-# # 在第二列中使用checkbox创建锁定开关
-# heating_fan_lock = sb2.checkbox('加温风扇锁', value=lock_status_df['加温风扇'][0])
-# cooling_fan_lock = sb4.checkbox('降温风扇锁', value=lock_status_df['降温风扇'][0])
-# ceramic_lamp_lock = sb6.checkbox('陶瓷灯锁', value=lock_status_df['陶瓷灯'][0])
-# uv_lamp_lock = sb8.checkbox('UV灯锁', value=lock_status_df['UV灯'][0])
-# daylight_lock = sb10.checkbox('日光灯锁', value=lock_status_df['日光灯'][0])
-heating_fan_button = st.sidebar.toggle('加温风扇', value=False)
-cooling_fan_button = st.sidebar.toggle('降温风扇', value=False)
-ceramic_lamp_button = st.sidebar.toggle('陶瓷灯', value=False)
-uv_lamp_button = st.sidebar.toggle('UV灯', value=False)
-daylight_button = st.sidebar.toggle('日光灯', value=False)
+heating_fan_button = st.sidebar.toggle('加温风扇', value=button_status_df['加温风扇'][0])
+cooling_fan_button = st.sidebar.toggle('降温风扇', value=button_status_df['降温风扇'][0])
+ceramic_lamp_button = st.sidebar.toggle('陶瓷灯', value=button_status_df['陶瓷灯'][0])
+uv_lamp_button = st.sidebar.toggle('UV灯', value=button_status_df['UV灯'][0])
+daylight_button = st.sidebar.toggle('日光灯', value=button_status_df['日光灯'][0])
 # 在第二列中使用checkbox创建锁定开关
-heating_fan_lock = st.sidebar.checkbox('加温风扇锁', value=False)
-cooling_fan_lock = st.sidebar.checkbox('降温风扇锁', value=False)
-ceramic_lamp_lock = st.sidebar.checkbox('陶瓷灯锁', value=False)
-uv_lamp_lock = st.sidebar.checkbox('UV灯锁', value=False)
-daylight_lock = st.sidebar.checkbox('日光灯锁', value=False)
+heating_fan_lock = st.sidebar.checkbox('加温风扇锁', value=lock_status_df['加温风扇'][0])
+cooling_fan_lock = st.sidebar.checkbox('降温风扇锁', value=lock_status_df['降温风扇'][0])
+ceramic_lamp_lock = st.sidebar.checkbox('陶瓷灯锁', value=lock_status_df['陶瓷灯'][0])
+uv_lamp_lock = st.sidebar.checkbox('UV灯锁', value=lock_status_df['UV灯'][0])
+daylight_lock = st.sidebar.checkbox('日光灯锁', value=lock_status_df['日光灯'][0])
+
 button_data_to_update = {
     "加温风扇": heating_fan_button,
     "降温风扇": cooling_fan_button,
