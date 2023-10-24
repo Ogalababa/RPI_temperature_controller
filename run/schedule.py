@@ -25,12 +25,13 @@ class Schedule:
             '日光灯': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
         }
+        lock_df = db.read_from_sql('lock')
         self.lock = {
-            '加温风扇': False,
-            '降温风扇': False,
-            'UV 灯': False,
-            '日光灯': False,
-            '陶瓷灯': False
+            '加温风扇': lock_df['加温风扇'][0],
+            '降温风扇': lock_df['降温风扇'][0],
+            'UV 灯': lock_df['UV 灯'][0],
+            '日光灯': lock_df['日光灯'][0],
+            '陶瓷灯': lock_df['陶瓷灯'][0]
         }
 
     def get_target_temp(self):
