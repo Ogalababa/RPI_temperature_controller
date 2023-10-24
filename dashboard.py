@@ -49,13 +49,13 @@ lock_status_df = db.read_from_sql(table_name="lock")
 heating_fan_button = st.sidebar.toggle('加温风扇', value=button_status_df['加温风扇'][0])
 cooling_fan_button = st.sidebar.toggle('降温风扇', value=button_status_df['降温风扇'][0])
 ceramic_lamp_button = st.sidebar.toggle('陶瓷灯', value=button_status_df['陶瓷灯'][0])
-uv_lamp_button = st.sidebar.toggle('UV灯', value=button_status_df['UV 灯'][0])
+uv_lamp_button = st.sidebar.toggle('UV 灯', value=button_status_df['UV 灯'][0])
 daylight_button = st.sidebar.toggle('日光灯', value=button_status_df['日光灯'][0])
 # 在第二列中使用checkbox创建锁定开关
 heating_fan_lock = st.sidebar.checkbox('加温风扇锁', value=lock_status_df['加温风扇'][0])
 cooling_fan_lock = st.sidebar.checkbox('降温风扇锁', value=lock_status_df['降温风扇'][0])
 ceramic_lamp_lock = st.sidebar.checkbox('陶瓷灯锁', value=lock_status_df['陶瓷灯'][0])
-uv_lamp_lock = st.sidebar.checkbox('UV灯锁', value=lock_status_df['UV 灯'][0])
+uv_lamp_lock = st.sidebar.checkbox('UV 灯锁', value=lock_status_df['UV 灯'][0])
 daylight_lock = st.sidebar.checkbox('日光灯锁', value=lock_status_df['日光灯'][0])
 
 button_data_to_update = {
