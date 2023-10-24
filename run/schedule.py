@@ -10,40 +10,46 @@ from run.ToDB import ConnectToDB
 class Schedule:
     def __init__(self):
         self.rtc = RTC()
+        self.db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
         self.target_day = 28
         self.target_night = 29
         self.target_temp = 27
         self.temp_range = 2
+        self.uv_time = 14
+        self.sun_time = 20
         self.is_night = True
         self.is_uv = False
         self.temp_status = 'good'
+        button_df = self.db.read_from_sql("button")
         self.equipment_mapping = {
-            '加温风扇': self.rtc.OFF,
-            '降温风扇': self.rtc.OFF,
-            'UV 灯': self.rtc.OFF,
-            '日光灯': self.rtc.OFF,
-            '陶瓷灯': self.rtc.OFF,
+            '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
+            '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
+            'UV 灯': self.rtc.ON if button_df['UV 灯'][0] else self.rtc.OFF,
+            '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
+            '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
+        lock_df = self.db.read_from_sql('lock')
         self.lock = {
-            '加温风扇': False,
-            '降温风扇': False,
-            'UV 灯': False,
-            '日光灯': False,
-            '陶瓷灯': False
+            '加温风扇': lock_df['加温风扇'][0],
+            '降温风扇': lock_df['降温风扇'][0],
+            'UV 灯': lock_df['UV 灯'][0],
+            '日光灯': lock_df['日光灯'][0],
+            '陶瓷灯': lock_df['陶瓷灯'][0]
         }
 
     def get_target_temp(self):
-        db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
-        temp_df = db.read_from_sql(table_name="target_temp")
+        temp_df = self.db.read_from_sql(table_name="target_temp")
         self.target_day = temp_df['日间温度'][0]
         self.target_night = temp_df['夜间温度'][0]
+        self.uv_time = temp_df['UV时间'][0]
+        self.sun_time = temp_df['日光时间'][0]
 
     def day_night(self):
         hour = datetime.now().hour
-        if hour >= 20:
+        if hour >= self.sun_time:
             self.is_night = False
         else:
-            if 16 <= hour < 20:
+            if self.uv_time <= hour < self.sun_time:
                 self.is_uv = True
             else:
                 self.is_uv = False
@@ -88,10 +94,13 @@ class Schedule:
     def equipment_actions(self):
         for equipment, status in self.equipment_mapping.items():
             self.equipment_action(equipment, status)
+        inverse_equipment_mapping = {
+            key: True if value == self.rtc.ON else False for key, value in self.equipment_mapping.items()
+        }
+        self.db.set_target_temp("button", inverse_equipment_mapping)
 
     def uv_lamp(self):
-        hour = datetime.now().hour
-        if 16 <= hour < 20:
+        if self.is_uv:
             self.change_mapping_status('UV 灯', "ON")
             self.change_mapping_status('加温风扇', "ON")
         else:
