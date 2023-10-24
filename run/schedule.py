@@ -57,7 +57,8 @@ class Schedule:
         else:
             self.target_temp = self.target_day
 
-        current_temp = self.rtc.get_control_temp()
+        current_temp_df = db.read_from_sql("current status")
+        current_temp = current_temp_df["current temp"][0]
         print(f"Current Temp: {current_temp}°C")
         print(f"Target Temp: {self.target_temp}°C")
         if current_temp < self.target_temp:
