@@ -58,23 +58,8 @@ ceramic_lamp_lock = st.sidebar.checkbox('陶瓷灯锁', value=lock_status_df['�
 uv_lamp_lock = st.sidebar.checkbox('UV 灯锁', value=lock_status_df['UV 灯'][0])
 daylight_lock = st.sidebar.checkbox('日光灯锁', value=lock_status_df['日光灯'][0])
 
-button_data_to_update = {
-    "加温风扇": heating_fan_button,
-    "降温风扇": cooling_fan_button,
-    "陶瓷灯": ceramic_lamp_button,
-    "UV 灯": uv_lamp_button,
-    "日光灯": daylight_button,
-}
-lock_data_to_update = {
-    "加温风扇": heating_fan_lock,
-    "降温风扇": cooling_fan_lock,
-    "陶瓷灯": ceramic_lamp_lock,
-    "UV 灯": uv_lamp_lock,
-    "日光灯": daylight_lock,
-}
-# 更新数据库
-db.set_target_temp("button", button_data_to_update)
-db.set_target_temp("lock", lock_data_to_update)
+
+
 # 添加目标温度输入
 temp_df = db.read_from_sql(table_name="target_temp")
 day_temp = temp_df["日间温度"][0]
@@ -85,12 +70,29 @@ uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=0, max_va
 sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=24, value=20)
 
 if st.sidebar.button('保存'):
+    button_data_to_update = {
+        "加温风扇": heating_fan_button,
+        "降温风扇": cooling_fan_button,
+        "陶瓷灯": ceramic_lamp_button,
+        "UV 灯": uv_lamp_button,
+        "日光灯": daylight_button,
+    }
+    lock_data_to_update = {
+        "加温风扇": heating_fan_lock,
+        "降温风扇": cooling_fan_lock,
+        "陶瓷灯": ceramic_lamp_lock,
+        "UV 灯": uv_lamp_lock,
+        "日光灯": daylight_lock,
+    }
     data_to_save = {
         "日间温度": day_target_temp,
         "夜间温度": night_target_temp,
         "UV时间": uv_start_time,
         "日光时间": sun_start_time
     }
+    # 更新数据库
+    db.set_target_temp("button", button_data_to_update)
+    db.set_target_temp("lock", lock_data_to_update)
     db.set_target_temp("target_temp", data_to_save)
     st.sidebar.success('目标温度已成功保存到数据库！')
 
