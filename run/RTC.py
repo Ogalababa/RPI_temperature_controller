@@ -50,7 +50,7 @@ class RTC:
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["控制室风扇"] = "N/A"
         self.status["加湿器"] = "N/A"
-        self.database = ConnectToDB("Status", os.path.join(current_dir, "data"))
+        self.database = ConnectToDB("Status", os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', "data"))
 
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
