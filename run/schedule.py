@@ -49,11 +49,12 @@ class Schedule:
         if hour >= self.sun_time:
             self.is_night = False
         else:
-            if self.uv_time <= hour < self.sun_time:
-                self.is_uv = True
-            else:
-                self.is_uv = False
             self.is_night = True
+        if self.uv_time <= hour < self.sun_time:
+            self.is_uv = True
+        else:
+            self.is_uv = False
+
 
     def check_temp(self):
         if self.is_night:
