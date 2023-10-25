@@ -28,10 +28,7 @@ class Schedule:
             '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
             '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
-        print("原始状态")
-        for key, value in self.equipment_mapping.items():
-            print(key + ' : ' + value)
-        print('===========')
+
         lock_df = self.db.read_from_sql('lock')
         self.lock = {
             '加温风扇': lock_df['加温风扇'][0],
@@ -58,6 +55,12 @@ class Schedule:
             '日光灯': lock_df['日光灯'][0],
             '陶瓷灯': lock_df['陶瓷灯'][0]
         }
+        print("原始状态")
+        for key, value in self.equipment_mapping.items():
+            print(key + ' : ' + value)
+        for key, value in self.lock.items():
+            print(key + ' : ' + value)
+        print('===========')
 
     def get_target_temp(self):
         temp_df = self.db.read_from_sql(table_name="target_temp")
