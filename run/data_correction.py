@@ -12,6 +12,7 @@ df = pd.read_sql_table("Status", conn)
 # 1. 加载数据
 data = df.copy()
 data['时间'] = pd.to_datetime(data['时间'])
+data.drop(columns='level_0', inplace=True)
 
 # 2. 使用z分数方法检测异常值
 data['温度_zscore'] = zscore(data['温度'])
