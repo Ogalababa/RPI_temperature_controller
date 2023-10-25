@@ -42,5 +42,8 @@ except:
     pass
 
 data.to_sql("Status", conn, if_exists="replace", index=False)
+df2 = pd.read_sql_table("Status", conn)
+df2.drop(columns='index', inplace=True)
+df2.to_sql("Status", conn, if_exists="replace", index=False)
 
 conn.close()
