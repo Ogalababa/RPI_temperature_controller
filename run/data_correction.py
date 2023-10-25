@@ -22,6 +22,5 @@ for column in ['温度', '湿度']:
     corrected_df.loc[outliers, column] = (df[column].shift()[outliers] + df[column].shift(-1)[outliers]) / 2
 
 corrected_df.to_sql("Status", conn, if_exists="replace")
-df.to_sql("Status_backup", conn, if_exists="replace")
 
 conn.close()

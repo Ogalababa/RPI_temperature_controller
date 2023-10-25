@@ -93,8 +93,6 @@ class Schedule:
             self.rtc.controller(equipment, desired_status)
 
     def equipment_actions(self):
-        for key, value in self.equipment_mapping.items():
-            print(f'{key}: {value}')
         for equipment, status in self.equipment_mapping.items():
             self.equipment_action(equipment, status)
         inverse_equipment_mapping = {
