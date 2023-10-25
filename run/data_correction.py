@@ -27,7 +27,7 @@ anomalies = data[(data['温度_anomaly']) | (data['湿度_anomaly'])]
 def replace_with_neighbors_average(series, anomalies_index):
     for idx in anomalies_index:
         if 0 < idx < len(series) - 1:
-            series[idx] = (series[idx - 1] + series[idx + 1]) / 2
+            series.loc[idx] = (series.loc[idx - 1] + series.loc[idx + 1]) / 2
     return series
 
 
