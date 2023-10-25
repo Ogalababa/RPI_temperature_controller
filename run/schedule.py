@@ -30,9 +30,26 @@ class Schedule:
         }
         print("原始状态")
         for key, value in self.equipment_mapping.items():
-
-            print(key+' : ' + value)
+            print(key + ' : ' + value)
         print('===========')
+        lock_df = self.db.read_from_sql('lock')
+        self.lock = {
+            '加温风扇': lock_df['加温风扇'][0],
+            '降温风扇': lock_df['降温风扇'][0],
+            'UV 灯': lock_df['UV 灯'][0],
+            '日光灯': lock_df['日光灯'][0],
+            '陶瓷灯': lock_df['陶瓷灯'][0]
+        }
+
+    def update_button_status(self):
+        button_df = self.db.read_from_sql("button")
+        self.equipment_mapping = {
+            '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
+            '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
+            'UV 灯': self.rtc.ON if button_df['UV 灯'][0] else self.rtc.OFF,
+            '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
+            '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
+        }
         lock_df = self.db.read_from_sql('lock')
         self.lock = {
             '加温风扇': lock_df['加温风扇'][0],
@@ -133,6 +150,7 @@ class Schedule:
     def controller(self):
         try:
             while True:
+                self.update_button_status()
                 self.get_target_temp()
                 self.day_night()
                 self.check_temp()
