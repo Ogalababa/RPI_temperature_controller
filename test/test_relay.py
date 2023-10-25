@@ -2,7 +2,6 @@
 # coding:utf-8
 # sys
 import time
-
 from run.RTC import RTC
 from run.RTC import cleanup
 

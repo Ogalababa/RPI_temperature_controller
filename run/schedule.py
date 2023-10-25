@@ -1,14 +1,20 @@
 #!/usr/bin/python3
 # coding:utf-8
+import os.path
 import time
 from datetime import datetime
-from objects import rtc_instance
-from objects import db_instance as db
-
-
+from run.RTC import RTC
+from run.ToDB import ConnectToDB
+import logging
+# 设置logging基础配置
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler()])  # 输出到控制台
+logger = logging.getLogger(__name__)
 class Schedule:
     def __init__(self):
-        self.rtc = rtc_instance
+        self.rtc = RTC()
+        self.db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
         self.target_day = 28
         self.target_night = 29
         self.target_temp = 27
@@ -18,7 +24,7 @@ class Schedule:
         self.is_night = True
         self.is_uv = False
         self.temp_status = 'good'
-        button_df = db.read_from_sql("button")
+        button_df = self.db.read_from_sql("button")
         self.equipment_mapping = {
             '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
             '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
@@ -26,7 +32,8 @@ class Schedule:
             '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
             '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
-        lock_df = db.read_from_sql('lock')
+
+        lock_df = self.db.read_from_sql('lock')
         self.lock = {
             '加温风扇': lock_df['加温风扇'][0],
             '降温风扇': lock_df['降温风扇'][0],
@@ -35,8 +42,32 @@ class Schedule:
             '陶瓷灯': lock_df['陶瓷灯'][0]
         }
 
+    def update_button_status(self):
+        button_df = self.db.read_from_sql("button")
+        self.equipment_mapping = {
+            '加温风扇': self.rtc.OFF,
+            '降温风扇': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
+            '日光灯': self.rtc.OFF,
+            '陶瓷灯': self.rtc.OFF,
+        }
+        lock_df = self.db.read_from_sql('lock')
+        self.lock = {
+            '加温风扇': False,
+            '降温风扇': False,
+            'UV 灯': False,
+            '日光灯': False,
+            '陶瓷灯': False
+        }
+        logger.info("原始状态")
+        for key, value in self.equipment_mapping.items():
+            logger.info(key + ' : ' + value)
+        for key, value in self.lock.items():
+            logger.info(f'{key} : {value}')
+        logger.info('===========')
+
     def get_target_temp(self):
-        temp_df = db.read_from_sql(table_name="target_temp")
+        temp_df = self.db.read_from_sql(table_name="target_temp")
         self.target_day = temp_df['日间温度'][0]
         self.target_night = temp_df['夜间温度'][0]
         self.uv_time = temp_df['UV时间'][0]
@@ -47,11 +78,11 @@ class Schedule:
         if hour >= self.sun_time:
             self.is_night = False
         else:
-            if self.uv_time <= hour < self.sun_time:
-                self.is_uv = True
-            else:
-                self.is_uv = False
             self.is_night = True
+        if self.uv_time <= hour < self.sun_time:
+            self.is_uv = True
+        else:
+            self.is_uv = False
 
     def check_temp(self):
         if self.is_night:
@@ -59,10 +90,9 @@ class Schedule:
         else:
             self.target_temp = self.target_day
 
-        current_temp_df = db.read_from_sql("current status")
-        current_temp = current_temp_df["current temp"][0]
-        print(f"Current Temp: {current_temp}°C")
-        print(f"Target Temp: {self.target_temp}°C")
+        current_temp = self.rtc.get_control_temp()
+        logger.info(f"Current Temp: {current_temp}°C")
+        logger.info(f"Target Temp: {self.target_temp}°C")
         if current_temp < self.target_temp:
             self.temp_status = 'cold'
         elif self.target_temp <= current_temp < self.target_temp + self.temp_range:
@@ -71,7 +101,7 @@ class Schedule:
             self.temp_status = 'hot'
         else:
             self.temp_status = 'error'
-        print(f"Temperature Status: {self.temp_status}")
+        logger.info(f"Temperature Status: {self.temp_status}")
 
     def change_mapping_status(self, equipment, status):
         status_dict = {'lock': True, 'unlock': False, 'ON': self.rtc.ON, 'OFF': self.rtc.OFF}
@@ -82,7 +112,7 @@ class Schedule:
             if equipment in self.lock and status in ('lock', 'unlock'):
                 self.lock[equipment] = status_dict.get(status)
         else:
-            print(f"Invalid status: {status}")
+            logger.info(f"Invalid status: {status}")
 
     def equipment_action(self, equipment, desired_status):
         current_status = self.rtc.status.get(equipment, self.rtc.OFF)
@@ -96,10 +126,9 @@ class Schedule:
         inverse_equipment_mapping = {
             key: True if value == self.rtc.ON else False for key, value in self.equipment_mapping.items()
         }
-        db.set_target_temp("button", inverse_equipment_mapping)
+        self.db.set_target_temp("button", inverse_equipment_mapping)
 
     def uv_lamp(self):
-
         if self.is_uv:
             self.change_mapping_status('UV 灯', "ON")
             self.change_mapping_status('加温风扇', "ON")
@@ -128,6 +157,7 @@ class Schedule:
     def controller(self):
         try:
             while True:
+                self.update_button_status()
                 self.get_target_temp()
                 self.day_night()
                 self.check_temp()
@@ -139,7 +169,7 @@ class Schedule:
                 self.rtc.save_to_json(self.target_temp)
                 time.sleep(54)
         except KeyboardInterrupt:
-            print("Controller stopped by user.")
+            logger.info("Controller stopped by user.")
 
 
 if __name__ == "__main__":
