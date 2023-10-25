@@ -11,6 +11,8 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
+
+
 class Schedule:
     def __init__(self):
         self.rtc = RTC()
@@ -59,12 +61,6 @@ class Schedule:
             '日光灯': False,
             '陶瓷灯': False
         }
-        logger.info("原始状态")
-        for key, value in self.equipment_mapping.items():
-            logger.info(key + ' : ' + value)
-        for key, value in self.lock.items():
-            logger.info(f'{key} : {value}')
-        logger.info('===========')
 
     def get_target_temp(self):
         temp_df = self.db.read_from_sql(table_name="target_temp")
