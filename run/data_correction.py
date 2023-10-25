@@ -26,7 +26,7 @@ anomalies = data[(data['温度_anomaly']) | (data['湿度_anomaly'])]
 # 3. 使用前后数据的平均值替换异常值
 def replace_with_neighbors_average(series, anomalies_index):
     for idx in anomalies_index:
-        if idx > 0 and idx < len(series) - 1:
+        if 0 < idx < len(series) - 1:
             series[idx] = (series[idx - 1] + series[idx + 1]) / 2
     return series
 
