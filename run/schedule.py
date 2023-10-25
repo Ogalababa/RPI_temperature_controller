@@ -59,7 +59,7 @@ class Schedule:
         for key, value in self.equipment_mapping.items():
             print(key + ' : ' + value)
         for key, value in self.lock.items():
-            print(key + ' : ' + value)
+            print(f'{key} : {value}')
         print('===========')
 
     def get_target_temp(self):
