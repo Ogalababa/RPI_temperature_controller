@@ -28,6 +28,9 @@ class Schedule:
             '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
             '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
+        for key, value in self.equipment_mapping.items():
+            print(key+' : ' + value)
+
         lock_df = self.db.read_from_sql('lock')
         self.lock = {
             '加温风扇': lock_df['加温风扇'][0],
