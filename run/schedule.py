@@ -29,6 +29,7 @@ class Schedule:
             '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
         }
         for key, value in self.equipment_mapping.items():
+            print("原始状态")
             print(key+' : ' + value)
 
         lock_df = self.db.read_from_sql('lock')
