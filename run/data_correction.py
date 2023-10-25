@@ -14,9 +14,9 @@ corrected_df = df.copy()
 # 遍历每个测量列
 for column in ['温度', '湿度']:
     # 计算每个点与其周围点的平均值的差异
-    diff = df[column] - df[column].rolling(window=5, center=True).mean()
+    diff = df[column] - df[column].rolling(window=3, center=True).mean()
     # 如果差异大于某个阈值（例如，固定阈值5或基于标准偏差的阈值），则修正该点
-    threshold = 5  # 或者 threshold = 3 * diff.std()
+    threshold = 3 * diff.std()
     outliers = diff.abs() > threshold
     # 用前后点的平均值替换异常值
     corrected_df.loc[outliers, column] = (df[column].shift()[outliers] + df[column].shift(-1)[outliers]) / 2
