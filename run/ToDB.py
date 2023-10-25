@@ -3,10 +3,8 @@
 # sys
 import os.path
 import sqlite3
-
 import pandas as pd
 from sqlalchemy import create_engine
-from __init__ import *
 
 
 class ConnectToDB:

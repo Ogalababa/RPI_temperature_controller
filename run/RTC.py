@@ -5,12 +5,17 @@ import json
 import os
 import time
 from datetime import datetime
-
 import Adafruit_DHT as DHT
 import RPi.GPIO as GPIO
-
 from run.ToDB import ConnectToDB
 from __init__ import *
+import logging
+
+# 设置logging基础配置
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler()])  # 输出到控制台
+logger = logging.getLogger(__name__)
 
 
 def cleanup():
@@ -55,7 +60,7 @@ class RTC:
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
             self.controller(equipment, self.OFF)
-        print(f'current_dir:{current_dir}')
+        logger.info(f'current_dir:{current_dir}')
 
     def initialize_pins(self):
         for pin_type, pins in self.PINS.items():
@@ -92,7 +97,7 @@ class RTC:
                 temp_list.append(temp)
                 hum_list.append(hum)
             else:
-                print("sensor field")
+                logger.info("sensor field")
                 self.control_temp = 0
                 self.control_hum = 0
                 time.sleep(5)
@@ -109,7 +114,7 @@ class RTC:
 
         set_to = GPIO.LOW if status == self.ON else GPIO.HIGH
         # set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
-        print(f"{equipment} {status}")
+        logger.info(f"{equipment} {status}")
         GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
 
