@@ -34,7 +34,7 @@ def replace_with_neighbors_average(series, anomalies_index):
 
 data['温度'] = replace_with_neighbors_average(data['温度'], anomalies[anomalies['温度_anomaly']].index)
 data['湿度'] = replace_with_neighbors_average(data['湿度'], anomalies[anomalies['湿度_anomaly']].index)
-data.drop(columns=['level_0','index','温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
+data.drop(columns=['温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
 
 data.to_sql("Status", conn, if_exists="replace")
 
