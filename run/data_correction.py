@@ -7,7 +7,7 @@ import os
 from sqlalchemy import create_engine
 
 
-conn = create_engine(f'sqlite:///{os.path.join(current_dir, "data", "Status.db")}').connect()
+conn = create_engine(f'sqlite:///{os.path.join("/", "home", "jiawei", "RPI_temperature_controller", "data", "Status.db")}').connect()
 df = pd.read_sql_table("Status", conn)
 corrected_df = df.copy()
 
