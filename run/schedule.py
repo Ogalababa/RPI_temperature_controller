@@ -55,7 +55,6 @@ class Schedule:
         else:
             self.is_uv = False
 
-
     def check_temp(self):
         if self.is_night:
             self.target_temp = self.target_night
