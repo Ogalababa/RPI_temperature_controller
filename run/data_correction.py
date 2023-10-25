@@ -13,7 +13,7 @@ df = pd.read_sql_table("Status", conn)
 data = df.copy()
 data['时间'] = pd.to_datetime(data['时间'])
 try:
-    data.drop(columns=['level_0','index','温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
+    data.drop(columns=['index','温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
 except:
     pass
 # 2. 使用z分数方法检测异常值
@@ -41,6 +41,6 @@ try:
 except:
     pass
 
-data.to_sql("Status", conn, if_exists="replace")
+data.to_sql("Status", conn, if_exists="replace", index=False)
 
 conn.close()
