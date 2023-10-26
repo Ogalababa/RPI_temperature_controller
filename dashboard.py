@@ -62,8 +62,8 @@ daylight_lock = st.sidebar.checkbox('日光灯锁', value=lock_status_df['日光
 temp_df = db.read_from_sql(table_name="target_temp")
 day_target_temp = st.sidebar.number_input('日间目标温度', min_value=20, max_value=32, value=temp_df["日间温度"][0])
 night_target_temp = st.sidebar.number_input('夜间目标温度', min_value=20, max_value=32, value=temp_df['夜间温度'][0])
-sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=24, value=temp_df['日光时间'][0])
-uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=0, max_value=24, value=temp_df['UV时间'][0])
+sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=temp_df['UV时间'][0], value=temp_df['日光时间'][0])
+uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=temp_df['日光时间'][0], max_value=24, value=temp_df['UV时间'][0])
 
 if st.sidebar.button('保存'):
     button_data_to_update = {
