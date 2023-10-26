@@ -71,11 +71,11 @@ class Schedule:
 
     def day_night(self):
         hour = datetime.now().hour
-        if hour >= self.sun_time:
+        if self.sun_time >= hour >= self.uv_time:
             self.is_night = False
         else:
             self.is_night = True
-        if self.uv_time <= hour < self.sun_time:
+        if hour >= self.uv_time:
             self.is_uv = True
         else:
             self.is_uv = False
