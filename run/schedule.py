@@ -71,14 +71,19 @@ class Schedule:
 
     def day_night(self):
         hour = datetime.now().hour
-        if self.sun_time >= hour >= self.uv_time:
+        if self.sun_time <= hour < self.uv_time:
             self.is_night = False
+            logger.info(f"Day time activate")
+
         else:
             self.is_night = True
+            logger.info(f"Night time activate")
         if hour >= self.uv_time:
             self.is_uv = True
+            logger.info(f"UV time activate")
         else:
             self.is_uv = False
+            logger.info(f"UV time deactivate")
 
     def check_temp(self):
         if self.is_night:
