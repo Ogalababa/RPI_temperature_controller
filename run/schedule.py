@@ -80,7 +80,7 @@ class Schedule:
         else:
             self.is_night = True
             logger.info(f"Night time activate")
-        if self.uv_time <= hour <= self.night_time:
+        if self.uv_time <= hour < self.night_time:
             self.is_uv = True
             logger.info(f"UV time activate")
         else:
