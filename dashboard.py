@@ -64,6 +64,7 @@ day_target_temp = st.sidebar.number_input('日间目标温度', min_value=20, ma
 night_target_temp = st.sidebar.number_input('夜间目标温度', min_value=20, max_value=32, value=temp_df['夜间温度'][0])
 sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=temp_df['UV时间'][0], value=temp_df['日光时间'][0])
 uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=temp_df['日光时间'][0], max_value=24, value=temp_df['UV时间'][0])
+night_start_time = st.sidebar.number_input('休息时间', min_value=temp_df['UV时间'][0], max_value=24, value=24)
 
 if st.sidebar.button('保存'):
     button_data_to_update = {
@@ -84,7 +85,8 @@ if st.sidebar.button('保存'):
         "日间温度": day_target_temp,
         "夜间温度": night_target_temp,
         "UV时间": uv_start_time,
-        "日光时间": sun_start_time
+        "日光时间": sun_start_time,
+        "夜光时间": night_start_time
     }
     # 更新数据库
     db.set_target_temp("button", button_data_to_update)

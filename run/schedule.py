@@ -23,6 +23,7 @@ class Schedule:
         self.temp_range = 2
         self.uv_time = 14
         self.sun_time = 20
+        self.night_time = 24
         self.is_night = True
         self.is_uv = False
         self.temp_status = 'good'
@@ -68,6 +69,7 @@ class Schedule:
         self.target_night = temp_df['夜间温度'][0]
         self.uv_time = temp_df['UV时间'][0]
         self.sun_time = temp_df['日光时间'][0]
+        self.night_time = temp_df['夜灯时间'][0]
 
     def day_night(self):
         hour = datetime.now().hour
@@ -78,7 +80,7 @@ class Schedule:
         else:
             self.is_night = True
             logger.info(f"Night time activate")
-        if hour >= self.uv_time:
+        if self.uv_time <= hour <= self.night_time:
             self.is_uv = True
             logger.info(f"UV time activate")
         else:
