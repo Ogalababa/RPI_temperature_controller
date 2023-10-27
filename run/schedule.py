@@ -85,7 +85,6 @@ class Schedule:
             logger.info(f"UV time activate")
         else:
             self.is_uv = False
-            logger.info(f"UV time deactivate")
 
     def check_temp(self):
         if self.is_night:
