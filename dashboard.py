@@ -64,7 +64,7 @@ day_target_temp = st.sidebar.number_input('日间目标温度', min_value=20, ma
 night_target_temp = st.sidebar.number_input('夜间目标温度', min_value=20, max_value=32, value=temp_df['夜间温度'][0])
 sun_start_time = st.sidebar.number_input('日光灯开始时间', min_value=0, max_value=temp_df['UV时间'][0], value=temp_df['日光时间'][0])
 uv_start_time = st.sidebar.number_input('UV灯开始时间', min_value=temp_df['日光时间'][0], max_value=24, value=temp_df['UV时间'][0])
-night_start_time = st.sidebar.number_input('休息时间', min_value=temp_df['UV时间'][0], max_value=24, value=24)
+night_start_time = st.sidebar.number_input('休息时间', min_value=temp_df['UV时间'][0], max_value=24, value=temp_df['夜光时间'][0])
 
 if st.sidebar.button('保存'):
     button_data_to_update = {
@@ -124,12 +124,13 @@ while True:
     df = db.read_from_sql()
     # 获取7天前的时间
     seven_days_ago = datetime.now() - timedelta(days=7)
+    one_days_ago = datetime.now() - timedelta(days=1)
 
     # 过滤出最近7天的数据
     df = df[df['时间'] > seven_days_ago]
 
     # 创建图形
-    both_temp = px.line(df[-1500:], x="时间", y=['湿度', '温度', '目标温度'],
+    both_temp = px.line(df[df['时间'] > one_days_ago], x="时间", y=['湿度', '温度', '目标温度'],
                         hover_data=['加温风扇', '降温风扇', '陶瓷灯', 'UV 灯', '日光灯'],
                         markers=True)
     fig_hum = px.line(df, x="时间", y='湿度',
