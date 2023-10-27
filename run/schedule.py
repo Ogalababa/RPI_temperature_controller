@@ -69,7 +69,7 @@ class Schedule:
         self.target_night = temp_df['夜间温度'][0]
         self.uv_time = temp_df['UV时间'][0]
         self.sun_time = temp_df['日光时间'][0]
-        self.night_time = temp_df['夜灯时间'][0]
+        self.night_time = temp_df['夜光时间'][0]
 
     def day_night(self):
         hour = datetime.now().hour
