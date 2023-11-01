@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 from run.ToDB import ConnectToDB
 from __init__ import *
 import logging
-
+from DS18B20 import DS18B20
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -45,8 +45,10 @@ class RTC:
 
         # Temp sensor
         self.TEMP_SENSOR = DHT.DHT11
+        self.TEMP_DEVICES = DS18B20()
+        self.device_count = self.TEMP_DEVICES.device_count()
+        self.device_name = self.TEMP_DEVICES.device_names()
         self.temp = 0
-        self.hum = 0
         self.control_temp = 0
         self.control_hum = 0
 
@@ -69,20 +71,25 @@ class RTC:
                 time.sleep(0.1)
 
     def get_room_temp(self):
-
-        temp_list = []
-        hum_list = []
-        termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
-
-        for i in termo_list:
-            hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
-            if temp_1 is not None and hum_1 is not None:
-                temp_list.append(temp_1)
-                hum_list.append(hum_1)
-
-        if temp_list and hum_list:
-            self.temp = round(sum(temp_list) / len(temp_list), 1)
-            self.hum = round(sum(hum_list) / len(hum_list), 1)
+        temp_dict = dict()
+        for i in range(self.device_count):
+            temp_dict[self.device_name] = self.TEMP_DEVICES.temp(i)
+        return temp_dict
+        #
+        #
+        # temp_list = []
+        # hum_list = []
+        # termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
+        #
+        # for i in termo_list:
+        #     hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
+        #     if temp_1 is not None and hum_1 is not None:
+        #         temp_list.append(temp_1)
+        #         hum_list.append(hum_1)
+        #
+        # if temp_list and hum_list:
+        #     self.temp = round(sum(temp_list) / len(temp_list), 1)
+        #     self.hum = round(sum(hum_list) / len(hum_list), 1)
 
     def get_control_temp(self):
         temp_list = []
