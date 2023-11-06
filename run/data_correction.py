@@ -13,7 +13,7 @@ df = pd.read_sql_table("Status", conn)
 data = df.copy()
 data['时间'] = pd.to_datetime(data['时间'])
 try:
-    data.drop(columns=['index','温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
+    data.drop(columns=['index', '温度_zscore', '湿度_zscore', '温度_anomaly', '湿度_anomaly'], inplace=True)
 except:
     pass
 # 2. 使用z分数方法检测异常值
@@ -37,7 +37,7 @@ def replace_with_neighbors_average(series, anomalies_index):
 data['温度'] = replace_with_neighbors_average(data['温度'], anomalies[anomalies['温度_anomaly']].index)
 data['湿度'] = replace_with_neighbors_average(data['湿度'], anomalies[anomalies['湿度_anomaly']].index)
 try:
-    data.drop(columns=['温度_zscore','湿度_zscore','温度_anomaly','湿度_anomaly'], inplace=True)
+    data.drop(columns=['温度_zscore', '湿度_zscore', '温度_anomaly', '湿度_anomaly'], inplace=True)
 except:
     pass
 
