@@ -145,7 +145,7 @@ class Schedule:
             self.change_mapping_status('日光灯', "OFF")
 
     def night_lamp(self):
-        if self.is_night and self.temp_status == "cold":
+        if self.temp_status == "cold":
             self.change_mapping_status('陶瓷灯', "ON")
         else:
             self.change_mapping_status("陶瓷灯", "OFF")
