@@ -42,6 +42,7 @@ def check_last_record_time():
 
 def main():
     logging.info("Database monitoring script started")
+    time.sleep(300)
     while True:
         if check_last_record_time():
             restart_raspberry_pi()
