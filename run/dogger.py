@@ -33,7 +33,7 @@ def check_last_record_time():
             last_record_time = pd.to_datetime(last_record['时间'].iloc[0])
             current_time = datetime.now()
 
-            if current_time - last_record_time > timedelta(minutes=10):
+            if current_time - last_record_time > timedelta(minutes=5):
                 return True
     except Exception as e:
         logging.error(f"Error while checking last record in database: {e}")
