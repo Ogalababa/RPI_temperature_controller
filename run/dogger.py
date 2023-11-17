@@ -21,7 +21,7 @@ def restart_raspberry_pi():
         logging.error(f"Error occurred while restarting Raspberry Pi: {e}")
 
 
-def check_last_record_time():
+def check_last_record_time(minutes: int):
     try:
         conn = create_engine(
             f'sqlite:///{os.path.join("/", "home", "jiawei", "RPI_temperature_controller", "data", "Status.db")}').connect()
@@ -33,7 +33,7 @@ def check_last_record_time():
             last_record_time = pd.to_datetime(last_record['时间'].iloc[0])
             current_time = datetime.now()
 
-            if current_time - last_record_time > timedelta(minutes=5):
+            if current_time - last_record_time > timedelta(minutes=minutes):
                 return True
     except Exception as e:
         logging.error(f"Error while checking last record in database: {e}")
@@ -44,8 +44,8 @@ def main():
     logging.info("Database monitoring script started")
     time.sleep(300)
     while True:
-        time.sleep(300)  # 等待5分钟
-        if check_last_record_time():
+        time.sleep(60)  # 等待5分钟
+        if check_last_record_time(5):
             restart_raspberry_pi()
 
 
