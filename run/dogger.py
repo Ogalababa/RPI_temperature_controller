@@ -44,9 +44,9 @@ def main():
     logging.info("Database monitoring script started")
     time.sleep(300)
     while True:
+        time.sleep(300)  # 等待5分钟
         if check_last_record_time():
             restart_raspberry_pi()
-        time.sleep(300)  # 等待5分钟
 
 
 if __name__ == "__main__":
