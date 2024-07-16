@@ -90,7 +90,7 @@ class Schedule:
             self.change_mapping_status('降温风扇', self.rtc.OFF)
             self.change_mapping_status('陶瓷灯', self.rtc.OFF)
 
-    def controller(self):
+    def controller(self, sec):
         try:
             while True:
                 start_time = time.time()
@@ -101,11 +101,11 @@ class Schedule:
                 self.equipment_actions()
                 self.rtc.save_to_json(self.target_temp)
 
-                time.sleep(30)  # 确保每分钟执行一次
+                time.sleep(sec)  # 确保每分钟执行一次
         except KeyboardInterrupt:
             logger.info("Controller stopped by user.")
 
 
 if __name__ == "__main__":
     schedule = Schedule(day_time=8, uv_start_time=12, night_time=22, day_temp=30,  night_temp=28, target_temp=27)
-    schedule.controller()
+    schedule.controller(30)
