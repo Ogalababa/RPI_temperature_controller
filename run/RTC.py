@@ -121,7 +121,7 @@ class RTC:
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
             '陶瓷灯': self.status.get("陶瓷灯"),
-            '最后更新': datetime.now()
+            '最后更新': datetime.now().isoformat()
         }
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)

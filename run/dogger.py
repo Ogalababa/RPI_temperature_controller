@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 # coding:utf-8
-import pandas as pd
+import json
 import os
-from sqlalchemy import create_engine
 from datetime import datetime, timedelta
 import time
 import subprocess
@@ -22,21 +21,20 @@ def restart_raspberry_pi():
 
 
 def check_last_record_time(minutes: int):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
     try:
-        conn = create_engine(
-            f'sqlite:///{os.path.join("/", "home", "jiawei", "RPI_temperature_controller", "data", "Status.db")}').connect()
+        with open(os.path.join(parent_dir, "status.json"), "r") as json_file:
+            data = json.load(json_file)
 
-        last_record = pd.read_sql_query("SELECT * FROM Status ORDER BY 时间 DESC LIMIT 1", conn)
-        conn.close()
+        last_record_time = datetime.fromisoformat(data['最后更新'])
+        current_time = datetime.now()
 
-        if not last_record.empty:
-            last_record_time = pd.to_datetime(last_record['时间'].iloc[0])
-            current_time = datetime.now()
-
-            if current_time - last_record_time > timedelta(minutes=minutes):
-                return True
+        if current_time - last_record_time > timedelta(minutes=minutes):
+            return True
     except Exception as e:
-        logging.error(f"Error while checking last record in database: {e}")
+        logging.error(f"Error while checking last record in status.json: {e}")
+
     return False
 
 
