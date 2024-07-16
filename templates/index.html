@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备控制面板</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .status { margin-bottom: 20px; }
+        .equipment { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>设备控制面板</h1>
+    <div class="status">
+        <h2>当前状态</h2>
+        <p>当前温度: <span id="current_temp"></span>°C</p>
+        <p>目标温度: <span id="target_temp"></span>°C</p>
+        <p>温度状态: <span id="temp_status"></span></p>
+        <p>白天状态: <span id="is_day"></span></p>
+        <p>UV状态: <span id="is_uv"></span></p>
+    </div>
+    <div class="equipment">
+        <h2>设备控制</h2>
+        <div id="equipment_controls"></div>
+    </div>
+    <script>
+        async function fetchStatus() {
+            const response = await fetch('/status');
+            const data = await response.json();
+            document.getElementById('current_temp').innerText = data.current_temp;
+            document.getElementById('target_temp').innerText = data.target_temp;
+            document.getElementById('temp_status').innerText = data.temp_status;
+            document.getElementById('is_day').innerText = data.is_day ? '白天' : '夜晚';
+            document.getElementById('is_uv').innerText = data.is_uv ? '开启' : '关闭';
+
+            const equipmentControls = document.getElementById('equipment_controls');
+            equipmentControls.innerHTML = '';
+            for (const [equipment, status] of Object.entries(data.equipment)) {
+                const controlDiv = document.createElement('div');
+                controlDiv.innerHTML = `
+                    <label>${equipment}:</label>
+                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}')">${status === 'ON' ? '关闭' : '开启'}</button>
+                `;
+                equipmentControls.appendChild(controlDiv);
+            }
+        }
+
+        async function controlEquipment(equipment, action) {
+            const response = await fetch('/control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ equipment, action })
+            });
+            const data = await response.json();
+            alert(data.message);
+            fetchStatus();
+        }
+
+        fetchStatus();
+        setInterval(fetchStatus, 10000);  // 每30秒刷新一次状态
+    </script>
+</body>
+</html>
