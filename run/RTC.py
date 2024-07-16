@@ -121,6 +121,10 @@ class RTC:
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
             '陶瓷灯': self.status.get("陶瓷灯"),
+            '目标温度': f"{target_temp}",
+            '日光灯': self.status.get('日光灯'),
+            'UV 灯': self.status.get("UV 灯"),
+            '降温风扇': self.status.get('降温风扇'),
             '最后更新': datetime.now().isoformat()
         }
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
