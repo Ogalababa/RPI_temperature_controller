@@ -8,7 +8,7 @@ print(sys.executable)
 print(sys.version)
 from flask import Flask, request, jsonify
 import logging
-from run.RTC import RTC
+from RTC import RTC
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
