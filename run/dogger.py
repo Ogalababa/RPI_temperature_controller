@@ -43,7 +43,7 @@ def main():
     time.sleep(300)
     while True:
         time.sleep(240)  # 等待5分钟
-        if check_last_record_time(5):
+        if check_last_record_time(10):
             restart_raspberry_pi()
 
 
