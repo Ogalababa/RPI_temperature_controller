@@ -3,10 +3,8 @@
 import time
 from datetime import datetime, timedelta
 from threading import Thread
-import sys
-print(sys.executable)
-print(sys.version)
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 import logging
 from run.RTC import RTC
 
@@ -16,7 +14,12 @@ logging.basicConfig(level=logging.INFO,
                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = FastAPI()
+
+
+class EquipmentControl(BaseModel):
+    equipment: str
+    action: str
 
 
 class Schedule:
@@ -92,9 +95,9 @@ class Schedule:
             self.change_mapping_status('日光灯', self.rtc.OFF)
 
         if self.is_uv and (current_time - self.last_control_time['UV 灯']) > timedelta(minutes=1):
-            self.change_mapping_status('UV 灯', self.rtc.ON)
-        elif not self.is_uv and (current_time - self.last_control_time['UV 灯']) > timedelta(minutes=1):
-            self.change_mapping_status('UV 灯', self.rtc.OFF)
+            self.change_mapping_status('UV 灟', self.rtc.ON)
+        elif not self.is_uv and (current_time - self.last_control_time['UV 灟']) > timedelta(minutes=1):
+            self.change_mapping_status('UV 灟', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         current_time = datetime.now()
@@ -128,19 +131,18 @@ class Schedule:
 schedule = Schedule(day_time=8, uv_start_time=12, night_time=22, day_temp=30, night_temp=28, target_temp=27)
 
 
-@app.route('/control', methods=['POST'])
-def control():
-    data = request.json
-    equipment = data.get('equipment')
-    action = data.get('action')
+@app.post('/control')
+def control(control: EquipmentControl):
+    equipment = control.equipment
+    action = control.action
     if equipment not in schedule.equipment_mapping:
-        return jsonify({"error": "Invalid equipment name"}), 400
+        raise HTTPException(status_code=400, detail="Invalid equipment name")
     if action not in [schedule.rtc.ON, schedule.rtc.OFF]:
-        return jsonify({"error": "Invalid action"}), 400
+        raise HTTPException(status_code=400, detail="Invalid action")
 
     schedule.change_mapping_status(equipment, action, source='api')
     schedule.equipment_action(equipment, action)
-    return jsonify({"message": "Success"}), 200
+    return {"message": "Success"}
 
 
 def run_controller():
@@ -148,12 +150,11 @@ def run_controller():
 
 
 def run_server():
-    app.run(host='0.0.0.0', port=5000)
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=5000)
 
 
 if __name__ == "__main__":
-
-
     controller_thread = Thread(target=run_controller)
     server_thread = Thread(target=run_server)
 
