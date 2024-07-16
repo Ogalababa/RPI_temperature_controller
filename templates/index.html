@@ -41,7 +41,7 @@
                 controlDiv.innerHTML = `
                     <label>${equipment}:</label>
                     <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'manual')">手动${status === 'ON' ? '关闭' : '开启'}</button>
-                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'auto')">自动${status === 'ON' ? '关闭' : '开启'}</button>
+                    <button onclick="controlEquipment('${equipment}', '${status}', 'auto')">自动控制</button>
                     <span>${manual ? '手动控制中' : '自动控制中'}</span>
                 `;
                 equipmentControls.appendChild(controlDiv);
@@ -60,7 +60,7 @@
         }
 
         fetchStatus();
-        setInterval(fetchStatus, 10000);  // 每30秒刷新一次状态
+        setInterval(fetchStatus, 30000);  // 每30秒刷新一次状态
     </script>
 </body>
 </html>

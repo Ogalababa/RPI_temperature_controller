@@ -163,7 +163,11 @@ def control_equipment():
         mode = data.get('mode', 'auto')  # 默认为自动模式
         if equipment in schedule.equipment_mapping and action in [schedule.rtc.ON, schedule.rtc.OFF]:
             manual = mode == 'manual'
-            schedule.change_mapping_status(equipment, action, manual)
+            if manual:
+                schedule.manual_control[equipment] = True
+                schedule.change_mapping_status(equipment, action, manual=True)
+            else:
+                schedule.manual_control[equipment] = False
             schedule.equipment_action(equipment, action)
             return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
         else:
@@ -207,4 +211,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
