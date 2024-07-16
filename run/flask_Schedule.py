@@ -4,11 +4,12 @@ import time
 from datetime import datetime, timedelta
 from threading import Thread
 import sys
+
 print(sys.executable)
 print(sys.version)
 from flask import Flask, request, jsonify
 import logging
-from RTC import RTC
+from run.RTC import RTC
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -151,9 +152,7 @@ def run_server():
     app.run(host='0.0.0.0', port=5000)
 
 
-if __name__ == "__main__":
-
-
+def main():
     controller_thread = Thread(target=run_controller)
     server_thread = Thread(target=run_server)
 
@@ -162,3 +161,7 @@ if __name__ == "__main__":
 
     controller_thread.join()
     server_thread.join()
+
+
+if __name__ == "__main__":
+    main()

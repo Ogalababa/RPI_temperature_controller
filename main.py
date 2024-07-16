@@ -2,9 +2,30 @@
 # coding:utf-8
 # sys
 import argparse
-from run.noDB_Schedule import Schedule
+# from run.noDB_Schedule import Schedule
+from run.flask_Schedule import Schedule
+from threading import Thread
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
+app = FastAPI()
 
+@app.post('/control')
+def control(control: EquipmentControl):
+    equipment = control.equipment
+    action = control.action
+    if equipment not in schedule.equipment_mapping:
+        raise HTTPException(status_code=400, detail="Invalid equipment name")
+    if action not in [schedule.rtc.ON, schedule.rtc.OFF]:
+        raise HTTPException(status_code=400, detail="Invalid action")
+
+    schedule.change_mapping_status(equipment, action, source='api')
+    schedule.equipment_action(equipment, action)
+    return {"message": "Success"}
+
+class EquipmentControl(BaseModel):
+    equipment: str
+    action: str
 def main():
     # 创建ArgumentParser对象
     parser = argparse.ArgumentParser(description="Schedule Controller")
@@ -32,7 +53,14 @@ def main():
     )
 
     # 调用controller方法
-    temp_controller.controller(args.sleep)
+    # temp_controller.controller(args.sleep)
+    controller_thread = Thread(target=temp_controller.controller, args=(args.sleep,))
+    controller_thread.start()
+
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=5000)
+
+    controller_thread.join()
 
 
 if __name__ == "__main__":
