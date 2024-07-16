@@ -25,6 +25,7 @@ class Schedule:
         self.is_day = False
         self.is_uv = False
         self.temp_status = 'good'
+        self.current_temp = 0
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
@@ -40,17 +41,17 @@ class Schedule:
         logger.info("UV time activate" if self.is_uv else "UV time deactivate")
 
     def check_temp(self):
-        current_temp = self.rtc.get_control_temp()
-        logger.info(f"Current Temp: {current_temp}°C")
+        self.current_temp = self.rtc.get_control_temp()
+        logger.info(f"Current Temp: {self.current_temp}°C")
         if self.is_day:
             self.target_temp = self.day_temp
         else:
             self.target_temp = self.night_temp
         logger.info(f"Target Temp: {self.target_temp}°C")
 
-        if current_temp - self.target_temp >= 2:
+        if self.current_temp - self.target_temp >= 2:
             self.temp_status = 'hot'
-        elif current_temp - self.target_temp <= -2:
+        elif self.current_temp - self.target_temp <= -2:
             self.temp_status = 'cold'
         else:
             self.temp_status = 'good'
@@ -80,6 +81,7 @@ class Schedule:
             self.change_mapping_status('UV 灯', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
+
         if self.temp_status == 'hot':
             self.change_mapping_status('降温风扇', self.rtc.ON)
             self.change_mapping_status('陶瓷灯', self.rtc.OFF)
@@ -87,7 +89,8 @@ class Schedule:
             self.change_mapping_status('降温风扇', self.rtc.OFF)
             self.change_mapping_status('陶瓷灯', self.rtc.ON)
         else:
-            self.change_mapping_status('降温风扇', self.rtc.OFF)
+            if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
+                self.change_mapping_status('降温风扇', self.rtc.OFF)
             self.change_mapping_status('陶瓷灯', self.rtc.OFF)
 
     def controller(self, sec):
