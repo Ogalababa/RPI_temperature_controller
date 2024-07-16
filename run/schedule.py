@@ -14,62 +14,44 @@ logger = logging.getLogger(__name__)
 
 
 class Schedule:
-    def __init__(self):
+    def __init__(self, target_day=30, target_night=28,target_temp=27, temp_range=2, uv_time=18, sun_time=10, night_time=22):
         self.rtc = RTC()
-        self.db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
-        self.target_day = 28
-        self.target_night = 29
-        self.target_temp = 27
-        self.temp_range = 2
-        self.uv_time = 14
-        self.sun_time = 20
-        self.night_time = 24
+        # self.db = ConnectToDB('Status', os.path.join('/', 'home', 'jiawei', 'RPI_temperature_controller', 'data'))
+        self.target_day = target_day
+        self.target_night = target_night
+        self.target_temp = target_temp
+        self.temp_range = temp_range
+        self.uv_time = uv_time
+        self.sun_time = sun_time
+        self.night_time = night_time
         self.is_night = True
         self.is_uv = False
         self.temp_status = 'good'
-        button_df = self.db.read_from_sql("button")
-        self.equipment_mapping = {
-            '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
-            '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
-            'UV 灯': self.rtc.ON if button_df['UV 灯'][0] else self.rtc.OFF,
-            '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
-            '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
-        }
-
-        lock_df = self.db.read_from_sql('lock')
+        # button_df = self.db.read_from_sql("button")
         self.lock = {
-            '加温风扇': lock_df['加温风扇'][0],
-            '降温风扇': lock_df['降温风扇'][0],
-            'UV 灯': lock_df['UV 灯'][0],
-            '日光灯': lock_df['日光灯'][0],
-            '陶瓷灯': lock_df['陶瓷灯'][0]
+            '加温风扇': False,
+            '降温风扇': False,
+            'UV 灯': False,
+            '日光灯': False,
+            '陶瓷灯': False
+        }
+        self.equipment_mapping = {
+            '加温风扇': self.rtc.OFF,
+            '降温风扇': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
+            '日光灯': self.rtc.OFF,
+            '陶瓷灯': self.rtc.OFF,
         }
 
     def update_button_status(self):
-        button_df = self.db.read_from_sql("button")
+        # button_df = self.db.read_from_sql("button")
         self.equipment_mapping = {
-            '加温风扇': self.rtc.ON if button_df['加温风扇'][0] else self.rtc.OFF,
-            '降温风扇': self.rtc.ON if button_df['降温风扇'][0] else self.rtc.OFF,
-            'UV 灯': self.rtc.ON if button_df['UV 灯'][0] else self.rtc.OFF,
-            '日光灯': self.rtc.ON if button_df['日光灯'][0] else self.rtc.OFF,
-            '陶瓷灯': self.rtc.ON if button_df['陶瓷灯'][0] else self.rtc.OFF,
+            '加温风扇': self.rtc.OFF,
+            '降温风扇': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
+            '日光灯': self.rtc.OFF,
+            '陶瓷灯': self.rtc.OFF,
         }
-        lock_df = self.db.read_from_sql('lock')
-        self.lock = {
-            '加温风扇': lock_df['加温风扇'][0],
-            '降温风扇': lock_df['降温风扇'][0],
-            'UV 灯': lock_df['UV 灯'][0],
-            '日光灯': lock_df['日光灯'][0],
-            '陶瓷灯': lock_df['陶瓷灯'][0]
-        }
-
-    def get_target_temp(self):
-        temp_df = self.db.read_from_sql(table_name="target_temp")
-        self.target_day = temp_df['日间温度'][0]
-        self.target_night = temp_df['夜间温度'][0]
-        self.uv_time = temp_df['UV时间'][0]
-        self.sun_time = temp_df['日光时间'][0]
-        self.night_time = temp_df['夜光时间'][0]
 
     def day_night(self):
         hour = datetime.now().hour
@@ -128,7 +110,6 @@ class Schedule:
         inverse_equipment_mapping = {
             key: True if value == self.rtc.ON else False for key, value in self.equipment_mapping.items()
         }
-        self.db.set_target_temp("button", inverse_equipment_mapping)
 
     def uv_lamp(self):
         if self.is_uv:
@@ -160,7 +141,6 @@ class Schedule:
         try:
             while True:
                 self.update_button_status()
-                self.get_target_temp()
                 self.day_night()
                 self.check_temp()
                 self.uv_lamp()

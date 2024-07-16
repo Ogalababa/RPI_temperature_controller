@@ -7,7 +7,6 @@ import time
 from datetime import datetime
 import Adafruit_DHT as DHT
 import RPi.GPIO as GPIO
-from run.ToDB import ConnectToDB
 from __init__ import *
 import logging
 
@@ -55,7 +54,6 @@ class RTC:
         self.status = {key: None for key in self.PINS["OUTPUT"].keys()}
         self.status["控制室风扇"] = "N/A"
         self.status["加湿器"] = "N/A"
-        self.database = ConnectToDB("Status", os.path.join(current_dir, "data"))
 
         # Initialization status set to off
         for equipment in self.PINS["OUTPUT"].keys():
@@ -122,17 +120,9 @@ class RTC:
         data = {
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
-            '陶瓷灯': self.status.get("陶瓷灯")
-        }
-        df_data = {
-            '温度': self.control_temp,
-            '湿度': self.control_hum,
-            '陶瓷灯': self.status.get("陶瓷灯")
+            '陶瓷灯': self.status.get("陶瓷灯"),
+            '最后更新': datetime.now()
         }
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)
-        df_data.update(self.status)
-        df_data.update({"时间": datetime.now()})
-        if target_temp:
-            df_data.update({"目标温度": target_temp})
-        self.database.save_to_sql(df_data)
+
