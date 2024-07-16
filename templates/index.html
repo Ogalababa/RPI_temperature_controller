@@ -36,20 +36,23 @@
             const equipmentControls = document.getElementById('equipment_controls');
             equipmentControls.innerHTML = '';
             for (const [equipment, status] of Object.entries(data.equipment)) {
+                const manual = data.manual_control[equipment];
                 const controlDiv = document.createElement('div');
                 controlDiv.innerHTML = `
                     <label>${equipment}:</label>
-                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}')">${status === 'ON' ? '关闭' : '开启'}</button>
+                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'manual')">手动${status === 'ON' ? '关闭' : '开启'}</button>
+                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'auto')">自动${status === 'ON' ? '关闭' : '开启'}</button>
+                    <span>${manual ? '手动控制中' : '自动控制中'}</span>
                 `;
                 equipmentControls.appendChild(controlDiv);
             }
         }
 
-        async function controlEquipment(equipment, action) {
+        async function controlEquipment(equipment, action, mode) {
             const response = await fetch('/control', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ equipment, action })
+                body: JSON.stringify({ equipment, action, mode })
             });
             const data = await response.json();
             alert(data.message);

@@ -29,6 +29,12 @@ class Schedule:
         self.is_uv = False
         self.temp_status = 'good'
         self.current_temp = 0
+        self.manual_control = {
+            '降温风扇': False,
+            '陶瓷灯': False,
+            'UV 灯': False,
+            '日光灯': False,
+        }
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
@@ -36,8 +42,14 @@ class Schedule:
             '日光灯': self.rtc.OFF,
         }
 
+    def reset_manual_control(self):
+        for equipment in self.manual_control:
+            self.manual_control[equipment] = False
+
     def update_day_night_status(self):
         hour = datetime.now().hour
+        if hour == 0:
+            self.reset_manual_control()
         self.is_day = self.day_time <= hour < self.uv_start_time
         self.is_uv = self.uv_start_time <= hour < self.night_time
         logger.info("Day time activate" if self.is_day else "Night time activate")
@@ -60,8 +72,10 @@ class Schedule:
             self.temp_status = 'good'
         logger.info(f"Temperature Status: {self.temp_status}")
 
-    def change_mapping_status(self, equipment, status):
+    def change_mapping_status(self, equipment, status, manual=False):
         if equipment in self.equipment_mapping:
+            if manual:
+                self.manual_control[equipment] = True
             self.equipment_mapping[equipment] = status
 
     def equipment_action(self, equipment, desired_status):
@@ -71,30 +85,33 @@ class Schedule:
 
     def equipment_actions(self):
         for equipment, status in self.equipment_mapping.items():
-            self.equipment_action(equipment, status)
+            if not self.manual_control[equipment]:
+                self.equipment_action(equipment, status)
 
     def control_lamps(self):
-        if self.is_day:
-            self.change_mapping_status('日光灯', self.rtc.ON)
-        else:
-            self.change_mapping_status('日光灯', self.rtc.OFF)
-        if self.is_uv:
-            self.change_mapping_status('UV 灯', self.rtc.ON)
-        else:
-            self.change_mapping_status('UV 灯', self.rtc.OFF)
+        if not self.manual_control['日光灯']:
+            if self.is_day:
+                self.change_mapping_status('日光灯', self.rtc.ON)
+            else:
+                self.change_mapping_status('日光灯', self.rtc.OFF)
+        if not self.manual_control['UV 灯']:
+            if self.is_uv:
+                self.change_mapping_status('UV 灯', self.rtc.ON)
+            else:
+                self.change_mapping_status('UV 灯', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
-
-        if self.temp_status == 'hot':
-            self.change_mapping_status('降温风扇', self.rtc.ON)
-            self.change_mapping_status('陶瓷灯', self.rtc.OFF)
-        elif self.temp_status == 'cold':
-            self.change_mapping_status('降温风扇', self.rtc.OFF)
-            self.change_mapping_status('陶瓷灯', self.rtc.ON)
-        else:
-            if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
+        if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
+            if self.temp_status == 'hot':
+                self.change_mapping_status('降温风扇', self.rtc.ON)
+                self.change_mapping_status('陶瓷灯', self.rtc.OFF)
+            elif self.temp_status == 'cold':
                 self.change_mapping_status('降温风扇', self.rtc.OFF)
-            self.change_mapping_status('陶瓷灯', self.rtc.OFF)
+                self.change_mapping_status('陶瓷灯', self.rtc.ON)
+            else:
+                if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
+                    self.change_mapping_status('降温风扇', self.rtc.OFF)
+                self.change_mapping_status('陶瓷灯', self.rtc.OFF)
 
     def controller(self, sec):
         try:
@@ -114,22 +131,21 @@ class Schedule:
 
 # Flask API 部分
 app = Flask(__name__)
-schedule = Schedule(day_time=10, uv_start_time=16, night_time=22, day_temp=30, night_temp=28, target_temp=29)
+schedule = Schedule(day_time=8, uv_start_time=12, night_time=22, day_temp=30, night_temp=28, target_temp=27)
 
 # 全局锁用于线程同步
 lock = threading.Lock()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/status', methods=['GET'])
 def get_status():
     with lock:
         status = {
             'equipment': schedule.equipment_mapping,
+            'manual_control': schedule.manual_control,
             'current_temp': schedule.current_temp,
             'target_temp': schedule.target_temp,
             'temp_status': schedule.temp_status,
@@ -138,24 +154,23 @@ def get_status():
         }
     return jsonify(status)
 
-
 @app.route('/control', methods=['POST'])
 def control_equipment():
     with lock:
         data = request.json
         equipment = data.get('equipment')
         action = data.get('action')
+        mode = data.get('mode', 'auto')  # 默认为自动模式
         if equipment in schedule.equipment_mapping and action in [schedule.rtc.ON, schedule.rtc.OFF]:
-            schedule.change_mapping_status(equipment, action)
+            manual = mode == 'manual'
+            schedule.change_mapping_status(equipment, action, manual)
             schedule.equipment_action(equipment, action)
-            return jsonify({'message': 'Success', 'equipment': equipment, 'action': action}), 200
+            return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
         else:
             return jsonify({'message': 'Invalid equipment or action'}), 400
 
-
 def run_controller():
     schedule.controller(30)
-
 
 def main():
     # 创建ArgumentParser对象
@@ -192,3 +207,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
