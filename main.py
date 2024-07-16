@@ -10,6 +10,12 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
+class EquipmentControl(BaseModel):
+    equipment: str
+    action: str
+
+
 @app.post('/control')
 def control(control: EquipmentControl):
     equipment = control.equipment
@@ -23,9 +29,10 @@ def control(control: EquipmentControl):
     schedule.equipment_action(equipment, action)
     return {"message": "Success"}
 
-class EquipmentControl(BaseModel):
-    equipment: str
-    action: str
+
+
+
+
 def main():
     # 创建ArgumentParser对象
     parser = argparse.ArgumentParser(description="Schedule Controller")
