@@ -101,7 +101,7 @@ class Schedule:
                 self.equipment_actions()
                 self.rtc.save_to_json(self.target_temp)
 
-                time.sleep(10)  # 确保每分钟执行一次
+                time.sleep(30)  # 确保每分钟执行一次
         except KeyboardInterrupt:
             logger.info("Controller stopped by user.")
 
