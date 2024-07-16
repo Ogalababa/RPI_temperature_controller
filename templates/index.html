@@ -3,25 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>设备控制面板</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; }
-        .status { margin-bottom: 20px; }
-        .equipment { margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .status, .equipment {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .equipment div {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>设备控制面板</h1>
-    <div class="status">
-        <h2>当前状态</h2>
-        <p>当前温度: <span id="current_temp"></span>°C</p>
-        <p>目标温度: <span id="target_temp"></span>°C</p>
-        <p>温度状态: <span id="temp_status"></span></p>
-        <p>白天状态: <span id="is_day"></span></p>
-        <p>UV状态: <span id="is_uv"></span></p>
-    </div>
-    <div class="equipment">
-        <h2>设备控制</h2>
-        <div id="equipment_controls"></div>
+    <div class="container">
+        <h1 class="text-center my-4">设备控制面板</h1>
+        <div class="status">
+            <h2>当前状态</h2>
+            <p>当前温度: <span id="current_temp" class="font-weight-bold"></span>°C</p>
+            <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
+            <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
+            <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
+            <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+        </div>
+        <div class="equipment">
+            <h2>设备控制</h2>
+            <div id="equipment_controls" class="row"></div>
+        </div>
     </div>
     <script>
         async function fetchStatus() {
@@ -38,11 +53,16 @@
             for (const [equipment, status] of Object.entries(data.equipment)) {
                 const manual = data.manual_control[equipment];
                 const controlDiv = document.createElement('div');
+                controlDiv.className = "col-md-6 mb-3";
                 controlDiv.innerHTML = `
-                    <label>${equipment}:</label>
-                    <button onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'manual')">手动${status === 'ON' ? '关闭' : '开启'}</button>
-                    <button onclick="controlEquipment('${equipment}', '${status}', 'auto')">自动控制</button>
-                    <span>${manual ? '手动控制中' : '自动控制中'}</span>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${equipment}</h5>
+                            <button class="btn btn-${status === 'ON' ? 'danger' : 'success'} btn-sm mr-2" onclick="controlEquipment('${equipment}', '${status === 'ON' ? 'OFF' : 'ON'}', 'manual')">手动${status === 'ON' ? '关闭' : '开启'}</button>
+                            <button class="btn btn-primary btn-sm" onclick="controlEquipment('${equipment}', '${status}', 'auto')">自动控制</button>
+                            <span class="badge badge-${manual ? 'warning' : 'secondary'} ml-2">${manual ? '手动控制中' : '自动控制中'}</span>
+                        </div>
+                    </div>
                 `;
                 equipmentControls.appendChild(controlDiv);
             }
