@@ -149,6 +149,11 @@ def run_server():
 
 
 if __name__ == "__main__":
+    import sys
+
+    print(sys.executable)
+    print(sys.version)
+
     controller_thread = Thread(target=run_controller)
     server_thread = Thread(target=run_server)
 
