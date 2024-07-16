@@ -149,7 +149,7 @@ class Schedule:
                 self.cooling_fan()
                 self.equipment_actions()
                 self.rtc.save_to_json(self.target_temp)
-                time.sleep(54)
+                # time.sleep(54)
         except KeyboardInterrupt:
             logger.info("Controller stopped by user.")
 
