@@ -3,6 +3,9 @@
 import time
 from datetime import datetime, timedelta
 from threading import Thread
+import sys
+print(sys.executable)
+print(sys.version)
 from flask import Flask, request, jsonify
 import logging
 from run.RTC import RTC
@@ -149,10 +152,7 @@ def run_server():
 
 
 if __name__ == "__main__":
-    import sys
 
-    print(sys.executable)
-    print(sys.version)
 
     controller_thread = Thread(target=run_controller)
     server_thread = Thread(target=run_server)
