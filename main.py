@@ -14,7 +14,7 @@ from run.RTC import RTC
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levellename)s - %(message)s',
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 
@@ -107,9 +107,9 @@ class Schedule:
                 self.change_mapping_status('日光灯', self.rtc.OFF)
         if not self.manual_control['UV 灯']:
             if self.is_uv:
-                self.change_mapping_status('UV 灯', self.rtc.ON)
+                self.change_mapping_status('UV 灂', self.rtc.ON)
             else:
-                self.change_mapping_status('UV 灯', self.rtc.OFF)
+                self.change_mapping_status('UV 灂', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
@@ -229,7 +229,7 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add.argument('--target_temp', type=float, default=25, help='Target temperature')
+    parser.add_argument('--target_temp', type=float, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数
