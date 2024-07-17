@@ -38,15 +38,11 @@
             <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
         </div>
         <div class="temperature-control">
-            <h2>设定温度</h2>
+            <h2>设定目标温度</h2>
             <form id="set_temp_form">
                 <div class="form-group">
-                    <label for="new_day_temp">新的白天温度 (°C):</label>
-                    <input type="number" class="form-control" id="new_day_temp" name="new_day_temp" required>
-                </div>
-                <div class="form-group">
-                    <label for="new_night_temp">新的夜间温度 (°C):</label>
-                    <input type="number" class="form-control" id="new_night_temp" name="new_night_temp" required>
+                    <label for="new_target_temp">新的目标温度 (°C):</label>
+                    <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
                 </div>
                 <button type="submit" class="btn btn-primary">设定温度</button>
             </form>
@@ -67,9 +63,10 @@
 
         socket.on('temperature_set', function (data) {
             document.getElementById('set_temp_message').innerText = data.message;
-            if (data.day_temp !== undefined && data.night_temp !== undefined) {
-                document.getElementById('day_temp').innerText = data.day_temp;
-                document.getElementById('night_temp').innerText = data.night_temp;
+            if (data.target_temp !== undefined) {
+                document.getElementById('target_temp').innerText = data.target_temp;
+                document.getElementById('day_temp').innerText = data.target_temp;
+                document.getElementById('night_temp').innerText = data.target_temp - 4;
             }
         });
 
@@ -105,9 +102,8 @@
 
         document.getElementById('set_temp_form').addEventListener('submit', function (event) {
             event.preventDefault();
-            const newDayTemp = document.getElementById('new_day_temp').value;
-            const newNightTemp = document.getElementById('new_night_temp').value;
-            socket.emit('set_day_night_temperature', { day_temp: newDayTemp, night_temp: newNightTemp });
+            const newTargetTemp = document.getElementById('new_target_temp').value;
+            socket.emit('set_target_temperature', { target_temp: newTargetTemp });
         });
 
         async function controlEquipment(equipment, action, mode) {
