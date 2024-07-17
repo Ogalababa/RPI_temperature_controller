@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # coding:utf-8
-# /main.py
+import eventlet
+eventlet.monkey_patch()
+
 import argparse
 import time
 from datetime import datetime
@@ -8,8 +10,6 @@ import logging
 import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
-import eventlet
-eventlet.monkey_patch()
 from run.RTC import RTC
 
 # 设置logging基础配置
@@ -46,7 +46,7 @@ class Schedule:
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
-            'UV 灂': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
             '日光灯': self.rtc.OFF,
         }
 
@@ -103,11 +103,11 @@ class Schedule:
                 self.change_mapping_status('日光灯', self.rtc.ON)
             else:
                 self.change_mapping_status('日光灯', self.rtc.OFF)
-        if not self.manual_control['UV 灂']:
+        if not self.manual_control['UV 灯']:
             if self.is_uv:
-                self.change_mapping_status('UV 灂', self.rtc.ON)
+                self.change_mapping_status('UV 灯', self.rtc.ON)
             else:
-                self.change_mapping_status('UV 灂', self.rtc.OFF)
+                self.change_mapping_status('UV 灯', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
@@ -146,7 +146,8 @@ class Schedule:
             'equipment': self.equipment_mapping,
             'manual_control': self.manual_control,
             'current_temp': self.current_temp,
-            'target_temp': self.target_temp,
+            'day_temp': self.day_temp,
+            'night_temp': self.night_temp,
             'temp_status': self.temp_status,
             'is_day': self.is_day,
             'last_update': self.last_update.isoformat() if self.last_update else None
@@ -211,7 +212,8 @@ def handle_set_day_night_temperature(data):
 
 
 def run_controller():
-    schedule.controller(30)
+    with app.app_context():
+        schedule.controller(30)
 
 
 def main():
@@ -224,8 +226,8 @@ def main():
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--day_temp', type=int, default=27, help='Day temperature')
-    parser.add.argument('--night_temp', type=int, default=22, help='Night temperature')
-    parser.add.argument('--target_temp', type=int, default=25, help='Target temperature')
+    parser.add_argument('--night_temp', type=int, default=22, help='Night temperature')
+    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数
