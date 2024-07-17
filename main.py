@@ -14,7 +14,7 @@ from run.RTC import RTC
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    format='%(asctime)s - %(levellename)s - %(message)s',
                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 
@@ -29,14 +29,14 @@ class Schedule:
         self.day_time = day_time
         self.night_time = night_time
         self.uv_start_time = uv_start_time
-        self.target_temp = target_temp
-        self.day_temp = target_temp
-        self.night_temp = target_temp - 4
+        self.target_temp = float(target_temp)
+        self.day_temp = float(target_temp)
+        self.night_temp = float(target_temp) - 4
         self.is_day = False
         self.is_uv = False
         self.temp_status = 'good'
-        self.current_temp = 0
-        self.current_hum = 0
+        self.current_temp = 0.0
+        self.current_hum = 0.0
         self.last_update = None
         self.manual_control = {
             '降温风扇': False,
@@ -68,16 +68,16 @@ class Schedule:
         self.last_update = datetime.now()
         self.current_temp, self.current_hum = self.rtc.get_control_temp()
         logger.info(f"Current Temp: {self.current_temp}°C")
-        logger.info(f"Current Humidity: {self.current_hum}%")
+        logger.info(f"Current Hum: {self.current_hum}%")
         if self.is_day:
             self.target_temp = self.day_temp
         else:
             self.target_temp = self.night_temp
         logger.info(f"Target Temp: {self.target_temp}°C")
 
-        if self.current_temp - self.target_temp >= 2:
+        if float(self.current_temp) - float(self.target_temp) >= 2:
             self.temp_status = 'hot'
-        elif self.current_temp - self.target_temp <= -2:
+        elif float(self.current_temp) - float(self.target_temp) <= -2:
             self.temp_status = 'cold'
         else:
             self.temp_status = 'good'
@@ -205,9 +205,9 @@ def handle_set_target_temperature(data):
     with lock:
         target_temp = data.get('target_temp')
         if target_temp is not None:
-            schedule.target_temp = target_temp
-            schedule.day_temp = target_temp
-            schedule.night_temp = target_temp - 4
+            schedule.target_temp = float(target_temp)
+            schedule.day_temp = float(target_temp)
+            schedule.night_temp = float(target_temp) - 4
             with app.app_context():
                 socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
                 emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
@@ -217,7 +217,7 @@ def handle_set_target_temperature(data):
 
 def run_controller():
     with app.app_context():
-        schedule.controller(0)
+        schedule.controller(30)
 
 
 def main():
@@ -229,7 +229,7 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
+    parser.add.argument('--target_temp', type=float, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数

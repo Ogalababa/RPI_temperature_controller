@@ -142,7 +142,7 @@
         document.getElementById('set_temp_form').addEventListener('submit', function (event) {
             event.preventDefault();
             const newTargetTemp = document.getElementById('new_target_temp').value;
-            socket.emit('set_target_temperature', { target_temp: newTargetTemp });
+            socket.emit('set_target_temperature', { target_temp: parseFloat(newTargetTemp) });
         });
 
         async function controlEquipment(equipment, action, mode) {
