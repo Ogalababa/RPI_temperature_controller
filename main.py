@@ -229,8 +229,8 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add_argument('--target_temp', type=float, default=25, help='Target temperature')
-    parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
+    parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
+    parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
 
     # 解析命令行参数
     args = parser.parse_args()
