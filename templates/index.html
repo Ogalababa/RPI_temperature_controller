@@ -34,7 +34,7 @@
         <h1 class="text-center my-4">设备控制面板</h1>
         <div class="status">
             <h2>当前状态</h2>
-            <p>当前温度: <span id="current_temp" class="temperature-status"></span>°C</p>
+            <p>当前温度: <span id="current_temp" class="temperature-status"></span></p>
             <p>当前湿度: <span id="current_hum" class="font-weight-bold"></span>%</p>
             <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
             <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
@@ -79,7 +79,7 @@
 
         function updateStatus(data) {
             const currentTempElem = document.getElementById('current_temp');
-            currentTempElem.innerText = data.current_temp;
+            currentTempElem.innerText = data.current_temp + '°C';
 
             // 根据温度设置背景颜色
             if (data.current_temp < 20) {
