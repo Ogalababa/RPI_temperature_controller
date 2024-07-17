@@ -46,7 +46,7 @@ class Schedule:
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
-            'UV 灯': self.rtc.OFF,
+            'UV 灂': self.rtc.OFF,
             '日光灯': self.rtc.OFF,
         }
 
@@ -103,11 +103,11 @@ class Schedule:
                 self.change_mapping_status('日光灯', self.rtc.ON)
             else:
                 self.change_mapping_status('日光灯', self.rtc.OFF)
-        if not self.manual_control['UV 灯']:
+        if not self.manual_control['UV 灂']:
             if self.is_uv:
-                self.change_mapping_status('UV 灯', self.rtc.ON)
+                self.change_mapping_status('UV 灂', self.rtc.ON)
             else:
-                self.change_mapping_status('UV 灯', self.rtc.OFF)
+                self.change_mapping_status('UV 灂', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
@@ -195,17 +195,19 @@ def control_equipment():
             return jsonify({'message': 'Invalid equipment or action'}), 400
 
 
-@socketio.on('set_temperature')
-def handle_set_temperature(data):
+@socketio.on('set_day_night_temperature')
+def handle_set_day_night_temperature(data):
     with lock:
-        new_temp = data.get('target_temp')
-        if new_temp is not None:
-            schedule.target_temp = new_temp
+        day_temp = data.get('day_temp')
+        night_temp = data.get('night_temp')
+        if day_temp is not None and night_temp is not None:
+            schedule.day_temp = day_temp
+            schedule.night_temp = night_temp
             with app.app_context():
                 socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
-                emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': new_temp})
+                emit('temperature_set', {'message': 'Temperatures set successfully', 'day_temp': day_temp, 'night_temp': night_temp})
         else:
-            emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
+            emit('temperature_set', {'message': 'Invalid temperature values'}, status=400)
 
 
 def run_controller():
@@ -222,8 +224,8 @@ def main():
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--day_temp', type=int, default=27, help='Day temperature')
-    parser.add_argument('--night_temp', type=int, default=22, help='Night temperature')
-    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
+    parser.add.argument('--night_temp', type=int, default=22, help='Night temperature')
+    parser.add.argument('--target_temp', type=int, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数
