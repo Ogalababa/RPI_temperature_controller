@@ -217,7 +217,7 @@ def handle_set_target_temperature(data):
 
 def run_controller():
     with app.app_context():
-        schedule.controller(30)
+        schedule.controller(0)
 
 
 def main():
