@@ -46,7 +46,7 @@ class Schedule:
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
-            'UV 灂': self.rtc.OFF,
+            'UV 灯': self.rtc.OFF,
             '日光灯': self.rtc.OFF,
         }
 
@@ -103,11 +103,11 @@ class Schedule:
                 self.change_mapping_status('日光灯', self.rtc.ON)
             else:
                 self.change_mapping_status('日光灯', self.rtc.OFF)
-        if not self.manual_control['UV 灂']:
+        if not self.manual_control['UV 灯']:
             if self.is_uv:
-                self.change_mapping_status('UV 灂', self.rtc.ON)
+                self.change_mapping_status('UV 灯', self.rtc.ON)
             else:
-                self.change_mapping_status('UV 灂', self.rtc.OFF)
+                self.change_mapping_status('UV 灯', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
