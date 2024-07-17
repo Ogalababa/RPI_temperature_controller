@@ -36,6 +36,7 @@ class Schedule:
         self.is_uv = False
         self.temp_status = 'good'
         self.current_temp = 0
+        self.current_hum = 0
         self.last_update = None
         self.manual_control = {
             '降温风扇': False,
@@ -65,8 +66,9 @@ class Schedule:
 
     def check_temp(self):
         self.last_update = datetime.now()
-        self.current_temp = self.rtc.get_control_temp()
+        self.current_temp, self.current_hum = self.rtc.get_control_temp()
         logger.info(f"Current Temp: {self.current_temp}°C")
+        logger.info(f"Current Humidity: {self.current_hum}%")
         if self.is_day:
             self.target_temp = self.day_temp
         else:
@@ -146,6 +148,7 @@ class Schedule:
             'equipment': self.equipment_mapping,
             'manual_control': self.manual_control,
             'current_temp': self.current_temp,
+            'current_hum': self.current_hum,
             'target_temp': self.target_temp,
             'day_temp': self.day_temp,
             'night_temp': self.night_temp,
@@ -214,7 +217,7 @@ def handle_set_target_temperature(data):
 
 def run_controller():
     with app.app_context():
-        schedule.controller(30)
+        schedule.controller(0)
 
 
 def main():

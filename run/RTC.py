@@ -106,7 +106,7 @@ class RTC:
         hum_final = sum(hum_list) / len(temp_list)
         self.control_temp = round(temp_final, 1)
         self.control_hum = round(hum_final, 1)
-        return temp_final
+        return temp_final, hum_final
 
     def controller(self, equipment, status):
 
@@ -122,7 +122,7 @@ class RTC:
             '温度': f"{self.control_temp} ℃",
             '湿度': f"{self.control_hum} %",
             '陶瓷灯': self.status.get("陶瓷灯"),
-            '目标温度': f"{target_temp}",
+            '目标温度': target_temp,
             '日光灯': self.status.get('日光灯'),
             'UV 灯': self.status.get("UV 灯"),
             '降温风扇': self.status.get('降温风扇'),

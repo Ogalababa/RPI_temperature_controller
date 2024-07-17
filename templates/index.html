@@ -21,6 +21,13 @@
         .equipment div {
             margin-bottom: 10px;
         }
+        .gauge-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -28,7 +35,11 @@
         <h1 class="text-center my-4">设备控制面板</h1>
         <div class="status">
             <h2>当前状态</h2>
+            <div class="gauge-container">
+                <canvas id="tempGauge"></canvas>
+            </div>
             <p>当前温度: <span id="current_temp" class="font-weight-bold"></span>°C</p>
+            <p>当前湿度: <span id="current_hum" class="font-weight-bold"></span>%</p>
             <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
             <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
             <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
@@ -54,8 +65,10 @@
         </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const socket = io();
+        let gaugeChart;
 
         socket.on('status_update', function (data) {
             updateStatus(data);
@@ -72,6 +85,7 @@
 
         function updateStatus(data) {
             document.getElementById('current_temp').innerText = data.current_temp;
+            document.getElementById('current_hum').innerText = data.current_hum;
             document.getElementById('target_temp').innerText = data.target_temp;
             document.getElementById('day_temp').innerText = data.day_temp;
             document.getElementById('night_temp').innerText = data.night_temp;
@@ -79,6 +93,8 @@
             document.getElementById('is_day').innerText = data.is_day ? '白天' : '夜晚';
             document.getElementById('is_uv').innerText = data.is_uv ? '开启' : '关闭';
             document.getElementById('last_update').innerText = new Date(data.last_update).toLocaleString();
+
+            updateGauge(data.current_temp);
 
             const equipmentControls = document.getElementById('equipment_controls');
             equipmentControls.innerHTML = '';
@@ -116,10 +132,59 @@
             alert(data.message);
         }
 
-        // Initial fetch to populate the status
+        function updateGauge(temp) {
+            if (gaugeChart) {
+                gaugeChart.data.datasets[0].data[0] = temp;
+                gaugeChart.update();
+            }
+        }
+
+        function createGauge() {
+            const ctx = document.getElementById('tempGauge').getContext('2d');
+            gaugeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['温度'],
+                    datasets: [{
+                        data: [0],
+                        backgroundColor: ['#FF6384'],
+                        borderWidth: 1,
+                        circumference: 180,
+                        rotation: 270,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: '当前温度'
+                    },
+                    tooltips: {
+                        enabled: false
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    },
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            formatter: function(value, context) {
+                                return value + '°C';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial fetch to populate the status and create the gauge
         fetch('/status')
             .then(response => response.json())
-            .then(data => updateStatus(data));
+            .then(data => {
+                updateStatus(data);
+                createGauge();
+            });
     </script>
 </body>
 </html>
