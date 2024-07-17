@@ -146,7 +146,7 @@ class Schedule:
             'target_temp': self.target_temp,
             'temp_status': self.temp_status,
             'is_day': self.is_day,
-            'last_update': self.last_update
+            'last_update': self.last_update.isoformat() if self.last_update else None
         }
 
 
