@@ -24,7 +24,7 @@ schedule = None
 
 
 class Schedule:
-    def __init__(self, day_time=8, uv_start_time=12, night_time=22, day_temp=30, night_temp=28, target_temp=27):
+    def __init__(self, day_time=9, uv_start_time=16, night_time=22, day_temp=26, night_temp=22, target_temp=25):
         self.rtc = RTC()
         self.day_time = day_time
         self.night_time = night_time
@@ -206,9 +206,9 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add_argument('--day_temp', type=int, default=30, help='Day temperature')
-    parser.add_argument('--night_temp', type=int, default=28, help='Night temperature')
-    parser.add_argument('--target_temp', type=int, default=29, help='Target temperature')
+    parser.add_argument('--day_temp', type=int, default=27, help='Day temperature')
+    parser.add_argument('--night_temp', type=int, default=22, help='Night temperature')
+    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数
