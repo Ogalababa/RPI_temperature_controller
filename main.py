@@ -4,13 +4,13 @@
 import argparse
 import time
 from datetime import datetime
-from run.RTC import RTC
 import logging
 import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 import eventlet
 eventlet.monkey_patch()
+from run.RTC import RTC
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -134,7 +134,8 @@ class Schedule:
                 self.equipment_actions()
                 self.rtc.save_to_json(self.target_temp)
 
-                socketio.emit('status_update', self.get_status_data())  # 发送更新状态到客户端
+                with app.app_context():
+                    socketio.emit('status_update', self.get_status_data())  # 发送更新状态到客户端
 
                 time.sleep(sec)  # 确保每分钟执行一次
         except KeyboardInterrupt:
@@ -187,10 +188,12 @@ def control_equipment():
             else:
                 schedule.manual_control[equipment] = False
             schedule.equipment_action(equipment, action)
-            socketio.emit('status_update', schedule.get_status_data())  # 发送更新状态到客户端
+            with app.app_context():
+                socketio.emit('status_update', schedule.get_status_data())  # 发送更新状态到客户端
             return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
         else:
             return jsonify({'message': 'Invalid equipment or action'}), 400
+
 
 @socketio.on('set_temperature')
 def handle_set_temperature(data):
@@ -198,10 +201,12 @@ def handle_set_temperature(data):
         new_temp = data.get('target_temp')
         if new_temp is not None:
             schedule.target_temp = new_temp
-            socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
-            emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': new_temp})
+            with app.app_context():
+                socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
+                emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': new_temp})
         else:
             emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
+
 
 def run_controller():
     schedule.controller(30)
@@ -215,10 +220,10 @@ def main():
     # 添加参数
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
-    parser.add.argument('--night_time', type=int, default=22, help='Night time')
+    parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--day_temp', type=int, default=27, help='Day temperature')
-    parser.add.argument('--night_temp', type=int, default=22, help='Night temperature')
-    parser.add.argument('--target_temp', type=int, default=25, help='Target temperature')
+    parser.add_argument('--night_temp', type=int, default=22, help='Night temperature')
+    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数
