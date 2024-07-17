@@ -21,6 +21,9 @@
         .equipment div {
             margin-bottom: 10px;
         }
+        .temperature-status {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -28,7 +31,7 @@
         <h1 class="text-center my-4">设备控制面板</h1>
         <div class="status">
             <h2>当前状态</h2>
-            <p>当前温度: <span id="current_temp" class="font-weight-bold"></span>°C</p>
+            <p>当前温度: <span id="current_temp" class="temperature-status"></span>°C</p>
             <p>当前湿度: <span id="current_hum" class="font-weight-bold"></span>%</p>
             <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
             <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
@@ -72,7 +75,18 @@
         });
 
         function updateStatus(data) {
-            document.getElementById('current_temp').innerText = data.current_temp;
+            const currentTempElem = document.getElementById('current_temp');
+            currentTempElem.innerText = data.current_temp;
+
+            // 根据温度设置颜色
+            if (data.current_temp < 20) {
+                currentTempElem.style.color = 'blue';
+            } else if (data.current_temp > 28) {
+                currentTempElem.style.color = 'red';
+            } else {
+                currentTempElem.style.color = 'green';
+            }
+
             document.getElementById('current_hum').innerText = data.current_hum;
             document.getElementById('target_temp').innerText = data.target_temp;
             document.getElementById('day_temp').innerText = data.day_temp;
