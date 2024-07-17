@@ -9,6 +9,8 @@ import logging
 import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
+import eventlet
+eventlet.monkey_patch()
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -44,7 +46,7 @@ class Schedule:
         self.equipment_mapping = {
             '降温风扇': self.rtc.OFF,
             '陶瓷灯': self.rtc.OFF,
-            'UV 灯': self.rtc.OFF,
+            'UV 灂': self.rtc.OFF,
             '日光灯': self.rtc.OFF,
         }
 
@@ -101,11 +103,11 @@ class Schedule:
                 self.change_mapping_status('日光灯', self.rtc.ON)
             else:
                 self.change_mapping_status('日光灯', self.rtc.OFF)
-        if not self.manual_control['UV 灯']:
+        if not self.manual_control['UV 灂']:
             if self.is_uv:
-                self.change_mapping_status('UV 灯', self.rtc.ON)
+                self.change_mapping_status('UV 灂', self.rtc.ON)
             else:
-                self.change_mapping_status('UV 灯', self.rtc.OFF)
+                self.change_mapping_status('UV 灂', self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
@@ -192,7 +194,7 @@ def control_equipment():
 
 
 def run_controller():
-    schedule.controller(0)
+    schedule.controller(30)
 
 
 def main():
@@ -222,7 +224,7 @@ def main():
     controller_thread.start()
 
     # 启动 Flask-SocketIO 应用
-    socketio.run(app, host='0.0.0.0', port=520)
+    socketio.run(app, host='0.0.0.0', port=520, allow_unsafe_werkzeug=True)
 
 
 if __name__ == "__main__":
