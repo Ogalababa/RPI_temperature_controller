@@ -192,9 +192,19 @@ def control_equipment():
         else:
             return jsonify({'message': 'Invalid equipment or action'}), 400
 
+@socketio.on('set_temperature')
+def handle_set_temperature(data):
+    with lock:
+        new_temp = data.get('target_temp')
+        if new_temp is not None:
+            schedule.target_temp = new_temp
+            socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
+            emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': new_temp})
+        else:
+            emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
 
 def run_controller():
-    schedule.controller(0)
+    schedule.controller(30)
 
 
 def main():
@@ -205,10 +215,10 @@ def main():
     # 添加参数
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
-    parser.add_argument('--night_time', type=int, default=22, help='Night time')
+    parser.add.argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--day_temp', type=int, default=27, help='Day temperature')
-    parser.add_argument('--night_temp', type=int, default=22, help='Night temperature')
-    parser.add_argument('--target_temp', type=int, default=25, help='Target temperature')
+    parser.add.argument('--night_temp', type=int, default=22, help='Night temperature')
+    parser.add.argument('--target_temp', type=int, default=25, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=300, help='Parameter for controller method')
 
     # 解析命令行参数

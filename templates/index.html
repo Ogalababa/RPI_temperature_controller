@@ -11,7 +11,7 @@
             background-color: #f8f9fa;
             padding: 20px;
         }
-        .status, .equipment {
+        .status, .equipment, .temperature-control {
             margin-bottom: 20px;
             padding: 20px;
             background-color: #ffffff;
@@ -35,6 +35,17 @@
             <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
             <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
         </div>
+        <div class="temperature-control">
+            <h2>设定温度</h2>
+            <form id="set_temp_form">
+                <div class="form-group">
+                    <label for="new_target_temp">新的目标温度 (°C):</label>
+                    <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
+                </div>
+                <button type="submit" class="btn btn-primary">设定温度</button>
+            </form>
+            <p id="set_temp_message" class="mt-3"></p>
+        </div>
         <div class="equipment">
             <h2>设备控制</h2>
             <div id="equipment_controls" class="row"></div>
@@ -46,6 +57,13 @@
 
         socket.on('status_update', function (data) {
             updateStatus(data);
+        });
+
+        socket.on('temperature_set', function (data) {
+            document.getElementById('set_temp_message').innerText = data.message;
+            if (data.target_temp !== undefined) {
+                document.getElementById('target_temp').innerText = data.target_temp;
+            }
         });
 
         function updateStatus(data) {
@@ -75,6 +93,12 @@
                 equipmentControls.appendChild(controlDiv);
             }
         }
+
+        document.getElementById('set_temp_form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const newTargetTemp = document.getElementById('new_target_temp').value;
+            socket.emit('set_temperature', { target_temp: newTargetTemp });
+        });
 
         async function controlEquipment(equipment, action, mode) {
             const response = await fetch('/control', {
