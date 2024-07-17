@@ -69,7 +69,7 @@ class Schedule:
         self.current_temp, self.current_hum = self.rtc.get_control_temp()
         logger.info(f"Current Temp: {self.current_temp}°C")
         logger.info(f"Current Hum: {self.current_hum}%")
-        if self.is_day:
+        if self.is_day or self.is_uv:
             self.target_temp = self.day_temp
         else:
             self.target_temp = self.night_temp
@@ -154,6 +154,7 @@ class Schedule:
             'night_temp': self.night_temp,
             'temp_status': self.temp_status,
             'is_day': self.is_day,
+            'is_uv': self.is_uv,
             'last_update': self.last_update.isoformat() if self.last_update else None
         }
 
@@ -165,18 +166,15 @@ socketio = SocketIO(app)
 # 全局锁用于线程同步
 lock = threading.Lock()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/status', methods=['GET'])
 def get_status():
     with lock:
         status = schedule.get_status_data()
     return jsonify(status)
-
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
@@ -198,7 +196,6 @@ def control_equipment():
             return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
         else:
             return jsonify({'message': 'Invalid equipment or action'}), 400
-
 
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):
