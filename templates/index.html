@@ -11,15 +11,9 @@
             background-color: #f8f9fa;
             padding: 20px;
         }
-        .status, .equipment, .temperature-control {
+        .card {
             margin-bottom: 20px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .equipment div {
-            margin-bottom: 10px;
         }
         .status-value {
             font-weight: bold;
@@ -27,8 +21,14 @@
             border-radius: 5px;
             color: #fff; /* Set text color to white for better contrast */
         }
-        .status p, .temperature-control p, .equipment h2 {
-            margin-bottom: 0.5rem;
+        .bg-cold {
+            background-color: #007bff; /* Bootstrap primary color */
+        }
+        .bg-hot {
+            background-color: #dc3545; /* Bootstrap danger color */
+        }
+        .bg-normal {
+            background-color: #28a745; /* Bootstrap success color */
         }
     </style>
 </head>
@@ -37,36 +37,42 @@
         <h1 class="text-center my-4">设备控制面板</h1>
         <div class="row">
             <div class="col-md-6">
-                <div class="status">
-                    <h2>当前状态</h2>
-                    <p>当前温度: <span id="current_temp" class="status-value"></span></p>
-                    <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
-                    <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
-                    <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
-                    <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
-                    <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
-                    <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
-                    <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
-                    <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
+                <div class="card">
+                    <div class="card-body">
+                        <h2>当前状态</h2>
+                        <p>当前温度: <span id="current_temp" class="status-value"></span></p>
+                        <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
+                        <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
+                        <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
+                        <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
+                        <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
+                        <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
+                        <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+                        <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="temperature-control">
-                    <h2>设定目标温度</h2>
-                    <form id="set_temp_form">
-                        <div class="form-group">
-                            <label for="new_target_temp">新的目标温度 (°C):</label>
-                            <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">设定温度</button>
-                    </form>
-                    <p id="set_temp_message" class="mt-3"></p>
+                <div class="card">
+                    <div class="card-body">
+                        <h2>设定目标温度</h2>
+                        <form id="set_temp_form">
+                            <div class="form-group">
+                                <label for="new_target_temp">新的目标温度 (°C):</label>
+                                <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">设定温度</button>
+                        </form>
+                        <p id="set_temp_message" class="mt-3"></p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="equipment">
-            <h2>设备控制</h2>
-            <div id="equipment_controls" class="row"></div>
+        <div class="card">
+            <div class="card-body">
+                <h2>设备控制</h2>
+                <div id="equipment_controls" class="row"></div>
+            </div>
         </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -92,11 +98,14 @@
 
             // 根据温度设置背景颜色
             if (data.current_temp < 20) {
-                currentTempElem.style.backgroundColor = 'blue';
+                currentTempElem.classList.remove('bg-hot', 'bg-normal');
+                currentTempElem.classList.add('bg-cold');
             } else if (data.current_temp > 28) {
-                currentTempElem.style.backgroundColor = 'red';
+                currentTempElem.classList.remove('bg-cold', 'bg-normal');
+                currentTempElem.classList.add('bg-hot');
             } else {
-                currentTempElem.style.backgroundColor = 'green';
+                currentTempElem.classList.remove('bg-cold', 'bg-hot');
+                currentTempElem.classList.add('bg-normal');
             }
 
             const currentHumElem = document.getElementById('current_hum');
@@ -104,11 +113,14 @@
 
             // 根据湿度设置背景颜色
             if (data.current_hum < 60) {
-                currentHumElem.style.backgroundColor = 'blue';
+                currentHumElem.classList.remove('bg-hot', 'bg-normal');
+                currentHumElem.classList.add('bg-cold');
             } else if (data.current_hum > 70) {
-                currentHumElem.style.backgroundColor = 'red';
+                currentHumElem.classList.remove('bg-cold', 'bg-normal');
+                currentHumElem.classList.add('bg-hot');
             } else {
-                currentHumElem.style.backgroundColor = 'green';
+                currentHumElem.classList.remove('bg-cold', 'bg-hot');
+                currentHumElem.classList.add('bg-normal');
             }
 
             document.getElementById('target_temp').innerText = data.target_temp;
