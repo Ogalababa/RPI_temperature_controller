@@ -194,7 +194,7 @@ def control_equipment():
 
 
 def run_controller():
-    schedule.controller(30)
+    schedule.controller(0)
 
 
 def main():
