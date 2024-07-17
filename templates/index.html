@@ -27,33 +27,42 @@
             border-radius: 5px;
             color: #fff; /* Set text color to white for better contrast */
         }
+        .status p, .temperature-control p, .equipment h2 {
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="text-center my-4">设备控制面板</h1>
-        <div class="status">
-            <h2>当前状态</h2>
-            <p>当前温度: <span id="current_temp" class="status-value"></span></p>
-            <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
-            <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
-            <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
-            <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
-            <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
-            <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
-            <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
-            <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
-        </div>
-        <div class="temperature-control">
-            <h2>设定目标温度</h2>
-            <form id="set_temp_form">
-                <div class="form-group">
-                    <label for="new_target_temp">新的目标温度 (°C):</label>
-                    <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="status">
+                    <h2>当前状态</h2>
+                    <p>当前温度: <span id="current_temp" class="status-value"></span></p>
+                    <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
+                    <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
+                    <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
+                    <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
+                    <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
+                    <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
+                    <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+                    <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
                 </div>
-                <button type="submit" class="btn btn-primary">设定温度</button>
-            </form>
-            <p id="set_temp_message" class="mt-3"></p>
+            </div>
+            <div class="col-md-6">
+                <div class="temperature-control">
+                    <h2>设定目标温度</h2>
+                    <form id="set_temp_form">
+                        <div class="form-group">
+                            <label for="new_target_temp">新的目标温度 (°C):</label>
+                            <input type="number" class="form-control" id="new_target_temp" name="new_target_temp" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">设定温度</button>
+                    </form>
+                    <p id="set_temp_message" class="mt-3"></p>
+                </div>
+            </div>
         </div>
         <div class="equipment">
             <h2>设备控制</h2>
