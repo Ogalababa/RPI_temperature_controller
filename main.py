@@ -67,18 +67,24 @@ class Schedule:
 
     def check_temp(self):
         self.last_update = datetime.now()
-        self.current_temp, self.current_hum = self.rtc.get_control_temp()
-        logger.info(f"Current Temp: {self.current_temp}°C")
-        logger.info(f"Current Hum: {self.current_hum}%")
+        try:
+            self.current_temp, self.current_hum = self.rtc.get_control_temp()
+            logger.info(f"Current Temp: {self.current_temp}°C")
+            logger.info(f"Current Hum: {self.current_hum}%")
+        except Exception as e:
+            logger.error(f"Error getting control temp: {e}")
+            return
+
         if self.is_day or self.is_uv:
             self.target_temp = self.day_temp
         else:
             self.target_temp = self.night_temp
         logger.info(f"Target Temp: {self.target_temp}°C")
 
-        if float(self.current_temp) - float(self.target_temp) >= 2:
+        temp_diff = float(self.current_temp) - float(self.target_temp)
+        if temp_diff >= 2:
             self.temp_status = 'hot'
-        elif float(self.current_temp) - float(self.target_temp) <= -2:
+        elif temp_diff <= -2:
             self.temp_status = 'cold'
         else:
             self.temp_status = 'good'
@@ -89,6 +95,11 @@ class Schedule:
             if manual:
                 self.manual_control[equipment] = True
             self.equipment_mapping[equipment] = status
+
+    def set_equipment_status(self, equipment, status):
+        if equipment in self.equipment_mapping:
+            self.equipment_mapping[equipment] = status
+            logger.info(f"Set {equipment} to {'ON' if status == self.rtc.ON else 'OFF'}")
 
     def equipment_action(self, equipment, desired_status):
         current_status = self.rtc.status.get(equipment, self.rtc.OFF)
@@ -102,30 +113,24 @@ class Schedule:
 
     def control_lamps(self):
         if not self.manual_control['日光灯']:
-            if self.is_day:
-                self.change_mapping_status('日光灯', self.rtc.ON)
-            else:
-                self.change_mapping_status('日光灯', self.rtc.OFF)
+            self.set_equipment_status('日光灯', self.rtc.ON if self.is_day else self.rtc.OFF)
         if not self.manual_control['UV 灯']:
-            if self.is_uv:
-                self.change_mapping_status('UV 灯', self.rtc.ON)
-            else:
-                self.change_mapping_status('UV 灯', self.rtc.OFF)
+            self.set_equipment_status('UV 灯', self.rtc.ON if self.is_uv else self.rtc.OFF)
 
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
             if self.temp_status == 'hot':
                 if self.current_temp >= self.day_temp:
-                    self.change_mapping_status('降温风扇', self.rtc.ON)
-                self.change_mapping_status('陶瓷灯', self.rtc.OFF)
+                    self.set_equipment_status('降温风扇', self.rtc.ON)
+                self.set_equipment_status('陶瓷灯', self.rtc.OFF)
             elif self.temp_status == 'cold':
-                self.change_mapping_status('降温风扇', self.rtc.OFF)
-                self.change_mapping_status('陶瓷灯', self.rtc.ON)
+                self.set_equipment_status('降温风扇', self.rtc.OFF)
+                if self.current_temp <= self.night_temp:
+                    self.set_equipment_status('陶瓷灯', self.rtc.ON)
             else:
-                if self.rtc.status.get('降温风扇',
-                                       self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
-                    self.change_mapping_status('降温风扇', self.rtc.OFF)
-                self.change_mapping_status('陶瓷灯', self.rtc.OFF)
+                if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
+                    self.set_equipment_status('降温风扇', self.rtc.OFF)
+                self.set_equipment_status('陶瓷灯', self.rtc.OFF)
 
     def controller(self, sec):
         try:
@@ -183,24 +188,24 @@ def get_status():
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
-    with lock:
-        data = request.json
-        equipment = data.get('equipment')
-        action = data.get('action')
-        mode = data.get('mode', 'auto')  # 默认为自动模式
-        if equipment in schedule.equipment_mapping and action in [schedule.rtc.ON, schedule.rtc.OFF]:
-            manual = mode == 'manual'
+    data = request.json
+    equipment = data.get('equipment')
+    action = data.get('action')
+    mode = data.get('mode', 'auto')  # 默认为自动模式
+    if equipment in schedule.equipment_mapping and action in [schedule.rtc.ON, schedule.rtc.OFF]:
+        manual = mode == 'manual'
+        with lock:
             if manual:
                 schedule.manual_control[equipment] = True
                 schedule.change_mapping_status(equipment, action, manual=True)
             else:
                 schedule.manual_control[equipment] = False
             schedule.equipment_action(equipment, action)
-            with app.app_context():
-                socketio.emit('status_update', schedule.get_status_data())  # 发送更新状态到客户端
-            return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
-        else:
-            return jsonify({'message': 'Invalid equipment or action'}), 400
+        with app.app_context():
+            socketio.emit('status_update', schedule.get_status_data())  # 发送更新状态到客户端
+        return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
+    else:
+        return jsonify({'message': 'Invalid equipment or action'}), 400
 
 
 @socketio.on('set_target_temperature')
