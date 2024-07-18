@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # coding:utf-8
 import eventlet
+
 eventlet.monkey_patch()
 
 import argparse
@@ -114,7 +115,8 @@ class Schedule:
     def control_fans_and_heaters(self):
         if not self.manual_control['降温风扇'] and not self.manual_control['陶瓷灯']:
             if self.temp_status == 'hot':
-                self.change_mapping_status('降温风扇', self.rtc.ON)
+                if self.current_temp >= self.day_temp:
+                    self.change_mapping_status('降温风扇', self.rtc.ON)
                 self.change_mapping_status('陶瓷灯', self.rtc.OFF)
             elif self.temp_status == 'cold':
                 self.change_mapping_status('降温风扇', self.rtc.OFF)
@@ -166,15 +168,18 @@ socketio = SocketIO(app)
 # 全局锁用于线程同步
 lock = threading.Lock()
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/status', methods=['GET'])
 def get_status():
     with lock:
         status = schedule.get_status_data()
     return jsonify(status)
+
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
@@ -196,6 +201,7 @@ def control_equipment():
             return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
         else:
             return jsonify({'message': 'Invalid equipment or action'}), 400
+
 
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):

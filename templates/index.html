@@ -19,16 +19,19 @@
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 5px;
-            color: #fff; /* Set text color to white for better contrast */
+            color: #fff;
         }
         .bg-cold {
-            background-color: #007bff; /* Bootstrap primary color */
+            background-color: #007bff;
         }
         .bg-hot {
-            background-color: #dc3545; /* Bootstrap danger color */
+            background-color: #dc3545;
         }
         .bg-normal {
-            background-color: #28a745; /* Bootstrap success color */
+            background-color: #28a745;
+        }
+        .bg-uv {
+            background-color: #ffc107;
         }
     </style>
 </head>
@@ -127,7 +130,11 @@
             document.getElementById('day_temp').innerText = data.day_temp;
             document.getElementById('night_temp').innerText = data.night_temp;
             document.getElementById('temp_status').innerText = data.temp_status;
-            document.getElementById('is_day').innerText = data.is_day ? '白天' : '夜晚';
+
+            let dayStatus = '夜晚';
+            if (data.is_day) dayStatus = '白天';
+            if (data.is_uv) dayStatus = 'UV';
+            document.getElementById('is_day').innerText = dayStatus;
             document.getElementById('is_uv').innerText = data.is_uv ? '开启' : '关闭';
             document.getElementById('last_update').innerText = new Date(data.last_update).toLocaleString();
 
