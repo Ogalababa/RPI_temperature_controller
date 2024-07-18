@@ -122,11 +122,16 @@ class Schedule:
             if self.temp_status == 'hot':
                 if self.current_temp >= self.day_temp:
                     self.set_equipment_status('降温风扇', self.rtc.ON)
+                else:
+                    self.set_equipment_status('降温风扇', self.rtc.OFF)
                 self.set_equipment_status('陶瓷灯', self.rtc.OFF)
+
             elif self.temp_status == 'cold':
                 self.set_equipment_status('降温风扇', self.rtc.OFF)
                 if self.current_temp <= self.night_temp:
                     self.set_equipment_status('陶瓷灯', self.rtc.ON)
+                else:
+                    self.set_equipment_status('陶瓷灯', self.rtc.OFF)
             else:
                 if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
                     self.set_equipment_status('降温风扇', self.rtc.OFF)
