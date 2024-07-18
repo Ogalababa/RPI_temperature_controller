@@ -88,7 +88,7 @@ class RTC:
         hum_list = []
 
         for i in range(self.NUM_RETRIES):
-            time.sleep(5)
+            time.sleep(3)
             hum, temp = DHT.read_retry(self.TEMP_SENSOR, self.PINS["INPUT"]["TERMO_CL"])
 
             if temp is not None and hum is not None:
