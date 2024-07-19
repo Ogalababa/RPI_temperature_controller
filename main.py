@@ -150,7 +150,9 @@ class Schedule:
                 self.rtc.save_to_json(self.target_temp)
 
                 with app.app_context():
-                    socketio.emit('status_update', self.get_status_data())  # 发送更新状态到客户端
+                    data = self.get_status_data()
+                    logger.info(f"Emitting status_update event: {data}")
+                    socketio.emit('status_update', data)  # 发送更新状态到客户端
 
                 time.sleep(sec)  # 确保每分钟执行一次
         except KeyboardInterrupt:
@@ -223,10 +225,13 @@ def handle_set_target_temperature(data):
             schedule.day_temp = float(target_temp)
             schedule.night_temp = float(target_temp) - 4
             with app.app_context():
-                socketio.emit('status_update', schedule.get_status_data())  # 更新状态到客户端
+                status_data = schedule.get_status_data()
+                logger.info(f"Emitting status_update event: {status_data}")
+                socketio.emit('status_update', status_data)  # 更新状态到客户端
                 emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
         else:
             emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
+
 
 
 def run_controller():
