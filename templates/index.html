@@ -39,19 +39,29 @@
     <div class="container">
         <h1 class="text-center my-4">设备控制面板</h1>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <h2>当前状态</h2>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <p>当前温度: <span id="current_temp" class="status-value"></span></p>
                                 <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
                                 <p>控制室温度: <span id="control_temp" class="status-value"></span></p>
                                 <p>控制室湿度: <span id="control_hum" class="status-value"></span></p>
+                                <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
                                 <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
                             </div>
-                            <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>当前状态</h2>
+                        <div class="row">
+                            <div class="col-md-12">
                                 <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
                                 <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
                                 <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
@@ -61,8 +71,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <h2>设定目标温度</h2>
