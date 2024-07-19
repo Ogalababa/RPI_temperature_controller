@@ -135,10 +135,10 @@
             currentTempElem.innerText = data.control_temp + '°C';
 
             // 根据温度设置背景颜色
-            if (data.current_temp < 20) {
+            if (data.control_temp < 20) {
                 currentTempElem.classList.remove('bg-hot', 'bg-normal');
                 currentTempElem.classList.add('bg-cold');
-            } else if (data.current_temp > 40) {
+            } else if (data.control_temp > 40) {
                 currentTempElem.classList.remove('bg-cold', 'bg-normal');
                 currentTempElem.classList.add('bg-hot');
             } else {
@@ -150,10 +150,10 @@
             currentHumElem.innerText = data.control_hum + '%';
 
             // 根据湿度设置背景颜色
-            if (data.current_hum < 30) {
+            if (data.control_hum < 30) {
                 currentHumElem.classList.remove('bg-hot', 'bg-normal');
                 currentHumElem.classList.add('bg-cold');
-            } else if (data.current_hum > 60) {
+            } else if (data.control_hum > 60) {
                 currentHumElem.classList.remove('bg-cold', 'bg-normal');
                 currentHumElem.classList.add('bg-hot');
             } else {
