@@ -45,6 +45,8 @@
                         <h2>当前状态</h2>
                         <p>当前温度: <span id="current_temp" class="status-value"></span></p>
                         <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
+                        <p>控制室温度: <span id="control_temp" class="status-value"></span></p>
+                        <p>控制室湿度: <span id="control_hum" class="status-value"></span></p>
                         <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
                         <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
                         <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
@@ -100,32 +102,14 @@
             const currentTempElem = document.getElementById('current_temp');
             currentTempElem.innerText = data.current_temp + '°C';
 
-            // 根据温度设置背景颜色
-            if (data.current_temp < 20) {
-                currentTempElem.classList.remove('bg-hot', 'bg-normal');
-                currentTempElem.classList.add('bg-cold');
-            } else if (data.current_temp > 28) {
-                currentTempElem.classList.remove('bg-cold', 'bg-normal');
-                currentTempElem.classList.add('bg-hot');
-            } else {
-                currentTempElem.classList.remove('bg-cold', 'bg-hot');
-                currentTempElem.classList.add('bg-normal');
-            }
-
             const currentHumElem = document.getElementById('current_hum');
             currentHumElem.innerText = data.current_hum + '%';
 
-            // 根据湿度设置背景颜色
-            if (data.current_hum < 60) {
-                currentHumElem.classList.remove('bg-hot', 'bg-normal');
-                currentHumElem.classList.add('bg-cold');
-            } else if (data.current_hum > 70) {
-                currentHumElem.classList.remove('bg-cold', 'bg-normal');
-                currentHumElem.classList.add('bg-hot');
-            } else {
-                currentHumElem.classList.remove('bg-cold', 'bg-hot');
-                currentHumElem.classList.add('bg-normal');
-            }
+            const controlTempElem = document.getElementById('control_temp');
+            controlTempElem.innerText = data.control_temp + '°C';
+
+            const controlHumElem = document.getElementById('control_hum');
+            controlHumElem.innerText = data.control_hum + '%';
 
             document.getElementById('target_temp').innerText = data.target_temp;
             document.getElementById('day_temp').innerText = data.day_temp;

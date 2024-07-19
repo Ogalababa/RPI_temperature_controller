@@ -72,8 +72,8 @@ class Schedule:
             # self.control_temp, self.control_hum = self.rtc.get_control_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
-            # logger.info(f"Control Room Temp: {self.current_temp}°C")
-            # logger.info(f"Control Room Hum: {self.current_hum}%")
+            logger.info(f"Control Room Temp: {self.control_temp}°C")
+            logger.info(f"Control Room Hum: {self.control_temp}%")
         except Exception as e:
             logger.error(f"Error getting control temp: {e}")
             return
@@ -165,6 +165,8 @@ class Schedule:
             'manual_control': self.manual_control,
             'current_temp': self.current_temp,
             'current_hum': self.current_hum,
+            'control_temp': self.control_temp,
+            'control_hum': self.control_hum,
             'target_temp': self.target_temp,
             'day_temp': self.day_temp,
             'night_temp': self.night_temp,
