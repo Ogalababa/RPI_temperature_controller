@@ -74,7 +74,6 @@ def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5, ret
             logger.info(f"Attempt {counter}/{max_retries}: Target data not found, rescanning...")
             time.sleep(retry_delay)
 
-
     if scanner.delegate.found:
         return scanner.delegate.temperature, scanner.delegate.humidity
     else:
