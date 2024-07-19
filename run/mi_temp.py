@@ -1,9 +1,10 @@
 # ！/usr/bin/python3
 # coding:utf-8
 # /run.mi_temp.py
-from bluepy.btle import Scanner, DefaultDelegate
+from bluepy.btle import Scanner, DefaultDelegate, BTLEException
 import time
 import logging
+import subprocess
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -45,15 +46,34 @@ def parse_mi_service_data(service_data):
     return temperature, humidity
 
 
+def reset_bluetooth_adapter():
+    try:
+        subprocess.run(["sudo", "hciconfig", "hci0", "down"])
+        time.sleep(1)
+        subprocess.run(["sudo", "hciconfig", "hci0", "up"])
+        time.sleep(1)
+    except Exception as e:
+        logger.error(f"Failed to reset Bluetooth adapter: {e}")
+
+
 def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5, retry_delay=1):
     scanner = Scanner().withDelegate(ScanDelegate(target_mac))
     counter = 0
     while not scanner.delegate.found and counter < max_retries:
-        scanner.scan(scan_time)
+
+        try:
+            reset_bluetooth_adapter()
+            scanner.scan(scan_time)
+        except BTLEException as e:
+            logger.error(f"Bluetooth error: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+
         counter += 1
         if not scanner.delegate.found:
             logger.info(f"Attempt {counter}/{max_retries}: Target data not found, rescanning...")
             time.sleep(retry_delay)
+
 
     if scanner.delegate.found:
         return scanner.delegate.temperature, scanner.delegate.humidity
