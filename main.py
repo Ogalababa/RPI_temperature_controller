@@ -17,6 +17,7 @@ from run.RTC import RTC
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     handlers=[logging.StreamHandler()])  # 输出到控制台
+
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
