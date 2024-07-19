@@ -1,5 +1,7 @@
-#!/usr/bin/python3
-# coding:utf-8
+# 在文件开头进行猴子补丁
+import eventlet
+eventlet.monkey_patch()
+
 import argparse
 import time
 from datetime import datetime
@@ -8,11 +10,6 @@ import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from run.RTC import RTC
-
-import eventlet
-
-# 在导入其他库后再打猴子补丁
-eventlet.monkey_patch()
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -69,8 +66,7 @@ class Schedule:
     def check_temp(self):
         self.last_update = datetime.now()
         try:
-            # self.current_temp, self.current_hum = self.rtc.get_room_temp()
-            self.current_temp, self.current_hum = self.rtc.get_control_temp()
+            self.current_temp, self.current_hum = self.rtc.get_room_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
         except Exception as e:
