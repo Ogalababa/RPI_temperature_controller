@@ -1,3 +1,7 @@
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
+# /run.mi_temp.py
 from bluepy.btle import Scanner, DefaultDelegate
 
 
@@ -9,7 +13,7 @@ class ScanDelegate(DefaultDelegate):
         self.temperature = None
         self.humidity = None
 
-    def handleDiscovery(self, dev, isNewDev, isNewData):
+    def handle_discovery(self, dev, is_new_dev, is_new_data):
         if dev.addr.lower() == self.target_mac:
             for (adtype, desc, value) in dev.getScanData():
                 if desc == "16b Service Data" and value.startswith("95fe") and len(value) == 40:
