@@ -38,6 +38,8 @@ class Schedule:
         self.temp_status = 'good'
         self.current_temp = 0.0
         self.current_hum = 0.0
+        self.control_temp = 0.0
+        self.control_hum = 0.0
         self.last_update = None
         self.manual_control = {
             '降温风扇': False,
@@ -68,7 +70,8 @@ class Schedule:
     def check_temp(self):
         self.last_update = datetime.now()
         try:
-            self.current_temp, self.current_hum = self.rtc.get_control_temp()
+            self.current_temp, self.current_hum = self.rtc.get_room_temp()
+            self.control_temp, self.control_hum = self.rtc.get_control_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
         except Exception as e:
