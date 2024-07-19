@@ -14,7 +14,7 @@ from run.mi_temp import scan_mi_temp
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    format='%(asctime)s - %(levellevel') - %(message)s',
                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 

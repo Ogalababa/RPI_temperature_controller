@@ -1,7 +1,3 @@
-# ！/usr/bin/python3
-# coding:utf-8
-# sys
-# /run.mi_temp.py
 from bluepy.btle import Scanner, DefaultDelegate
 
 
@@ -55,6 +51,6 @@ def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5):
 
 
 # 调用函数并获取温度和湿度
-if "__name__" == "__main__":
+if __name__ == "__main__":
     temperature, humidity = scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2)
     print(f"Final Temperature: {temperature}°C, Final Humidity: {humidity}%")
