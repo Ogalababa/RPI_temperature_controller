@@ -83,6 +83,7 @@
         const socket = io();
 
         socket.on('status_update', function (data) {
+            console.log("Received status_update event:", data);
             updateStatus(data);
         });
 
@@ -175,9 +176,16 @@
         }
 
         // Initial fetch to populate the status
-        fetch('/status')
-            .then(response => response.json())
-            .then(data => updateStatus(data));
+        function fetchStatus() {
+            fetch('/status')
+                .then(response => response.json())
+                .then(data => updateStatus(data));
+        }
+
+        fetchStatus(); // Initial fetch
+
+        // Set interval to fetch status every 10 seconds
+        setInterval(fetchStatus, 10000); // 10000 milliseconds = 10 seconds
     </script>
 </body>
 </html>
