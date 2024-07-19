@@ -10,6 +10,7 @@ import Adafruit_DHT as DHT
 import RPi.GPIO as GPIO
 from __init__ import *
 import logging
+from mi_temp import scan_mi_temp
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -68,20 +69,16 @@ class RTC:
                 time.sleep(0.1)
 
     def get_room_temp(self):
+        # 先尝试使用 scan_mi_temp 获取温度和湿度
+        result = scan_mi_temp()
+        if result:
+            self.temp, self.hum = result
+        else:
+            # 如果 scan_mi_temp 失败，则使用 get_control_temp
+            print("scan_mi_temp failed, using get_control_temp instead.")
+            self.temp, self.hum = self.get_control_temp()
 
-        temp_list = []
-        hum_list = []
-        termo_list = [i for i in self.PINS["INPUT"].values() if i != self.PINS["INPUT"]["TERMO_CL"]]
-
-        for i in termo_list:
-            hum_1, temp_1 = DHT.read_retry(self.TEMP_SENSOR, i)
-            if temp_1 is not None and hum_1 is not None:
-                temp_list.append(temp_1)
-                hum_list.append(hum_1)
-
-        if temp_list and hum_list:
-            self.temp = round(sum(temp_list) / len(temp_list), 1)
-            self.hum = round(sum(hum_list) / len(hum_list), 1)
+        return self.temp, self.hum
 
     def get_control_temp(self):
         temp_list = []
