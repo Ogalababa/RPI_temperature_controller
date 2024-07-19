@@ -10,7 +10,7 @@ import Adafruit_DHT as DHT
 import RPi.GPIO as GPIO
 from __init__ import *
 import logging
-from mi_temp import scan_mi_temp
+from run.mi_temp import scan_mi_temp
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
