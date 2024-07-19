@@ -132,33 +132,33 @@
 
             // 控制室温度
             const controlTempElem = document.getElementById('control_temp');
-            currentTempElem.innerText = data.control_temp + '°C';
+            controlTempElem.innerText = data.control_temp + '°C';
 
             // 根据温度设置背景颜色
             if (data.control_temp < 20) {
-                currentTempElem.classList.remove('bg-hot', 'bg-normal');
-                currentTempElem.classList.add('bg-cold');
+                controlTempElem.classList.remove('bg-hot', 'bg-normal');
+                controlTempElem.classList.add('bg-cold');
             } else if (data.control_temp > 40) {
-                currentTempElem.classList.remove('bg-cold', 'bg-normal');
-                currentTempElem.classList.add('bg-hot');
+                controlTempElem.classList.remove('bg-cold', 'bg-normal');
+                controlTempElem.classList.add('bg-hot');
             } else {
-                currentTempElem.classList.remove('bg-cold', 'bg-hot');
-                currentTempElem.classList.add('bg-normal');
+                controlTempElem.classList.remove('bg-cold', 'bg-hot');
+                controlTempElem.classList.add('bg-normal');
             }
             // 控制室湿度
             const controlHumElem = document.getElementById('control_hum');
-            currentHumElem.innerText = data.control_hum + '%';
+            controlHumElem.innerText = data.control_hum + '%';
 
             // 根据湿度设置背景颜色
             if (data.control_hum < 30) {
-                currentHumElem.classList.remove('bg-hot', 'bg-normal');
-                currentHumElem.classList.add('bg-cold');
+                controlHumElem.classList.remove('bg-hot', 'bg-normal');
+                controlHumElem.classList.add('bg-cold');
             } else if (data.control_hum > 60) {
-                currentHumElem.classList.remove('bg-cold', 'bg-normal');
-                currentHumElem.classList.add('bg-hot');
+                controlHumElem.classList.remove('bg-cold', 'bg-normal');
+                controlHumElem.classList.add('bg-hot');
             } else {
-                currentHumElem.classList.remove('bg-cold', 'bg-hot');
-                currentHumElem.classList.add('bg-normal');
+                controlHumElem.classList.remove('bg-cold', 'bg-hot');
+                controlHumElem.classList.add('bg-normal');
             }
 
             document.getElementById('target_temp').innerText = data.target_temp;
