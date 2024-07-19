@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # coding:utf-8
-import eventlet
-
-eventlet.monkey_patch()
+# /main.py
 
 import argparse
 import time
@@ -20,7 +18,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode=None)
 schedule = None
 
 
@@ -38,6 +36,8 @@ class Schedule:
         self.temp_status = 'good'
         self.current_temp = 0.0
         self.current_hum = 0.0
+        self.control_temp = 0.0
+        self.control_hum = 0.0
         self.last_update = None
         self.manual_control = {
             '降温风扇': False,
@@ -68,7 +68,8 @@ class Schedule:
     def check_temp(self):
         self.last_update = datetime.now()
         try:
-            self.current_temp, self.current_hum = self.rtc.get_control_temp()
+            self.current_temp, self.current_hum = self.rtc.get_room_temp()
+            self.control_temp, self.control_hum = self.rtc.get_control_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
         except Exception as e:
@@ -173,7 +174,7 @@ class Schedule:
 
 # Flask API 部分
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode=None)
 
 # 全局锁用于线程同步
 lock = threading.Lock()
@@ -230,7 +231,7 @@ def handle_set_target_temperature(data):
 
 def run_controller():
     with app.app_context():
-        schedule.controller(0)
+        schedule.controller(60)
 
 
 def main():
@@ -243,7 +244,7 @@ def main():
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
-    parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
+    parser.add_argument('--sleep', type=int, default=60, help='Parameter for controller method')
 
     # 解析命令行参数
     args = parser.parse_args()
