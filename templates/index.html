@@ -33,6 +33,9 @@
         .bg-uv {
             background-color: #ffc107;
         }
+        #target_temp {
+            display: none; /* 隐藏目标温度的显示部分 */
+        }
     </style>
 </head>
 <body>
@@ -49,7 +52,7 @@
                                 <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
                                 <p>控制室温度: <span id="control_temp" class="status-value"></span></p>
                                 <p>控制室湿度: <span id="control_hum" class="status-value"></span></p>
-<!--                                <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>-->
+                                <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
                                 <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
                             </div>
                             <div class="col-md-6">
