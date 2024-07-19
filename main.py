@@ -69,9 +69,11 @@ class Schedule:
         self.last_update = datetime.now()
         try:
             self.current_temp, self.current_hum = self.rtc.get_room_temp()
-            self.control_temp, self.control_hum = self.rtc.get_control_temp()
+            # self.control_temp, self.control_hum = self.rtc.get_control_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
+            # logger.info(f"Control Room Temp: {self.current_temp}°C")
+            # logger.info(f"Control Room Hum: {self.current_hum}%")
         except Exception as e:
             logger.error(f"Error getting control temp: {e}")
             return
