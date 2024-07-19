@@ -153,7 +153,6 @@ class Schedule:
 
                 with app.app_context():
                     data = self.get_status_data()
-                    logger.info(f"Emitting status_update event: {data}")
                     socketio.emit('status_update', data)  # 发送更新状态到客户端
 
                 time.sleep(sec)  # 确保每分钟执行一次
@@ -228,7 +227,6 @@ def handle_set_target_temperature(data):
             schedule.night_temp = float(target_temp) - 4
             with app.app_context():
                 status_data = schedule.get_status_data()
-                logger.info(f"Emitting status_update event: {status_data}")
                 socketio.emit('status_update', status_data)  # 更新状态到客户端
                 emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
         else:
