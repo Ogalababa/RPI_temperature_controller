@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-# coding:utf-8
+# 在文件开头进行猴子补丁
 import eventlet
-
 eventlet.monkey_patch()
 
 import argparse
@@ -69,6 +67,7 @@ class Schedule:
     def check_temp(self):
         self.last_update = datetime.now()
         try:
+            # self.current_temp, self.current_hum = self.rtc.get_room_temp()
             self.current_temp, self.current_hum = self.rtc.get_control_temp()
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
