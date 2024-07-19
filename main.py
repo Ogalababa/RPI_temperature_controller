@@ -231,7 +231,7 @@ def handle_set_target_temperature(data):
 
 def run_controller():
     with app.app_context():
-        schedule.controller(60)
+        schedule.controller(0)
 
 
 def main():
@@ -244,7 +244,7 @@ def main():
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
-    parser.add_argument('--sleep', type=int, default=60, help='Parameter for controller method')
+    parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
 
     # 解析命令行参数
     args = parser.parse_args()
