@@ -44,19 +44,12 @@
                     <div class="card-body">
                         <h2>当前状态</h2>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <p>当前温度: <span id="current_temp" class="status-value"></span></p>
                                 <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
                                 <p>控制室温度: <span id="control_temp" class="status-value"></span></p>
                                 <p>控制室湿度: <span id="control_hum" class="status-value"></span></p>
-                            </div>
-                            <div class="col-md-6">
                                 <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
-                                <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
-                                <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
-                                <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
-                                <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
-                                <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
                                 <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
                             </div>
                         </div>
@@ -64,6 +57,20 @@
                 </div>
             </div>
             <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>当前状态</h2>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>白天温度: <span id="day_temp" class="font-weight-bold"></span>°C</p>
+                                <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
+                                <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
+                                <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
+                                <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <h2>设定目标温度</h2>
@@ -101,6 +108,7 @@
                 document.getElementById('target_temp').innerText = data.target_temp;
                 document.getElementById('day_temp').innerText = data.target_temp;
                 document.getElementById('night_temp').innerText = data.target_temp - 4;
+                document.getElementById('new_target_temp').value = data.target_temp;
             }
         });
 
@@ -168,6 +176,7 @@
             }
 
             document.getElementById('target_temp').innerText = data.target_temp;
+            document.getElementById('new_target_temp').value = data.target_temp;
             document.getElementById('day_temp').innerText = data.day_temp;
             document.getElementById('night_temp').innerText = data.night_temp;
             document.getElementById('temp_status').innerText = data.temp_status;
