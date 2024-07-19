@@ -33,8 +33,8 @@
         .bg-uv {
             background-color: #ffc107;
         }
-        #target_temp {
-            display: none; /* 隐藏目标温度的显示部分 */
+        #target_temp, #is_uv_label {
+            display: none; /* 隐藏目标温度和UV状态 */
         }
     </style>
 </head>
@@ -52,7 +52,6 @@
                                 <p>当前湿度: <span id="current_hum" class="status-value"></span></p>
                                 <p>控制室温度: <span id="control_temp" class="status-value"></span></p>
                                 <p>控制室湿度: <span id="control_hum" class="status-value"></span></p>
-                                <p>目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
                                 <p>最后更新: <span id="last_update" class="font-weight-bold"></span></p>
                             </div>
                             <div class="col-md-6">
@@ -60,7 +59,8 @@
                                 <p>夜间温度: <span id="night_temp" class="font-weight-bold"></span>°C</p>
                                 <p>温度状态: <span id="temp_status" class="font-weight-bold"></span></p>
                                 <p>白天状态: <span id="is_day" class="font-weight-bold"></span></p>
-                                <p>UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+                                <p id="is_uv_label">UV状态: <span id="is_uv" class="font-weight-bold"></span></p>
+                                <p id="target_temp_label">目标温度: <span id="target_temp" class="font-weight-bold"></span>°C</p>
                             </div>
                         </div>
                     </div>
