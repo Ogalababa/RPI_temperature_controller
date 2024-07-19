@@ -85,7 +85,7 @@
         const socket = io();
 
         socket.on('status_update', function (data) {
-            console.log("Received status_update event:", data);
+            console.log("Received status_update event:", data);  // 调试日志
             updateStatus(data);
         });
 

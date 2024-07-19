@@ -1,7 +1,3 @@
-#!/usr/bin/python3
-# coding:utf-8
-# /main.py
-
 import argparse
 import time
 from datetime import datetime
@@ -20,7 +16,6 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
 schedule = None
-
 
 class Schedule:
     def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
@@ -154,6 +149,7 @@ class Schedule:
                 with app.app_context():
                     data = self.get_status_data()
                     socketio.emit('status_update', data)  # 发送更新状态到客户端
+                    logger.info(f"Emitting status_update event: {data}")  # 记录日志，检查数据
 
                 time.sleep(sec)  # 确保每分钟执行一次
         except KeyboardInterrupt:
@@ -176,7 +172,6 @@ class Schedule:
             'last_update': self.last_update.isoformat() if self.last_update else None
         }
 
-
 # Flask API 部分
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
@@ -184,18 +179,15 @@ socketio = SocketIO(app, async_mode=None)
 # 全局锁用于线程同步
 lock = threading.Lock()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/status', methods=['GET'])
 def get_status():
     with lock:
         status = schedule.get_status_data()
     return jsonify(status)
-
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
@@ -218,7 +210,6 @@ def control_equipment():
     else:
         return jsonify({'message': 'Invalid equipment or action'}), 400
 
-
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):
     with lock:
@@ -234,12 +225,9 @@ def handle_set_target_temperature(data):
         else:
             emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
 
-
-
 def run_controller():
     with app.app_context():
         schedule.controller(0)
-
 
 def main():
     global schedule
@@ -267,7 +255,6 @@ def main():
 
     # 启动 Flask-SocketIO 应用
     socketio.run(app, host='0.0.0.0', port=520, allow_unsafe_werkzeug=True)
-
 
 if __name__ == "__main__":
     main()
