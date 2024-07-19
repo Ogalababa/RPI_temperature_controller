@@ -56,7 +56,7 @@ def reset_bluetooth_adapter():
         logger.error(f"Failed to reset Bluetooth adapter: {e}")
 
 
-def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5, retry_delay=1):
+def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=4, max_retries=5, retry_delay=1):
     scanner = Scanner().withDelegate(ScanDelegate(target_mac))
     counter = 0
     while not scanner.delegate.found and counter < max_retries:
