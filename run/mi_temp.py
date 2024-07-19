@@ -1,8 +1,15 @@
 # ！/usr/bin/python3
 # coding:utf-8
-# sys
 # /run.mi_temp.py
 from bluepy.btle import Scanner, DefaultDelegate
+import time
+import logging
+
+# 设置logging基础配置
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler()])  # 输出到控制台
+logger = logging.getLogger(__name__)
 
 
 class ScanDelegate(DefaultDelegate):
@@ -13,12 +20,12 @@ class ScanDelegate(DefaultDelegate):
         self.temperature = None
         self.humidity = None
 
-    def handle_discovery(self, dev, is_new_dev, is_new_data):
+    def handleDiscovery(self, dev, isNewDev, isNewData):
         if dev.addr.lower() == self.target_mac:
             for (adtype, desc, value) in dev.getScanData():
                 if desc == "16b Service Data" and value.startswith("95fe") and len(value) == 40:
                     self.temperature, self.humidity = parse_mi_service_data(value)
-                    print(f"Temperature: {self.temperature}°C, Humidity: {self.humidity}%")
+                    logger.info(f"Temperature: {self.temperature}°C, Humidity: {self.humidity}%")
                     self.found = True
                     break
 
@@ -38,23 +45,30 @@ def parse_mi_service_data(service_data):
     return temperature, humidity
 
 
-def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5):
+def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=5, retry_delay=1):
     scanner = Scanner().withDelegate(ScanDelegate(target_mac))
     counter = 0
     while not scanner.delegate.found and counter < max_retries:
+        start_time = time.time()
         scanner.scan(scan_time)
+        end_time = time.time()
         counter += 1
         if not scanner.delegate.found:
-            print(f"Attempt {counter}/{max_retries}: Target data not found, rescanning...")
+            logger.info(f"Attempt {counter}/{max_retries}: Target data not found, rescanning...")
+            time.sleep(retry_delay)
+        logger.info(f"Scan duration: {end_time - start_time:.2f} seconds")
 
     if scanner.delegate.found:
         return scanner.delegate.temperature, scanner.delegate.humidity
     else:
-        print("Failed to find target device after maximum retries.")
+        logger.info("Failed to find target device after maximum retries.")
         return False
 
 
 # 调用函数并获取温度和湿度
 if __name__ == "__main__":
     temperature, humidity = scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2)
-    print(f"Final Temperature: {temperature}°C, Final Humidity: {humidity}%")
+    if temperature and humidity:
+        logger.info(f"Final Temperature: {temperature}°C, Final Humidity: {humidity}%")
+    else:
+        logger.info("Failed to retrieve temperature and humidity data.")
