@@ -1,3 +1,7 @@
+# ！/usr/bin/python3
+# coding:utf-8
+# sys
+# /run.mi_temp.py
 from bluepy.btle import Scanner, DefaultDelegate
 
 

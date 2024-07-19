@@ -128,4 +128,3 @@ class RTC:
         }
         with open(os.path.join(current_dir, "status.json"), "w") as json_file:
             json.dump(data, json_file, indent=4)
-
