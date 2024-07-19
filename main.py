@@ -149,7 +149,6 @@ class Schedule:
                 with app.app_context():
                     data = self.get_status_data()
                     socketio.emit('status_update', data)  # 发送更新状态到客户端
-                    logger.info(f"Emitting status_update event: {data}")  # 记录日志，检查数据
 
                 time.sleep(sec)  # 确保每分钟执行一次
         except KeyboardInterrupt:
