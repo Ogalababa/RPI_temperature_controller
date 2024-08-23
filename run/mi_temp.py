@@ -43,7 +43,7 @@ def test_mi_device(mac_address="58:2D:34:30:53:58"):
         return (temperature, humidity)
     except:
         print(f"Device {mac_address} is NOT a Xiaomi Thermometer or not reachable.")
-        return False
+        return (0, 0)
 
 def parse_mi_service_data(service_data):
     # 将16进制字符串转换为字节数组
