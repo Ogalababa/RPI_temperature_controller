@@ -8,13 +8,25 @@ from flask_socketio import SocketIO, emit
 from run.RTC import RTC
 
 # 设置logging基础配置
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[logging.StreamHandler()])  # 输出到控制台
-logger = logging.getLogger(__name__)
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
+# Logging configuration with SocketIO handler
+class SocketIOHandler(logging.Handler):
+    def emit(self, record):
+        log_entry = self.format(record)
+        socketio.emit('log_message', {'message': log_entry})
+
+# Set up the logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+socketio_handler = SocketIOHandler()
+socketio_handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+socketio_handler.setFormatter(formatter)
+logger.addHandler(socketio_handler)
+
 schedule = None
 
 class SocketIOHandler(logging.Handler):
@@ -26,11 +38,7 @@ class SocketIOHandler(logging.Handler):
         with app.app_context():
             socketio.emit('log_message', {'message': log_entry})
 
-# 将 SocketIOHandler 添加到 logger
-socketio_handler = SocketIOHandler()
-socketio_handler.setLevel(logging.INFO)
-socketio_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-logger.addHandler(socketio_handler)
+
 
 class Schedule:
     def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
