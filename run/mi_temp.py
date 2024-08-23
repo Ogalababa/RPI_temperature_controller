@@ -5,6 +5,8 @@ from bluepy.btle import Scanner, DefaultDelegate, BTLEException
 import time
 import logging
 import subprocess
+from mitemp_bt.mitemp_bt_poller import MiTempBtPoller, MI_TEMPERATURE, MI_HUMIDITY
+from btlewrap.gatttool import GatttoolBackend
 
 # 设置logging基础配置
 logging.basicConfig(level=logging.INFO,
@@ -30,6 +32,18 @@ class ScanDelegate(DefaultDelegate):
                     self.found = True
                     break
 
+def test_mi_device(mac_address="58:2D:34:30:53:58"):
+    try:
+        poller = MiTempBtPoller(mac_address, GatttoolBackend)
+        temperature = poller.parameter_value(MI_TEMPERATURE)
+        humidity = poller.parameter_value(MI_HUMIDITY)
+        print(f"Device {mac_address} is a Xiaomi Thermometer!")
+        print(f"Temperature: {temperature}°C")
+        print(f"Humidity: {humidity}%")
+        return (temperature, humidity)
+    except:
+        print(f"Device {mac_address} is NOT a Xiaomi Thermometer or not reachable.")
+        return False
 
 def parse_mi_service_data(service_data):
     # 将16进制字符串转换为字节数组
@@ -56,7 +70,7 @@ def reset_bluetooth_adapter():
         logger.error(f"Failed to reset Bluetooth adapter: {e}")
 
 
-def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=10, retry_delay=1):
+def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=4, max_retries=10, retry_delay=1):
     scanner = Scanner().withDelegate(ScanDelegate(target_mac))
     counter = 0
     while not scanner.delegate.found and counter < max_retries:
@@ -83,8 +97,11 @@ def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2, max_retries=10, re
 
 # 调用函数并获取温度和湿度
 if __name__ == "__main__":
-    temperature, humidity = scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=2)
+    temperature, humidity = scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=4)
     if temperature and humidity:
         logger.info(f"Final Temperature: {temperature}°C, Final Humidity: {humidity}%")
     else:
         logger.info("Failed to retrieve temperature and humidity data.")
+
+    temperature2, humidity = test_mi_device("58:2D:34:30:53:58")
+
