@@ -19,7 +19,6 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
 schedule = None
 
-
 class SocketIOHandler(logging.Handler):
     def __init__(self):
         super().__init__()
@@ -29,13 +28,11 @@ class SocketIOHandler(logging.Handler):
         with app.app_context():
             socketio.emit('log_message', {'message': log_entry})
 
-
 # 将 SocketIOHandler 添加到 logger
 socketio_handler = SocketIOHandler()
 socketio_handler.setLevel(logging.INFO)
 socketio_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logger.addHandler(socketio_handler)
-
 
 class Schedule:
     def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
@@ -151,8 +148,7 @@ class Schedule:
                 else:
                     self.set_equipment_status('陶瓷灯', self.rtc.OFF)
             else:
-                if self.rtc.status.get('降温风扇',
-                                       self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
+                if self.rtc.status.get('降温风扇', self.rtc.OFF) == self.rtc.ON and self.current_temp <= self.target_temp:
                     self.set_equipment_status('降温风扇', self.rtc.OFF)
                 self.set_equipment_status('陶瓷灯', self.rtc.OFF)
 
@@ -192,7 +188,6 @@ class Schedule:
             'last_update': self.last_update.isoformat() if self.last_update else None
         }
 
-
 # Flask API 部分
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
@@ -200,18 +195,15 @@ socketio = SocketIO(app, async_mode=None)
 # 全局锁用于线程同步
 lock = threading.Lock()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 @app.route('/status', methods=['GET'])
 def get_status():
     with lock:
         status = schedule.get_status_data()
     return jsonify(status)
-
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
@@ -234,15 +226,6 @@ def control_equipment():
     else:
         return jsonify({'message': 'Invalid equipment or action'}), 400
 
-
-@app.route('/logs', methods=['GET'])
-def get_logs():
-    with open(log_filename, 'r') as file:
-        logs = file.readlines()
-    last_10_logs = logs[-10:]  # 获取最后10条日志
-    return jsonify({'logs': ''.join(last_10_logs)})
-
-
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):
     with lock:
@@ -258,11 +241,9 @@ def handle_set_target_temperature(data):
         else:
             emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
 
-
 def run_controller():
     with app.app_context():
         schedule.controller(0)
-
 
 def main():
     global schedule
@@ -290,7 +271,6 @@ def main():
 
     # 启动 Flask-SocketIO 应用
     socketio.run(app, host='0.0.0.0', port=520, allow_unsafe_werkzeug=True)
-
 
 if __name__ == "__main__":
     main()
