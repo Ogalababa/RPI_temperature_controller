@@ -103,5 +103,9 @@ if __name__ == "__main__":
     else:
         logger.info("Failed to retrieve temperature and humidity data.")
 
-    temperature2, humidity = test_mi_device("58:2D:34:30:53:58")
+    temperature2, humidity2 = test_mi_device("58:2D:34:30:53:58")
+    if temperature2 and humidity2:
+        logger.info(f"Final Temperature: {temperature2}°C, Final Humidity: {humidity2}%")
+    else:
+        logger.info("Failed to retrieve temperature and humidity data.")
 
