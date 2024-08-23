@@ -67,21 +67,20 @@ def test_mi_temp(mac_address="58:2D:34:30:53:58", max_retries=10, retry_delay=1)
             humidity = poller.parameter_value(MI_HUMIDITY)
 
             if temperature is not None and humidity is not None:
-                print(f"Device {mac_address} is a Xiaomi Thermometer!")
-                print(f"Temperature: {temperature}°C")
-                print(f"Humidity: {humidity}%")
+                logger.info(f"Temperature: {temperature}°C")
+                logger.info(f"Humidity: {humidity}%")
                 return temperature, humidity
             else:
-                print(f"Attempt {counter + 1}/{max_retries}: Data not available, retrying...")
+                logger.error(f"Attempt {counter + 1}/{max_retries}: Data not available, retrying...")
         except BTLEException as e:
-            print(f"Bluetooth error: {e}")
+            logger.error(f"Bluetooth error: {e}")
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logger.error(f"Unexpected error: {e}")
 
         counter += 1
         time.sleep(retry_delay)
 
-    print(f"Failed to retrieve data from device {mac_address} after {max_retries} retries.")
+    logger.error(f"Failed to retrieve data from device {mac_address} after {max_retries} retries.")
     return False
 
 
