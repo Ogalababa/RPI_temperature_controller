@@ -36,6 +36,18 @@
         #target_temp_label, #target_temp, #is_uv_label {
             display: none; /* 隐藏目标温度和UV状态 */
         }
+        #log {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        #log p {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -88,6 +100,12 @@
                 <div id="equipment_controls" class="row"></div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <h2>日志</h2>
+                <div id="log"></div>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
@@ -106,6 +124,14 @@
                 document.getElementById('night_temp').innerText = data.target_temp - 4;
                 document.getElementById('new_target_temp').value = data.target_temp;
             }
+        });
+
+        socket.on('log_message', function (data) {
+            const logDiv = document.getElementById('log');
+            const message = document.createElement('p');
+            message.textContent = data.message;
+            logDiv.appendChild(message);
+            logDiv.scrollTop = logDiv.scrollHeight;  // 滚动到最底部
         });
 
         function updateStatus(data) {

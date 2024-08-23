@@ -17,6 +17,21 @@ app = Flask(__name__)
 socketio = SocketIO(app, async_mode=None)
 schedule = None
 
+class SocketIOHandler(logging.Handler):
+    def __init__(self):
+        super().__init__()
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        with app.app_context():
+            socketio.emit('log_message', {'message': log_entry})
+
+# 将 SocketIOHandler 添加到 logger
+socketio_handler = SocketIOHandler()
+socketio_handler.setLevel(logging.INFO)
+socketio_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(socketio_handler)
+
 class Schedule:
     def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
         self.rtc = RTC()
@@ -223,6 +238,18 @@ def handle_set_target_temperature(data):
                 emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
         else:
             emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
+
+@socketio.on('connect')
+def handle_connect():
+    logger.info("Client connected")
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    logger.info("Client disconnected")
+
+@socketio.on('log_request')
+def handle_log_request():
+    logger.info("Client requested log messages")
 
 def run_controller():
     with app.app_context():
