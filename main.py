@@ -8,7 +8,7 @@ from run.RTC import RTC  # 假设RTC模块在同一目录下
 
 # Flask and SocketIO setup
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode=None)
 
 # Logging configuration
 log_filename = "app_logs.txt"
