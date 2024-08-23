@@ -32,18 +32,6 @@ class ScanDelegate(DefaultDelegate):
                     self.found = True
                     break
 
-def test_mi_device(mac_address="58:2D:34:30:53:58"):
-    try:
-        poller = MiTempBtPoller(mac_address, GatttoolBackend)
-        temperature = poller.parameter_value(MI_TEMPERATURE)
-        humidity = poller.parameter_value(MI_HUMIDITY)
-        print(f"Device {mac_address} is a Xiaomi Thermometer!")
-        print(f"Temperature: {temperature}°C")
-        print(f"Humidity: {humidity}%")
-        return (temperature, humidity)
-    except:
-        print(f"Device {mac_address} is NOT a Xiaomi Thermometer or not reachable.")
-        return (0, 0)
 
 def parse_mi_service_data(service_data):
     # 将16进制字符串转换为字节数组
@@ -68,6 +56,33 @@ def reset_bluetooth_adapter():
         time.sleep(1)
     except Exception as e:
         logger.error(f"Failed to reset Bluetooth adapter: {e}")
+
+
+def test_mi_temp(mac_address="58:2D:34:30:53:58", max_retries=10, retry_delay=1):
+    counter = 0
+    while counter < max_retries:
+        try:
+            poller = MiTempBtPoller(mac_address, GatttoolBackend)
+            temperature = poller.parameter_value(MI_TEMPERATURE)
+            humidity = poller.parameter_value(MI_HUMIDITY)
+
+            if temperature is not None and humidity is not None:
+                print(f"Device {mac_address} is a Xiaomi Thermometer!")
+                print(f"Temperature: {temperature}°C")
+                print(f"Humidity: {humidity}%")
+                return temperature, humidity
+            else:
+                print(f"Attempt {counter + 1}/{max_retries}: Data not available, retrying...")
+        except BTLEException as e:
+            print(f"Bluetooth error: {e}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+
+        counter += 1
+        time.sleep(retry_delay)
+
+    print(f"Failed to retrieve data from device {mac_address} after {max_retries} retries.")
+    return False
 
 
 def scan_mi_temp(target_mac="58:2D:34:30:53:58", scan_time=4, max_retries=10, retry_delay=1):
@@ -108,4 +123,3 @@ if __name__ == "__main__":
         logger.info(f"Final Temperature: {temperature2}°C, Final Humidity: {humidity2}%")
     else:
         logger.info("Failed to retrieve temperature and humidity data.")
-
