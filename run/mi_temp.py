@@ -8,7 +8,10 @@ import subprocess
 from mitemp_bt.mitemp_bt_poller import MiTempBtPoller, MI_TEMPERATURE, MI_HUMIDITY
 from btlewrap.gatttool import GatttoolBackend
 
-
+# 设置logging基础配置
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 
 

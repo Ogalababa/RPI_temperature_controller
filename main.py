@@ -1,44 +1,37 @@
 import argparse
 import time
-from datetime import datetime
 import logging
 import threading
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
-from run.RTC import RTC
+from run.RTC import RTC  # 假设RTC模块在同一目录下
 
-# 设置logging基础配置
-
-
+# Flask and SocketIO setup
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode=None)
-# Logging configuration with SocketIO handler
-class SocketIOHandler(logging.Handler):
-    def emit(self, record):
-        log_entry = self.format(record)
-        socketio.emit('log_message', {'message': log_entry})
+socketio = SocketIO(app)
 
-# Set up the logger
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-socketio_handler = SocketIOHandler()
-socketio_handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-socketio_handler.setFormatter(formatter)
-logger.addHandler(socketio_handler)
-
-schedule = None
+# Logging configuration
+log_filename = "app_logs.txt"
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.StreamHandler(),  # Output to console
+                              logging.FileHandler(log_filename)])  # Output to file
+logger = logging.getLogger(__name__)
 
 class SocketIOHandler(logging.Handler):
-    def __init__(self):
-        super().__init__()
-
     def emit(self, record):
         log_entry = self.format(record)
         with app.app_context():
             socketio.emit('log_message', {'message': log_entry})
 
+# Add the SocketIO handler to logger
+socketio_handler = SocketIOHandler()
+socketio_handler.setLevel(logging.INFO)
+socketio_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(socketio_handler)
 
+# Global schedule object
+schedule = None
 
 class Schedule:
     def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
@@ -91,7 +84,7 @@ class Schedule:
             logger.info(f"Current Temp: {self.current_temp}°C")
             logger.info(f"Current Hum: {self.current_hum}%")
             logger.info(f"Control Room Temp: {self.control_temp}°C")
-            logger.info(f"Control Room Hum: {self.control_temp}%")
+            logger.info(f"Control Room Hum: {self.control_hum}%")
         except Exception as e:
             logger.error(f"Error getting control temp: {e}")
             return
@@ -195,21 +188,22 @@ class Schedule:
         }
 
 # Flask API 部分
-app = Flask(__name__)
-socketio = SocketIO(app, async_mode=None)
-
-# 全局锁用于线程同步
-lock = threading.Lock()
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/status', methods=['GET'])
 def get_status():
-    with lock:
-        status = schedule.get_status_data()
+    status = schedule.get_status_data()
     return jsonify(status)
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    with open(log_filename, 'r') as file:
+        logs = file.readlines()
+    last_10_logs = logs[-10:]  # 获取最后10条日志
+    return jsonify({'logs': ''.join(last_10_logs)})
+
 
 @app.route('/control', methods=['POST'])
 def control_equipment():
@@ -219,75 +213,49 @@ def control_equipment():
     mode = data.get('mode', 'auto')  # 默认为自动模式
     if equipment in schedule.equipment_mapping and action in [schedule.rtc.ON, schedule.rtc.OFF]:
         manual = mode == 'manual'
-        with lock:
-            if manual:
-                schedule.manual_control[equipment] = True
-                schedule.change_mapping_status(equipment, action, manual=True)
-            else:
-                schedule.manual_control[equipment] = False
-            schedule.equipment_action(equipment, action)
-        with app.app_context():
-            socketio.emit('status_update', schedule.get_status_data())  # 发送更新状态到客户端
+        if manual:
+            schedule.manual_control[equipment] = True
+            schedule.change_mapping_status(equipment, action, manual=True)
+        else:
+            schedule.manual_control[equipment] = False
+        schedule.equipment_action(equipment, action)
+        socketio.emit('status_update', schedule.get_status_data())
         return jsonify({'message': 'Success', 'equipment': equipment, 'action': action, 'mode': mode}), 200
     else:
         return jsonify({'message': 'Invalid equipment or action'}), 400
 
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):
-    with lock:
-        target_temp = data.get('target_temp')
-        if target_temp is not None:
-            schedule.target_temp = float(target_temp)
-            schedule.day_temp = float(target_temp)
-            schedule.night_temp = float(target_temp) - 4
-            with app.app_context():
-                status_data = schedule.get_status_data()
-                socketio.emit('status_update', status_data)  # 更新状态到客户端
-                emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
-        else:
-            emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
-
-@socketio.on('connect')
-def handle_connect():
-    logger.info("Client connected")
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    logger.info("Client disconnected")
-
-@socketio.on('log_request')
-def handle_log_request():
-    logger.info("Client requested log messages")
+    target_temp = data.get('target_temp')
+    if target_temp is not None:
+        schedule.target_temp = float(target_temp)
+        schedule.day_temp = float(target_temp)
+        schedule.night_temp = float(target_temp) - 4
+        socketio.emit('status_update', schedule.get_status_data())
+        emit('temperature_set', {'message': 'Temperature set successfully', 'target_temp': target_temp})
+    else:
+        emit('temperature_set', {'message': 'Invalid temperature value'}, status=400)
 
 def run_controller():
-    with app.app_context():
-        schedule.controller(0)
+    schedule.controller(0)
 
 def main():
     global schedule
-    # 创建ArgumentParser对象
     parser = argparse.ArgumentParser(description="Schedule Controller")
-
-    # 添加参数
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
     parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
-
-    # 解析命令行参数
     args = parser.parse_args()
 
-    # 更新 Schedule 对象的参数
     schedule = Schedule(day_time=args.day_time, uv_start_time=args.uv_start_time, night_time=args.night_time,
                         target_temp=args.target_temp)
 
-    # 启动控制器线程
     controller_thread = threading.Thread(target=run_controller)
     controller_thread.daemon = True
     controller_thread.start()
 
-    # 启动 Flask-SocketIO 应用
     socketio.run(app, host='0.0.0.0', port=520, allow_unsafe_werkzeug=True)
 
 if __name__ == "__main__":

@@ -13,7 +13,10 @@ import logging
 
 from run.mi_temp import scan_mi_temp, test_mi_temp
 
-
+# 设置logging基础配置
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(levelname)s - %(message)s',
+#                     handlers=[logging.StreamHandler()])  # 输出到控制台
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +78,6 @@ class RTC:
             # 如果 scan_mi_temp 失败，则使用 get_control_temp
             result = scan_mi_temp()
             if result:
-                print("test_mi_temp failed, using scan_mi_temp instead.")
                 self.temp, self.hum = result
             else:
                 print("scan_mi_temp failed, using get_control_temp instead.")
