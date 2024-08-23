@@ -226,6 +226,15 @@ def control_equipment():
     else:
         return jsonify({'message': 'Invalid equipment or action'}), 400
 
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    with open(log_filename, 'r') as file:
+        logs = file.readlines()
+    last_10_logs = logs[-10:]  # 获取最后10条日志
+    return jsonify({'logs': ''.join(last_10_logs)})
+
+
 @socketio.on('set_target_temperature')
 def handle_set_target_temperature(data):
     with lock:
