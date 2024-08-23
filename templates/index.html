@@ -110,9 +110,9 @@
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
         const socket = io();
+        const logQueue = [];
 
         socket.on('status_update', function (data) {
-            console.log("Received status_update event:", data);  // 调试日志
             updateStatus(data);
         });
 
@@ -127,19 +127,27 @@
         });
 
         socket.on('log_message', function (data) {
+            logQueue.push(data.message);
+
+            if (logQueue.length > 10) {
+                logQueue.shift(); // 移除队列中的第一条日志，保持队列长度为10
+            }
+
             const logDiv = document.getElementById('log');
-            const message = document.createElement('p');
-            message.textContent = data.message;
-            logDiv.appendChild(message);
+            logDiv.innerHTML = '';
+            logQueue.forEach(function (log) {
+                const message = document.createElement('p');
+                message.textContent = log;
+                logDiv.appendChild(message);
+            });
+
             logDiv.scrollTop = logDiv.scrollHeight;  // 滚动到最底部
         });
 
         function updateStatus(data) {
-            // 小米温度
             const currentTempElem = document.getElementById('current_temp');
             currentTempElem.innerText = data.current_temp + '°C';
 
-            // 根据温度设置背景颜色
             if (data.current_temp < 20) {
                 currentTempElem.classList.remove('bg-hot', 'bg-normal');
                 currentTempElem.classList.add('bg-cold');
@@ -150,11 +158,10 @@
                 currentTempElem.classList.remove('bg-cold', 'bg-hot');
                 currentTempElem.classList.add('bg-normal');
             }
-            // 小米湿度
+
             const currentHumElem = document.getElementById('current_hum');
             currentHumElem.innerText = data.current_hum + '%';
 
-            // 根据湿度设置背景颜色
             if (data.current_hum < 60) {
                 currentHumElem.classList.remove('bg-hot', 'bg-normal');
                 currentHumElem.classList.add('bg-cold');
@@ -166,11 +173,9 @@
                 currentHumElem.classList.add('bg-normal');
             }
 
-            // 控制室温度
             const controlTempElem = document.getElementById('control_temp');
             controlTempElem.innerText = data.control_temp + '°C';
 
-            // 根据温度设置背景颜色
             if (data.control_temp < 20) {
                 controlTempElem.classList.remove('bg-hot', 'bg-normal');
                 controlTempElem.classList.add('bg-cold');
@@ -181,11 +186,10 @@
                 controlTempElem.classList.remove('bg-cold', 'bg-hot');
                 controlTempElem.classList.add('bg-normal');
             }
-            // 控制室湿度
+
             const controlHumElem = document.getElementById('control_hum');
             controlHumElem.innerText = data.control_hum + '%';
 
-            // 根据湿度设置背景颜色
             if (data.control_hum < 30) {
                 controlHumElem.classList.remove('bg-hot', 'bg-normal');
                 controlHumElem.classList.add('bg-cold');
@@ -246,17 +250,15 @@
             alert(data.message);
         }
 
-        // Initial fetch to populate the status
         function fetchStatus() {
             fetch('/status')
                 .then(response => response.json())
                 .then(data => updateStatus(data));
         }
 
-        fetchStatus(); // Initial fetch
+        fetchStatus();
 
-        // Set interval to fetch status every 10 seconds
-        setInterval(fetchStatus, 10000); // 10000 milliseconds = 10 seconds
+        setInterval(fetchStatus, 10000); // 10 seconds interval
     </script>
 </body>
 </html>
