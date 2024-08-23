@@ -36,6 +36,18 @@
         #target_temp_label, #target_temp, #is_uv_label {
             display: none; /* 隐藏目标温度和UV状态 */
         }
+        #log {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        #log p {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -88,6 +100,13 @@
                 <div id="equipment_controls" class="row"></div>
             </div>
         </div>
+        <div class="card">
+            <div class="card-body">
+                <h2>日志</h2>
+                <div id="log"></div>
+                <button class="btn btn-secondary mt-2" onclick="fetchLogs()">刷新日志</button>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
@@ -109,11 +128,9 @@
         });
 
         function updateStatus(data) {
-            // 小米温度
             const currentTempElem = document.getElementById('current_temp');
             currentTempElem.innerText = data.current_temp + '°C';
 
-            // 根据温度设置背景颜色
             if (data.current_temp < 20) {
                 currentTempElem.classList.remove('bg-hot', 'bg-normal');
                 currentTempElem.classList.add('bg-cold');
@@ -124,11 +141,10 @@
                 currentTempElem.classList.remove('bg-cold', 'bg-hot');
                 currentTempElem.classList.add('bg-normal');
             }
-            // 小米湿度
+
             const currentHumElem = document.getElementById('current_hum');
             currentHumElem.innerText = data.current_hum + '%';
 
-            // 根据湿度设置背景颜色
             if (data.current_hum < 60) {
                 currentHumElem.classList.remove('bg-hot', 'bg-normal');
                 currentHumElem.classList.add('bg-cold');
@@ -140,11 +156,9 @@
                 currentHumElem.classList.add('bg-normal');
             }
 
-            // 控制室温度
             const controlTempElem = document.getElementById('control_temp');
             controlTempElem.innerText = data.control_temp + '°C';
 
-            // 根据温度设置背景颜色
             if (data.control_temp < 20) {
                 controlTempElem.classList.remove('bg-hot', 'bg-normal');
                 controlTempElem.classList.add('bg-cold');
@@ -155,11 +169,10 @@
                 controlTempElem.classList.remove('bg-cold', 'bg-hot');
                 controlTempElem.classList.add('bg-normal');
             }
-            // 控制室湿度
+
             const controlHumElem = document.getElementById('control_hum');
             controlHumElem.innerText = data.control_hum + '%';
 
-            // 根据湿度设置背景颜色
             if (data.control_hum < 30) {
                 controlHumElem.classList.remove('bg-hot', 'bg-normal');
                 controlHumElem.classList.add('bg-cold');
@@ -220,17 +233,33 @@
             alert(data.message);
         }
 
-        // Initial fetch to populate the status
         function fetchStatus() {
             fetch('/status')
                 .then(response => response.json())
                 .then(data => updateStatus(data));
         }
 
-        fetchStatus(); // Initial fetch
+        function fetchLogs() {
+            fetch('/logs')
+                .then(response => response.json())
+                .then(data => {
+                    const logDiv = document.getElementById('log');
+                    logDiv.innerHTML = ''; // 清除当前日志内容
+                    data.logs.split('\n').forEach(log => {
+                        if (log.trim()) { // 确保不添加空行
+                            const message = document.createElement('p');
+                            message.textContent = log;
+                            logDiv.appendChild(message);
+                        }
+                    });
+                });
+        }
 
-        // Set interval to fetch status every 10 seconds
-        setInterval(fetchStatus, 10000); // 10000 milliseconds = 10 seconds
+        fetchStatus(); // Initial fetch
+        fetchLogs(); // Initial fetch logs
+
+        setInterval(fetchStatus, 10000);  // 每10秒刷新一次状态
+        setInterval(fetchLogs, 30000);  // 每30秒刷新一次日志
     </script>
 </body>
 </html>
