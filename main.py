@@ -260,7 +260,7 @@ def handle_set_target_temperature(data):
         if target_temp is not None:
             schedule.target_temp = float(target_temp)
             schedule.day_temp = float(target_temp)
-            schedule.night_temp = float(target_temp) - 4
+            schedule.night_temp = float(target_temp) - 2
             with app.app_context():
                 status_data = schedule.get_status_data()
                 socketio.emit('status_update', status_data)  # 更新状态到客户端
