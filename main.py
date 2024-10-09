@@ -48,7 +48,7 @@ logger.addHandler(socketio_handler)
 
 
 class Schedule:
-    def __init__(self, day_time=9, uv_start_time=16, night_time=25, target_temp=28):
+    def __init__(self, day_time=9, uv_start_time=16, night_time=22, target_temp=25):
         self.rtc = RTC()
         self.day_time = day_time
         self.night_time = night_time
@@ -260,7 +260,7 @@ def handle_set_target_temperature(data):
         if target_temp is not None:
             schedule.target_temp = float(target_temp)
             schedule.day_temp = float(target_temp)
-            schedule.night_temp = float(target_temp) - 2
+            schedule.night_temp = float(target_temp) - 4
             with app.app_context():
                 status_data = schedule.get_status_data()
                 socketio.emit('status_update', status_data)  # 更新状态到客户端
@@ -283,7 +283,7 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add_argument('--target_temp', type=float, default=30, help='Target temperature')
+    parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
 
     # 解析命令行参数
