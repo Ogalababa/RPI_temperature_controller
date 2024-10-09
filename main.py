@@ -55,7 +55,7 @@ class Schedule:
         self.uv_start_time = uv_start_time
         self.target_temp = float(target_temp)
         self.day_temp = float(target_temp)
-        self.night_temp = float(target_temp) - 4
+        self.night_temp = float(target_temp) - 2
         self.is_day = False
         self.is_uv = False
         self.temp_status = 'good'
@@ -283,7 +283,7 @@ def main():
     parser.add_argument('--day_time', type=int, default=10, help='Day time')
     parser.add_argument('--uv_start_time', type=int, default=16, help='UV start time')
     parser.add_argument('--night_time', type=int, default=22, help='Night time')
-    parser.add_argument('--target_temp', type=float, default=27, help='Target temperature')
+    parser.add_argument('--target_temp', type=float, default=28, help='Target temperature')
     parser.add_argument('--sleep', type=int, default=0, help='Parameter for controller method')
 
     # 解析命令行参数
