@@ -99,8 +99,8 @@ class RTC:
 
             else:
                 logger.info("sensor field")
-                self.control_temp = 0
-                self.control_hum = 0
+                self.control_temp = 20
+                self.control_hum = 20
                 time.sleep(5)
                 self.get_control_temp()
             time.sleep(1)
@@ -114,7 +114,7 @@ class RTC:
     def controller(self, equipment, status):
 
         set_to = GPIO.LOW if status == self.ON else GPIO.HIGH
-        # set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
+        #set_to = GPIO.HIGH if status == self.ON else GPIO.LOW
         logger.info(f"{equipment} {status}")
         GPIO.output(self.PINS["OUTPUT"][equipment], set_to)
         self.status[equipment] = status
