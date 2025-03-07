@@ -99,10 +99,10 @@ class RTC:
 
             else:
                 logger.info("sensor field")
-                self.control_temp = 20
-                self.control_hum = 20
-                time.sleep(5)
-                self.get_control_temp()
+                temp_list.append(20)
+                hum_list.append(20)
+                logger.info("temp_list append 20")
+
             time.sleep(1)
 
         temp_final = sum(temp_list) / len(temp_list)
